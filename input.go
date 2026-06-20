@@ -58,72 +58,6 @@ type InputStatus struct {
 	Errors []string `json:"errors,omitempty"`
 }
 
-type InputGetConfigRequest struct {
-	// ID of the input component instance.
-	ID int `json:"id"`
-}
-
-func (r *InputGetConfigRequest) Method() string {
-	return "Input.GetConfig"
-}
-
-func (r *InputGetConfigRequest) NewTypedResponse() *InputConfig {
-	return &InputConfig{}
-}
-
-func (r *InputGetConfigRequest) NewResponse() any {
-	return r.NewTypedResponse()
-}
-
-func (r *InputGetConfigRequest) Do(
-	client *resty.Client,
-) (
-	*InputConfig,
-	*Frame,
-	error,
-) {
-	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
-	return resp, raw, err
-}
-
-type InputConfig struct {
-	// ID of the switch component instance.
-	ID int `json:"id"`
-
-	// Name of the switch instance.
-	Name *string `json:"name"`
-
-	// Type of associated input. Range of values switch, button, analog (only if applicable).
-	Type *string `json:"type,omitempty"`
-
-	// Enable flag. When disabled, the input instance doesn't emit any events and reports
-	// status properties as null. Applies for all input types.
-	Enable *bool `json:"enable,omitempty"`
-
-	// Invert is true if the logical state of the associated input is inverted, false otherwise.
-	// For the change to be applied, the physical switch has to be toggled once after invert
-	// is set. For type analog inverts percent range - 100% becomes 0% and 0% becomes 100%
-	Invert *bool `json:"invert,omitempty"`
-
-	// FactoryReset is true if input-triggered factory reset option is enabled, false otherwise
-	// (shown if applicable). (only for type switch, button).
-	FactorReset *bool `json:"factory_reset,omitempty"`
-
-	// ReportThr is the analog input report threshold in percent. The accepted range is
-	// device-specific, default [1.0..50.0]% unless specified otherwise.
-	ReportThr *float64 `json:"report_thr,omitempty"`
-
-	// RangeMap remaps 0%-100% range to values in array. The first value in the array is the
-	// min setting, and the second value is the max setting. Array elements are of type number.
-	// Float values are supported. The accepted range for values is from 0% to 100%. Default
-	// values are [0, 100]. max must be greater than min. Equality is supported.
-	RangeMap []float64 `json:"range_map,omitempty"`
-
-	// XPercent is value transformation config for status.percent.
-	XPercent *InputXPercent `json:"xpercent,omitempty"`
-}
-
 // InputXPercent is value transformation config for status.percent.
 type InputXPercent struct {
 	// Expr is a JS expression containing x, where x is the raw value to be transformed
@@ -135,38 +69,6 @@ type InputXPercent struct {
 	// Accepted range: null or [0..20] chars. Both null and "" mean value transformation
 	// is disabled.
 	Unit *string `json:"unit,omitempty"`
-}
-
-type InputSetConfigRequest struct {
-	// ID of the input component instance.
-	ID int `json:"id"`
-
-	// Configuration that the method takes.
-	Config InputConfig `json:"config"`
-}
-
-func (r *InputSetConfigRequest) Method() string {
-	return "Input.SetConfig"
-}
-
-func (r *InputSetConfigRequest) NewTypedResponse() *SetConfigResponse {
-	return &SetConfigResponse{}
-}
-
-func (r *InputSetConfigRequest) NewResponse() any {
-	return r.NewTypedResponse()
-}
-
-func (r *InputSetConfigRequest) Do(
-	client *resty.Client,
-) (
-	*SetConfigResponse,
-	*Frame,
-	error,
-) {
-	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
-	return resp, raw, err
 }
 
 type InputCheckExpressionRequest struct {

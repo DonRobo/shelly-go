@@ -1,0 +1,2254 @@
+{
+  "sourceUrl": "https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/",
+  "components": [
+    {
+      "name": "BLE",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "rpc.enable",
+          "type": "boolean",
+          "description": "True if rpc service is enabled, false otherwise"
+        }
+      ]
+    },
+    {
+      "name": "CCT",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the CCT component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the CCT instance"
+        },
+        {
+          "key": "initial_state",
+          "type": "string",
+          "enum": [
+            "off",
+            "on",
+            "restore_last"
+          ],
+          "description": "Output state to set on power_on. Range of values: off, on, restore_last"
+        },
+        {
+          "key": "auto_on",
+          "type": "boolean",
+          "description": "True if the \"Automatic ON\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_on_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back on"
+        },
+        {
+          "key": "auto_off",
+          "type": "boolean",
+          "description": "True if the \"Automatic OFF\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_off_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back off"
+        },
+        {
+          "key": "transition_duration",
+          "type": "number",
+          "description": "Transition time (in seconds) - time to change from 0% to 100% of brightness (if applicable)"
+        },
+        {
+          "key": "min_brightness_on_toggle",
+          "type": "number",
+          "description": "Brightness level (in percent) applied when there is a toggle and current brightness is lower than min_brightness_on_toggle."
+        },
+        {
+          "key": "night_mode.enable",
+          "type": "boolean",
+          "description": "Enable or disable night mode"
+        },
+        {
+          "key": "night_mode.brightness",
+          "type": "number",
+          "nullable": true,
+          "description": "Brightness level limit when night mode is active. null overrides night_mode.brightness with current brightness when night mode starts. Default value 50."
+        },
+        {
+          "key": "night_mode.ct",
+          "type": "number",
+          "nullable": true,
+          "description": "Color temperature level limit (in Kelvin) when night mode is active. null overrides night_mode.ct value with current ct value when night mode starts. Default value: 50% of ct_range. For DuoBulbG3: 4600"
+        },
+        {
+          "key": "night_mode.active_between",
+          "type": "array",
+          "description": "Containing 2 elements of type string, the first element indicates the start of the period during which the night mode will be active, the second indicates the end of that period. Both start and end are strings in the format HH:MM, where HH and MM are hours and minutes with optinal leading zeros"
+        },
+        {
+          "key": "button_fade_rate",
+          "type": "number",
+          "description": "Controls how quickly the output level changes while a button is held down for dimming (if applicable). Default value 3. Range [1,5] where 5 is fastest, 1 is slowest"
+        },
+        {
+          "key": "button_presets.button_doublepush.brightness",
+          "type": "number",
+          "nullable": true,
+          "description": "Brightness level (in percent) set on double click (if applicable). null overrides brightness with current brightness when preset is applied. Default: 100"
+        },
+        {
+          "key": "button_presets.button_doublepush.ct",
+          "type": "number",
+          "nullable": true,
+          "description": "Color temperature level (in Kelvin) set on double click (if applicable). null overrides ct with current ct when preset is applied. Default: max setting of ct_range (device specific)"
+        },
+        {
+          "key": "range_map",
+          "type": "array",
+          "nullable": true,
+          "description": "Remaps output 0%-100% range to values in array (if applicable). First value in array is min setting, second value is max setting. Array elements are of type number. Accepted range for values is from 0% to 100%. Default values are [0, 100]. max must be greater than min."
+        },
+        {
+          "key": "ct_range",
+          "type": "array",
+          "nullable": true,
+          "description": "Sets the color temperature operating range in Kelvin (if applicable). First value in array is min setting, second value is max setting. Array elements are of type number. Accepted range for values is from 1000K to 10000K. Default values are device specific. Default values for DuoBulbG3: [2700, 6500]. max must be greater than min."
+        },
+        {
+          "key": "current_limit",
+          "type": "number",
+          "description": "Limit (in Amperes) over which overcurrent condition occurs (shown if applicable). For specific devices applies for color channels, not CCT component"
+        },
+        {
+          "key": "power_limit",
+          "type": "number",
+          "description": "Limit (in Watts) over which overpower condition occurs (shown if applicable)"
+        },
+        {
+          "key": "voltage_limit",
+          "type": "number",
+          "description": "Limit (in Volts) over which overvoltage condition occurs (shown if applicable)"
+        }
+      ]
+    },
+    {
+      "name": "Cloud",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "enable",
+          "type": "boolean",
+          "description": "True if cloud connection is enabled, false otherwise"
+        },
+        {
+          "key": "server",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the server to which the device is connected"
+        }
+      ]
+    },
+    {
+      "name": "Cover",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "The numeric ID of the Cover component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "description": "Name of the Cover component instance"
+        },
+        {
+          "key": "in_locked",
+          "type": "boolean",
+          "description": "If True, all changes to physical inputs are ignored, regardless of mode."
+        },
+        {
+          "key": "initial_state",
+          "type": "string",
+          "description": "Defines Cover target state on power-on, one of open (Cover will fully open), closed (Cover will fully close) or stopped (Cover will not change its position)"
+        },
+        {
+          "key": "power_limit",
+          "type": "number",
+          "description": "Watts, a limit that must be exceeded to trigger an overpower error"
+        },
+        {
+          "key": "voltage_limit",
+          "type": "number",
+          "description": "Volts, a limit that must be exceeded to trigger an overvoltage error"
+        },
+        {
+          "key": "undervoltage_limit",
+          "type": "number",
+          "description": "Volts, a limit that must be subceeded to trigger an undervoltage error"
+        },
+        {
+          "key": "current_limit",
+          "type": "number",
+          "description": "Amperes, a limit that must be exceeded to trigger an overcurrent error"
+        },
+        {
+          "key": "motor",
+          "type": "object",
+          "description": "configuration of the Cover motor. The exact contents depend on the type of motor used. The descriptions below are valid when an AC motor is used"
+        },
+        {
+          "key": "motor.idle_power_thr",
+          "type": "number",
+          "description": "Watts, threshold below which the motor is considered stopped"
+        },
+        {
+          "key": "motor.idle_confirm_period",
+          "type": "number",
+          "description": "Seconds, the minimum period of time in idle state before the state is confirmed"
+        },
+        {
+          "key": "maxtime_open",
+          "type": "number",
+          "description": "Default timeout after which Cover will stop moving in open direction"
+        },
+        {
+          "key": "maxtime_close",
+          "type": "number",
+          "description": "Default timeout after which Cover will stop moving in a close direction"
+        },
+        {
+          "key": "obstruction_detection.enable",
+          "type": "boolean",
+          "description": "true when obstruction detection is enabled, false otherwise"
+        },
+        {
+          "key": "obstruction_detection.direction",
+          "type": "string",
+          "description": "The direction of motion for which the safety switch should be monitored, one of open, close, both"
+        },
+        {
+          "key": "obstruction_detection.power_thr",
+          "type": "number",
+          "description": "Watts, power consumption above this threshold should be interpreted as objects obstructing Cover movement. This property is editable at any time, but note that during the cover calibration procedure (Cover.Calibrate), power_thr will be automatically set to the peak power consumption + 15%, overwriting the current value. The automatic setup of power_thr during calibration will only start tracking power values when the holdoff time (see below) has elapsed"
+        },
+        {
+          "key": "obstruction_detection.holdoff",
+          "type": "number",
+          "description": "Seconds, time to wait after Cover starts moving before obstruction detection is activated (to avoid false detections because of the initial power consumption spike)"
+        },
+        {
+          "key": "safety_switch.enable",
+          "type": "boolean",
+          "description": "true when the safety switch is enabled, false otherwise"
+        },
+        {
+          "key": "safety_switch.direction",
+          "type": "string",
+          "description": "The direction of motion for which the safety switch should be monitored, one of open, close, both"
+        },
+        {
+          "key": "slat.enable",
+          "type": "boolean",
+          "description": "true when slat control is enabled, false otherwise"
+        },
+        {
+          "key": "slat.open_time",
+          "type": "number",
+          "description": "Time it takes for slats to move from fully closed (0%) to fully open (100%) position, seconds. Must be manually configured by the user. Accepted range: [0.5..30]s"
+        },
+        {
+          "key": "slat.close_time",
+          "type": "number",
+          "description": "Time it takes for slats to move from fully open (100%) to fully closed (100%) position, seconds. Must be manually configured by the user. Accepted range: [0.5..30]s"
+        },
+        {
+          "key": "slat.step",
+          "type": "number",
+          "description": "Single step movement spread, represented as % from the full range (used only when slats are controlled via inputs). Accepted range: [1..100]%"
+        },
+        {
+          "key": "slat.retain_pos",
+          "type": "boolean",
+          "description": "Whether to retain slat position when cover (vertical) position is changed"
+        },
+        {
+          "key": "slat.precise_ctl",
+          "type": "boolean",
+          "description": "This property only applies when cover (vertical) position is less than one full slat rotation away from the fully closed position. If this condition is met, any slat movement will always go through fully closed position first. This improves slat positioning accuracy, yet is slower to execute."
+        }
+      ]
+    },
+    {
+      "name": "DALI",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "cg_count",
+          "type": "number",
+          "nullable": true,
+          "description": "Number of scanned control gears (null if scan has never been executed)"
+        },
+        {
+          "key": "scan.cg_count",
+          "type": "number",
+          "description": "Number of found control gears during scan"
+        },
+        {
+          "key": "scan.started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the scan process (in UTC)"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Shown only if at least one error is present. May contain control_gear_missing, driver"
+        }
+      ]
+    },
+    {
+      "name": "DevicePower",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the DevicePower component instance"
+        },
+        {
+          "key": "battery.percent",
+          "type": "number",
+          "nullable": true,
+          "description": "Battery charge level in % (null if valid value could not be obtained)"
+        },
+        {
+          "key": "external",
+          "type": "object",
+          "description": "Information about the external power source (only available if external power source is supported)"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Whether external power source is connected"
+        }
+      ]
+    },
+    {
+      "name": "EM",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the EM component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the energy meter instance"
+        },
+        {
+          "key": "blink_mode_selector",
+          "type": "string",
+          "enum": [
+            "active_energy",
+            "apparent_energy"
+          ],
+          "description": "Select the electrical quantity that drives the LED. Range of values: active_energy, apparent_energy"
+        },
+        {
+          "key": "phase_selector",
+          "type": "string",
+          "enum": [
+            "a",
+            "b",
+            "c",
+            "all"
+          ],
+          "description": "Select witch phase controls the LED. Range of values: a, b, c, all"
+        },
+        {
+          "key": "monitor_phase_sequence",
+          "type": "boolean",
+          "description": "Set this to show phase_sequence error in GetStatus if three-phase power system is used and the wires are not connected correctly to the device."
+        },
+        {
+          "key": "reverse.a",
+          "type": "boolean",
+          "description": "When set to true reverse CT measurement direction of active power and energy for phase A. shown if true"
+        },
+        {
+          "key": "reverse.b",
+          "type": "boolean",
+          "description": "When set to true reverse CT measurement direction of active power and energy for phase B. shown if true"
+        },
+        {
+          "key": "reverse.c",
+          "type": "boolean",
+          "description": "When set to true reverse CT measurement direction of active power and energy for phase C. shown if true"
+        },
+        {
+          "key": "alarms.a.voltage",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.a.current",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.a.power",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.b.voltage",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.b.current",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.b.power",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.c.voltage",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.c.current",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.c.power",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "ct_type",
+          "type": "string",
+          "description": "Select the type of Shelly current transformer attached to the device."
+        }
+      ]
+    },
+    {
+      "name": "EM1",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the EM1 component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the EM1 instance"
+        },
+        {
+          "key": "reverse",
+          "type": "boolean",
+          "description": "Reverse CT measurement direction of active power and energy for the EM1 component. setting the reverse option requires restart"
+        },
+        {
+          "key": "ct_type",
+          "type": "string",
+          "description": "Select the type of Shelly current transformer attached to the device."
+        },
+        {
+          "key": "alarms.voltage",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.current",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.power",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        }
+      ]
+    },
+    {
+      "name": "EM1Data",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the EM1Data component instance"
+        },
+        {
+          "key": "total_act_energy",
+          "type": "number",
+          "description": "Total active energy, Wh"
+        },
+        {
+          "key": "total_act_ret_energy",
+          "type": "number",
+          "description": "Total active returned energy, Wh"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Error condition occurred. May contain database_error or ct_type_not_set, (shown if the error is present)."
+        }
+      ]
+    },
+    {
+      "name": "EMData",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the EMData component instance"
+        },
+        {
+          "key": "a_total_act_energy",
+          "type": "number",
+          "description": "Total active energy on phase A, Wh"
+        },
+        {
+          "key": "a_total_act_ret_energy",
+          "type": "number",
+          "description": "Total active returned energy on phase A, Wh"
+        },
+        {
+          "key": "b_total_act_energy",
+          "type": "number",
+          "description": "Total active energy on phase B, Wh"
+        },
+        {
+          "key": "b_total_act_ret_energy",
+          "type": "number",
+          "description": "Total active returned energy on phase B, Wh"
+        },
+        {
+          "key": "c_total_act_energy",
+          "type": "number",
+          "description": "Total active energy on phase C, Wh"
+        },
+        {
+          "key": "c_total_act_ret_energy",
+          "type": "number",
+          "description": "Total active returned energy on phase C, Wh"
+        },
+        {
+          "key": "total_act",
+          "type": "number",
+          "description": "Total active energy on all phases, Wh"
+        },
+        {
+          "key": "total_act_ret",
+          "type": "number",
+          "description": "Total active returned energy on all phases, Wh"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Error condition occurred. May contain database_error or ct_type_not_set, (shown if the error is present)."
+        }
+      ]
+    },
+    {
+      "name": "Eth",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "enable",
+          "type": "boolean",
+          "description": "true if the connection is enabled, false otherwise"
+        },
+        {
+          "key": "server_mode",
+          "type": "boolean",
+          "description": "true if the inerface is configured to operate in server mode, false if in client mode"
+        },
+        {
+          "key": "ipv4mode",
+          "type": "string",
+          "enum": [
+            "dhcp",
+            "static"
+          ],
+          "description": "IPv4 mode. Range of values: dhcp, static. Applicable only for client mode. Can be omitted if once set"
+        },
+        {
+          "key": "ip",
+          "type": "string",
+          "nullable": true,
+          "description": "IP in the network for client mode static and for server mode enabled. Required if not already set"
+        },
+        {
+          "key": "netmask",
+          "type": "string",
+          "nullable": true,
+          "description": "Netmask of the network for client mode static and for server mode enabled. Optional, defaults to 255.255.255.0"
+        },
+        {
+          "key": "gw",
+          "type": "string",
+          "nullable": true,
+          "description": "Gateway of the network for client mode static and for server mode enabled. Optional, set to null to clear"
+        },
+        {
+          "key": "nameserver",
+          "type": "string",
+          "nullable": true,
+          "description": "Nameserver to use for client mode static and for server mode enabled. Optional, set to null to clear"
+        },
+        {
+          "key": "dhcp_start",
+          "type": "string",
+          "description": "DHCP range starting IP address for the DHCP server in server mode. Applicable only for server mode. Required if not already set"
+        },
+        {
+          "key": "dhcp_end",
+          "type": "string",
+          "description": "DHCP range ending IP address for the DHCP server in server mode. Applicable only for server mode. Required if not already set"
+        }
+      ]
+    },
+    {
+      "name": "Flood",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Flood component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the Flood instance. name length should not exceed 64 chars"
+        },
+        {
+          "key": "alarm_mode",
+          "type": "string",
+          "nullable": true,
+          "description": "Configuration of sound made on alarm. Accepted values are disabled, normal, intense and rain. When cable is unplugged value is null"
+        },
+        {
+          "key": "report_holdoff",
+          "type": "number",
+          "description": "Time waited before reporting flood status. For this period status must be steady. Accepted values are between 0-60 sec with step 5 sec"
+        }
+      ]
+    },
+    {
+      "name": "HTTP",
+      "hasGetConfig": false,
+      "hasSetConfig": false,
+      "keyed": false
+    },
+    {
+      "name": "Humidity",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Humidity component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the Humidity instance. name length should not exceed 64 chars"
+        },
+        {
+          "key": "report_thr",
+          "type": "number",
+          "description": "Humidity report threshold in %. Accepted range is device-specific, default [1.0..20.0]% unless specified otherwise"
+        },
+        {
+          "key": "offset",
+          "type": "number",
+          "description": "Humidity offset in %. Value is applied to measured humidity. Accepted range is device-specific, default [-50.0..50.0]% unless specified otherwise"
+        }
+      ]
+    },
+    {
+      "name": "Illuminance",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Illuminance component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "description": "Name of the Illuminance instance. name length should not exceed 64 chars"
+        },
+        {
+          "key": "dark_thr",
+          "type": "number",
+          "description": "Threshold in lux. Accepted range is device-specific"
+        },
+        {
+          "key": "bright_thr",
+          "type": "number",
+          "description": "bright threshold in lux. Accepted range is device-specific"
+        }
+      ]
+    },
+    {
+      "name": "Input",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Input component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the input instance"
+        },
+        {
+          "key": "type",
+          "type": "string",
+          "description": "Type of associated input. Range of values switch, button, analog, count (only if applicable)."
+        },
+        {
+          "key": "enable",
+          "type": "boolean",
+          "description": "Global enable flag. When disabled, the input instance doesn't emit any events and reports status properties as null. Applies for all input types"
+        },
+        {
+          "key": "invert",
+          "type": "boolean",
+          "description": "(only for type switch, button, analog) True if the logical state of the associated input is inverted, false otherwise. For the change to be applied, the physical switch has to be toggled once after invert is set. For type analog inverts percent range - 100% becomes 0% and 0% becomes 100%"
+        },
+        {
+          "key": "factory_reset",
+          "type": "boolean",
+          "description": "(only for type switch, button) True if input-triggered factory reset option is enabled, false otherwise (shown if applicable)"
+        },
+        {
+          "key": "report_thr",
+          "type": "number",
+          "description": "(only for type analog) Analog input report threshold in percent. The accepted range is device-specific, default [1.0..50.0]% unless specified otherwise"
+        },
+        {
+          "key": "range_map",
+          "type": "array",
+          "nullable": true,
+          "description": "(only for type analog) Remaps 0%-100% range to values in array. The first value in the array is the min setting, and the second value is the max setting. Array elements are of type number. Float values are supported. The accepted range for values is from 0% to 100%. Default values are [0, 100]. max must be greater than min. Equality is supported."
+        },
+        {
+          "key": "range",
+          "type": "number",
+          "description": "(only for type analog) Analog input range, which is device-specific. See the table below."
+        },
+        {
+          "key": "xpercent.expr",
+          "type": "string",
+          "nullable": true,
+          "description": "JS expression containing x, where x is the raw value to be transformed (status.percent), for example \"x+1\". Accepted range: null or [0..100] chars. Both null and \"\" mean value transformation is disabled."
+        },
+        {
+          "key": "xpercent.unit",
+          "type": "string",
+          "nullable": true,
+          "description": "Unit of the transformed value (status.xpercent), for example, \"m/s\". Accepted range: null or [0..20] chars. Both null and \"\" mean value transformation is disabled."
+        },
+        {
+          "key": "count_rep_thr",
+          "type": "number",
+          "description": "(only for type count) Counts report threshold in number of pulses. Accepted range [1 - 2147483647]"
+        },
+        {
+          "key": "freq_window",
+          "type": "number",
+          "description": "(only for type count) Reference time in seconds for base of frequency measurement. Accepted range [1 - 3600]"
+        },
+        {
+          "key": "freq_rep_thr",
+          "type": "number",
+          "description": "(only for type count) Frequency report threshold in percent. Accepted range [0 - 10000]"
+        },
+        {
+          "key": "xcounts.expr",
+          "type": "string",
+          "nullable": true,
+          "description": "JS expression containing x, where x is the raw value to be transformed (status.counts.total and status.counts.by_minute), for example \"x+1\". Accepted range: null or [0..100] chars. Both null and \"\" mean value transformation is disabled."
+        },
+        {
+          "key": "xcounts.unit",
+          "type": "string",
+          "nullable": true,
+          "description": "Unit of the transformed values (status.counts.xtotal and status.counts.xby_minute), for example, \"m/s\". Accepted range: null or [0..20] chars. Both null and \"\" mean value transformation is disabled."
+        },
+        {
+          "key": "xfreq.expr",
+          "type": "string",
+          "nullable": true,
+          "description": "JS expression containing x, where x is the raw value to be transformed (status.freq), for example \"x+1\". Accepted range: null or [0..100] chars. Both null and \"\" mean value transformation is disabled."
+        },
+        {
+          "key": "xfreq.unit",
+          "type": "string",
+          "nullable": true,
+          "description": "Unit of the transformed value (status.xfreq), for example, \"m/s\". Accepted range: null or [0..20] chars. Both null and \"\" mean value transformation is disabled."
+        }
+      ]
+    },
+    {
+      "name": "KVS",
+      "hasGetConfig": false,
+      "hasSetConfig": false,
+      "keyed": false
+    },
+    {
+      "name": "Light",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Light component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the light instance"
+        },
+        {
+          "key": "in_mode",
+          "type": "string",
+          "enum": [
+            "follow",
+            "flip",
+            "activate",
+            "detached",
+            "dim"
+          ],
+          "description": "Mode of the associated input. Range of values: follow, flip, activate, detached, dim (if applicable), dual_dim (if applicable)"
+        },
+        {
+          "key": "op_mode",
+          "type": "number",
+          "description": "Operational mode (if applicable), which is device-specific. See the table below."
+        },
+        {
+          "key": "initial_state",
+          "type": "string",
+          "enum": [
+            "off",
+            "on",
+            "restore_last",
+            "toggle"
+          ],
+          "description": "Output state to set on power_on. Range of values: off, on, restore_last, toggle"
+        },
+        {
+          "key": "auto_on",
+          "type": "boolean",
+          "description": "True if the \"Automatic ON\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_on_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back on"
+        },
+        {
+          "key": "auto_off",
+          "type": "boolean",
+          "description": "True if the \"Automatic OFF\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_off_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back off"
+        },
+        {
+          "key": "transition_duration",
+          "type": "number",
+          "description": "Transition time (in seconds) - time to change from 0% to 100% of brightness (if applicable)"
+        },
+        {
+          "key": "gamma",
+          "type": "number",
+          "description": "Gamma correction (dimensionless) - adjusts light intensity for perceptual linearity. Range 0.4 to 4.0, default 1.0 (if applicable)"
+        },
+        {
+          "key": "min_brightness_on_toggle",
+          "type": "number",
+          "description": "Brightness level (in percent) applied when there is a toggle and current brightness is lower than min_brightness_on_toggle."
+        },
+        {
+          "key": "night_mode.enable",
+          "type": "boolean",
+          "description": "Enable or disable night mode"
+        },
+        {
+          "key": "night_mode.brightness",
+          "type": "number",
+          "description": "Brightness level limit when night mode is active. Default value 50."
+        },
+        {
+          "key": "night_mode.active_between",
+          "type": "array",
+          "description": "Containing 2 elements of type string, the first element indicates the start of the period during which the night mode will be active, the second indicates the end of that period. Both start and end are strings in the format HH:MM, where HH and MM are hours and minutes with optinal leading zeros"
+        },
+        {
+          "key": "button_fade_rate",
+          "type": "number",
+          "description": "Controls how quickly the output level changes while a button is held down for dimming (if applicable). Default value 3. Range [1,5] where 5 is fastest, 1 is slowest"
+        },
+        {
+          "key": "button_presets.button_doublepush.brightness",
+          "type": "number",
+          "description": "Brightness level (in percent) set on double click (if applicable), default: 100"
+        },
+        {
+          "key": "range_map",
+          "type": "array",
+          "nullable": true,
+          "description": "Remaps output 0%-100% range to values in array (if applicable). First value in array is min setting, second value is max setting. Array elements are of type number. Accepted range for values is from 0% to 100%. Default values are [0, 100]. max must be greater than min."
+        },
+        {
+          "key": "power_limit",
+          "type": "number",
+          "description": "Limit (in Watts) over which overpower condition occurs (shown if applicable)"
+        },
+        {
+          "key": "voltage_limit",
+          "type": "number",
+          "description": "Limit (in Volts) over which overvoltage condition occurs (shown if applicable)"
+        },
+        {
+          "key": "undervoltage_limit",
+          "type": "number",
+          "description": "Limit (in Volts) under which undervoltage condition occurs (shown if applicable)"
+        },
+        {
+          "key": "current_limit",
+          "type": "number",
+          "description": "Limit (in Amperes) over which overcurrent condition occurs (shown if applicable). For PlusRGBWPM shown if device is calibrated."
+        },
+        {
+          "key": "warmup.enable",
+          "type": "boolean",
+          "description": "When enabled warmup is applied on toogle from off to on and brightness below 10%."
+        },
+        {
+          "key": "warmup.brightness",
+          "type": "number",
+          "description": "Warmup brightness in percent. Range 10-100%."
+        },
+        {
+          "key": "warmup.time_ms",
+          "type": "number",
+          "description": "Time period during which warmup_brightness will be on. Range 20-1000 milliseconds."
+        }
+      ]
+    },
+    {
+      "name": "Matter",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "enable",
+          "type": "boolean",
+          "description": "Set true to enable."
+        }
+      ]
+    },
+    {
+      "name": "MbRtuClient",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false
+    },
+    {
+      "name": "Modbus",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "enable",
+          "type": "boolean",
+          "description": "Set true to enable."
+        }
+      ]
+    },
+    {
+      "name": "Mqtt",
+      "goPrefix": "MQTT",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "enable",
+          "type": "boolean",
+          "description": "True if MQTT connection is enabled, false otherwise"
+        },
+        {
+          "key": "server",
+          "type": "string",
+          "nullable": true,
+          "description": "Host name of the MQTT server. Can be followed by port number - host:port"
+        },
+        {
+          "key": "user",
+          "type": "string",
+          "nullable": true,
+          "description": "Username"
+        },
+        {
+          "key": "rpc_ntf",
+          "type": "boolean",
+          "description": "Enables RPC notifications (NotifyStatus and NotifyEvent) to be published on \u003cdevice_id|topic_prefix\u003e/events/rpc (\u003ctopic_prefix\u003e when a custom prefix is set, \u003cdevice_id\u003e otherwise). Default value: true."
+        },
+        {
+          "key": "status_ntf",
+          "type": "boolean",
+          "description": "Enables publishing the complete component status on \u003cdevice_id|topic_prefix\u003e/status/\u003ccomponent\u003e:\u003cid\u003e (\u003ctopic_prefix\u003e when a custom prefix is set, \u003cdevice_id\u003e otherwise). The complete status will be published if a signifficant change occurred. Default value: false"
+        },
+        {
+          "key": "use_client_cert",
+          "type": "boolean",
+          "description": "Enable or diable usage of client certifactes to use MQTT with encription, default: false"
+        },
+        {
+          "key": "enable_control",
+          "type": "boolean",
+          "description": "Enable the MQTT control feature. Defalut value: true"
+        }
+      ]
+    },
+    {
+      "name": "PM1",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the PM1 component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the PM1 instance"
+        },
+        {
+          "key": "reverse",
+          "type": "boolean",
+          "description": "Reverse measurement direction of active power and energy for the PM1 component. setting the reverse option requires restart"
+        },
+        {
+          "key": "alarms.voltage",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.current",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        },
+        {
+          "key": "alarms.power",
+          "type": "array",
+          "nullable": true,
+          "description": "['under','over'] thresholds"
+        }
+      ]
+    },
+    {
+      "name": "Pill",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "mode",
+          "type": "string",
+          "description": "Device mode. Range of values onewire, dht22, analog_in, ssr, digital_io"
+        },
+        {
+          "key": "pin0_mode",
+          "type": "string",
+          "description": "Pin 0 mode. Range of values none, reserved, digital_in, digital_out"
+        },
+        {
+          "key": "pin1_mode",
+          "type": "string",
+          "description": "Pin 1 mode. Range of values none, reserved, digital_in, digital_out"
+        },
+        {
+          "key": "pin2_mode",
+          "type": "string",
+          "description": "Pin 2 mode. Range of values none, reserved, digital_in, digital_out"
+        }
+      ]
+    },
+    {
+      "name": "Presence",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "enable",
+          "type": "boolean",
+          "description": "Enable or disable tracking sensor"
+        },
+        {
+          "key": "zmin",
+          "type": "number",
+          "nullable": true,
+          "description": "Lower detection limit in meters"
+        },
+        {
+          "key": "zmax",
+          "type": "number",
+          "nullable": true,
+          "description": "Upper detection limit in meters"
+        },
+        {
+          "key": "sensor.flipped",
+          "type": "boolean",
+          "description": "Sensor is flipped by 180 degrees"
+        },
+        {
+          "key": "sensor.height",
+          "type": "number",
+          "description": "Mount height of sensor (in meters)"
+        },
+        {
+          "key": "sensor.tilt",
+          "type": "number",
+          "description": "Sensor vertical tilt (see note)"
+        },
+        {
+          "key": "sensor.points",
+          "type": "number",
+          "description": "Object recognition threshold"
+        },
+        {
+          "key": "sensor.velocity",
+          "type": "number",
+          "description": "Velocity threshold"
+        },
+        {
+          "key": "sensor.snr",
+          "type": "number",
+          "description": "SNR threshold"
+        },
+        {
+          "key": "sensor.max_velocity",
+          "type": "number",
+          "description": "Max velocity difference"
+        },
+        {
+          "key": "sensor.position",
+          "type": "string",
+          "description": "Mount position of sensor in room can be 'left', 'center' or 'right'"
+        },
+        {
+          "key": "sensor.power",
+          "type": "string",
+          "description": "Power of sensor. Can be 'low', 'medium' or 'high'"
+        },
+        {
+          "key": "sensor.sensitivity",
+          "type": "string",
+          "description": "Sensor sensitivity. Can be 'low', 'medium' or 'high'"
+        },
+        {
+          "key": "sensor.state.det_act_thr",
+          "type": "number",
+          "description": "Motion activation threshold"
+        },
+        {
+          "key": "sensor.state.det_free_thr",
+          "type": "number",
+          "description": "Motion release threshold"
+        },
+        {
+          "key": "sensor.state.act_free_thr",
+          "type": "number",
+          "description": "Tracking loss threshold"
+        },
+        {
+          "key": "sensor.state.stat_free_thr",
+          "type": "number",
+          "description": "Stillness tracking threshold"
+        },
+        {
+          "key": "sensor.state.sleep_free_thr",
+          "type": "number",
+          "description": "Stillness timeout threshold"
+        },
+        {
+          "key": "ui.imperial",
+          "type": "boolean",
+          "description": "Units are in imeprial system, otherwise units are in metric system"
+        },
+        {
+          "key": "blind",
+          "type": "array",
+          "description": "Blind zone that sensor will ignore objects (see PresenceZone area configuration)"
+        },
+        {
+          "key": "leds.brightness",
+          "type": "boolean",
+          "description": "Max brightness of led"
+        },
+        {
+          "key": "leds.night_mode.enable",
+          "type": "boolean",
+          "description": "Enable or disable night mode"
+        },
+        {
+          "key": "leds.night_mode.brightness",
+          "type": "number",
+          "description": "Brightness level limit when night mode is active."
+        },
+        {
+          "key": "leds.night_mode.active_between",
+          "type": "array",
+          "description": "Containing 2 elements of type string, the first element indicates the start of the period during which the night mode will be active, the second indicates the end of that period. Both start and end are strings in the format HH:MM, where HH and MM are hours and minutes with optional leading zeros"
+        },
+        {
+          "key": "main_zone",
+          "type": "string",
+          "description": "Default presence zone key. (readonly)"
+        }
+      ]
+    },
+    {
+      "name": "PresenceZone",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the component instance"
+        },
+        {
+          "key": "enable",
+          "type": "boolean",
+          "description": "Activate or deactivate zone"
+        },
+        {
+          "key": "color",
+          "type": "array",
+          "description": "Preview color defined in format [R, G, B] where every color element is within limit of 0 to 255"
+        },
+        {
+          "key": "presence_delay",
+          "type": "number",
+          "nullable": true,
+          "description": "Active period of presence before trigger (in seconds)"
+        },
+        {
+          "key": "absence_delay",
+          "type": "number",
+          "nullable": true,
+          "description": "Active period of absence before trigger (in seconds)"
+        },
+        {
+          "key": "area",
+          "type": "array",
+          "description": "Zone area definition"
+        }
+      ]
+    },
+    {
+      "name": "RGB",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the RGB component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the RGB instance"
+        },
+        {
+          "key": "in_mode",
+          "type": "string",
+          "enum": [
+            "follow",
+            "flip",
+            "activate",
+            "detached",
+            "dim"
+          ],
+          "description": "Mode of the associated input. Range of values: follow, flip, activate, detached, dim"
+        },
+        {
+          "key": "initial_state",
+          "type": "string",
+          "enum": [
+            "off",
+            "on",
+            "restore_last"
+          ],
+          "description": "Output state to set on power_on. Range of values: off, on, restore_last"
+        },
+        {
+          "key": "auto_on",
+          "type": "boolean",
+          "description": "True if the \"Automatic ON\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_on_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back on"
+        },
+        {
+          "key": "auto_off",
+          "type": "boolean",
+          "description": "True if the \"Automatic OFF\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_off_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back off"
+        },
+        {
+          "key": "transition_duration",
+          "type": "number",
+          "description": "Transition time (in seconds) - time to change from 0% to 100% of brightness or RGB levels"
+        },
+        {
+          "key": "min_brightness_on_toggle",
+          "type": "number",
+          "description": "Brightness level (in percent) applied when there is a toggle and current brightness is lower than min_brightness_on_toggle."
+        },
+        {
+          "key": "night_mode.enable",
+          "type": "boolean",
+          "description": "Enable or disable night mode"
+        },
+        {
+          "key": "night_mode.brightness",
+          "type": "number",
+          "nullable": true,
+          "description": "Brightness level limit (in percent) when night mode is active. null overrides night_mode.brightness with current brightness when night mode starts. Default value 50."
+        },
+        {
+          "key": "night_mode.rgb",
+          "type": "array",
+          "nullable": true,
+          "description": "Color level when night mode is active. Red, Green, Blue [r,g,b] - each value represents level between 0..255. null overrides night_mode.rgb array with current rgb array when night mode starts. Default value 255 for each color"
+        },
+        {
+          "key": "night_mode.active_between",
+          "type": "array",
+          "description": "Containing 2 elements of type string, the first element indicates the start of the period during which the night mode will be active, the second indicates the end of that period. Both start and end are strings in the format HH:MM, where HH and MM are hours and minutes with optinal leading zeros"
+        },
+        {
+          "key": "button_fade_rate",
+          "type": "number",
+          "description": "Controls how quickly the output level changes while a button is held down for dimming (if applicable). Default value 3. Range [1,5] where 5 is fastest, 1 is slowest"
+        },
+        {
+          "key": "button_presets.button_doublepush.brightness",
+          "type": "number",
+          "nullable": true,
+          "description": "Brightness level (in percent) set on double click (if applicable). null overrides brightness with current brightness when preset is applied. Default 100"
+        },
+        {
+          "key": "button_presets.button_doublepush.rgb",
+          "type": "array",
+          "nullable": true,
+          "description": "Color level set on double click (if applicable). Red, Green, Blue [r,g,b] - each value represents level between 0..255. null overrides rgb array with current rgb array when preset is applied. Default value 255 for each color"
+        },
+        {
+          "key": "current_limit",
+          "type": "number",
+          "description": "Limit (in Amperes) over which overcurrent condition occurs (shown if applicable). For specific devices applies for color channels, not RGB component"
+        },
+        {
+          "key": "power_limit",
+          "type": "number",
+          "description": "Limit (in Watts) over which overpower condition occurs (shown if applicable)"
+        },
+        {
+          "key": "voltage_limit",
+          "type": "number",
+          "description": "Limit (in Volts) over which overvoltage condition occurs (shown if applicable)"
+        }
+      ]
+    },
+    {
+      "name": "RGBCCT",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the RGBCCT component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the RGBCCT instance"
+        },
+        {
+          "key": "initial_state",
+          "type": "string",
+          "enum": [
+            "off",
+            "on",
+            "restore_last"
+          ],
+          "description": "Output state to set on power_on. Range of values: off, on, restore_last"
+        },
+        {
+          "key": "auto_on",
+          "type": "boolean",
+          "description": "True if the \"Automatic ON\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_on_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back on"
+        },
+        {
+          "key": "auto_off",
+          "type": "boolean",
+          "description": "True if the \"Automatic OFF\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_off_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back off"
+        },
+        {
+          "key": "transition_duration",
+          "type": "number",
+          "description": "Transition time (in seconds) - time to change from 0% to 100% of brightness, RGB levels or color temperature value"
+        },
+        {
+          "key": "min_brightness_on_toggle",
+          "type": "number",
+          "description": "Brightness level (in percent) applied when there is a toggle and current brightness is lower than min_brightness_on_toggle."
+        },
+        {
+          "key": "night_mode.enable",
+          "type": "boolean",
+          "description": "Enable or disable night mode"
+        },
+        {
+          "key": "night_mode.brightness",
+          "type": "number",
+          "nullable": true,
+          "description": "Brightness level limit (in percent) when night mode is active. null overrides night_mode.brightness with current brightness when night mode starts. Default value 50."
+        },
+        {
+          "key": "night_mode.rgb",
+          "type": "array",
+          "nullable": true,
+          "description": "Color level when night mode is active. Red, Green, Blue [r,g,b] - each value represents level between 0..255. null overrides night_mode.rgb array with current rgb array when night mode starts. Default value 255 for each color"
+        },
+        {
+          "key": "night_mode.ct",
+          "type": "number",
+          "nullable": true,
+          "description": "Color temperature level limit (in Kelvin) when night mode is active. null overrides night_mode.ct value with current ct value when night mode starts. Default value: 50% of ct_range. For DuoBulbG3: 4600"
+        },
+        {
+          "key": "night_mode.mode",
+          "type": "string",
+          "nullable": true,
+          "enum": [
+            "rgb"
+          ],
+          "description": "Operating mode of the light output when night mode is active. Range of values: rgb, cct or null. null overrides night_mode.mode value with current mode when night mode starts. Default value: rgb"
+        },
+        {
+          "key": "night_mode.active_between",
+          "type": "array",
+          "description": "Containing 2 elements of type string, the first element indicates the start of the period during which the night mode will be active, the second indicates the end of that period. Both start and end are strings in the format HH:MM, where HH and MM are hours and minutes with optinal leading zeros"
+        }
+      ]
+    },
+    {
+      "name": "RGBW",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the RGBW component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the RGBW instance"
+        },
+        {
+          "key": "in_mode",
+          "type": "string",
+          "enum": [
+            "follow",
+            "flip",
+            "activate",
+            "detached",
+            "dim"
+          ],
+          "description": "Mode of the associated input. Range of values: follow, flip, activate, detached, dim"
+        },
+        {
+          "key": "initial_state",
+          "type": "string",
+          "enum": [
+            "off",
+            "on",
+            "restore_last"
+          ],
+          "description": "Output state to set on power_on. Range of values: off, on, restore_last"
+        },
+        {
+          "key": "auto_on",
+          "type": "boolean",
+          "description": "True if the \"Automatic ON\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_on_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back on"
+        },
+        {
+          "key": "auto_off",
+          "type": "boolean",
+          "description": "True if the \"Automatic OFF\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_off_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back off"
+        },
+        {
+          "key": "transition_duration",
+          "type": "number",
+          "description": "Transition time (in seconds) - time to change from 0% to 100% of brightness, RGB or white"
+        },
+        {
+          "key": "min_brightness_on_toggle",
+          "type": "number",
+          "description": "Brightness level (in percent) applied when there is a toggle and current brightness is lower than min_brightness_on_toggle."
+        },
+        {
+          "key": "night_mode.enable",
+          "type": "boolean",
+          "description": "Enable or disable night mode"
+        },
+        {
+          "key": "night_mode.brightness",
+          "type": "number",
+          "nullable": true,
+          "description": "Brightness level limit (in percent) when night mode is active. null overrides night_mode.brightness with current brightness when night mode starts. Default value 50."
+        },
+        {
+          "key": "night_mode.rgb",
+          "type": "array",
+          "nullable": true,
+          "description": "Color level when night mode is active. Red, Green, Blue [r,g,b] - each value represents level between 0..255. null overrides night_mode.rgb array with current rgb array when night mode starts. Default value 255 for each color"
+        },
+        {
+          "key": "night_mode.white",
+          "type": "number",
+          "nullable": true,
+          "description": "White level limit (in percent) when night mode is active. null overrides night_mode.white with current white when night mode starts. Default value 127."
+        },
+        {
+          "key": "night_mode.active_between",
+          "type": "array",
+          "description": "Containing 2 elements of type string, the first element indicates the start of the period during which the night mode will be active, the second indicates the end of that period. Both start and end are strings in the format HH:MM, where HH and MM are hours and minutes with optinal leading zeros"
+        },
+        {
+          "key": "button_fade_rate",
+          "type": "number",
+          "description": "Controls how quickly the output level changes while a button is held down for dimming (if applicable). Default value 3. Range [1,5] where 5 is fastest, 1 is slowest"
+        },
+        {
+          "key": "button_presets.button_doublepush.brightness",
+          "type": "number",
+          "nullable": true,
+          "description": "Brightness level (in percent) set on double click (if applicable). null overrides brightness with current brightness when preset is applied. Default 100"
+        },
+        {
+          "key": "button_presets.button_doublepush.rgb",
+          "type": "array",
+          "nullable": true,
+          "description": "Color level set on double click (if applicable). Red, Green, Blue [r,g,b] - each value represents level between 0..255. null overrides rgb array with current rgb array when preset is applied. Default value 255 for each color"
+        },
+        {
+          "key": "button_presets.button_doublepush.white",
+          "type": "number",
+          "nullable": true,
+          "description": "White level 0.255 set on double click (if applicable). null overrides white with current white when preset is applied. Default 255"
+        },
+        {
+          "key": "current_limit",
+          "type": "number",
+          "description": "Limit (in Amperes) over which overcurrent condition occurs (shown if applicable)"
+        },
+        {
+          "key": "power_limit",
+          "type": "number",
+          "description": "Limit (in Watts) over which overpower condition occurs (shown if applicable)"
+        },
+        {
+          "key": "voltage_limit",
+          "type": "number",
+          "description": "Limit (in Volts) over which overvoltage condition occurs (shown if applicable)"
+        }
+      ]
+    },
+    {
+      "name": "Schedule",
+      "hasGetConfig": false,
+      "hasSetConfig": false,
+      "keyed": false
+    },
+    {
+      "name": "Script",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the script"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "description": "Name of the script"
+        },
+        {
+          "key": "enable",
+          "type": "boolean",
+          "description": "true if the script runs by default on boot, false otherwise"
+        }
+      ]
+    },
+    {
+      "name": "Serial",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Serial component instance"
+        },
+        {
+          "key": "mode",
+          "type": "string",
+          "description": "Operating mode for the serial port. Supported modes are listed in the modes attribute."
+        },
+        {
+          "key": "serial.baud",
+          "type": "integer",
+          "description": "Baud rate"
+        },
+        {
+          "key": "serial.format",
+          "type": "string",
+          "description": "A 3-character string indicating the serial frame format to use, e.g. 8N1"
+        },
+        {
+          "key": "serial.hd",
+          "type": "boolean",
+          "description": "Optional. Half-duplex mode. Only present on devices where the underlying hardware supports it. true = enabled, false = disabled."
+        },
+        {
+          "key": "serial.de_al",
+          "type": "boolean",
+          "description": "Optional. Driver Enable (DE) active level. Only present on devices where the underlying hardware supports it. true = active high, false = active low."
+        },
+        {
+          "key": "mb_server.addr",
+          "type": "integer",
+          "description": "RTU Server Address, between 1 and 247"
+        },
+        {
+          "key": "mb_client",
+          "type": "object",
+          "description": "Modbus RTU Client configuration. Reserved for future use."
+        }
+      ]
+    },
+    {
+      "name": "Shelly",
+      "hasGetConfig": true,
+      "hasSetConfig": false,
+      "keyed": false
+    },
+    {
+      "name": "Smoke",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Smoke component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the Smoke instance. name length should not exceed 64 chars"
+        }
+      ]
+    },
+    {
+      "name": "Switch",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Switch component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the switch instance"
+        },
+        {
+          "key": "in_mode",
+          "type": "string",
+          "enum": [
+            "momentary",
+            "follow",
+            "flip",
+            "detached",
+            "cycle"
+          ],
+          "description": "Mode of the associated input. Range of values: momentary, follow, flip, detached, cycle (if applicable), activate (if applicable)"
+        },
+        {
+          "key": "in_locked",
+          "type": "boolean",
+          "description": "If True, all changes to physical inputs are ignored, regardless of mode."
+        },
+        {
+          "key": "initial_state",
+          "type": "string",
+          "enum": [
+            "off",
+            "on",
+            "restore_last",
+            "match_input"
+          ],
+          "description": "Output state to set on power_on. Range of values: off, on, restore_last, match_input"
+        },
+        {
+          "key": "auto_on",
+          "type": "boolean",
+          "description": "True if the \"Automatic ON\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_on_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back on"
+        },
+        {
+          "key": "auto_off",
+          "type": "boolean",
+          "description": "True if the \"Automatic OFF\" function is enabled, false otherwise"
+        },
+        {
+          "key": "auto_off_delay",
+          "type": "number",
+          "description": "Seconds to pass until the component is switched back off"
+        },
+        {
+          "key": "autorecover_voltage_errors",
+          "type": "boolean",
+          "description": "True if switch output state should be restored after over/undervoltage error is cleared, false otherwise (shown if applicable)"
+        },
+        {
+          "key": "input_id",
+          "type": "number",
+          "description": "Id of the Input component which controls the Switch. Applicable only to Pro1, Pro1PM and 1LG3 devices. Valid values: 0, 1"
+        },
+        {
+          "key": "power_limit",
+          "type": "number",
+          "description": "Limit (in Watts) over which overpower condition occurs (shown if applicable)"
+        },
+        {
+          "key": "voltage_limit",
+          "type": "number",
+          "description": "Limit (in Volts) over which overvoltage condition occurs (shown if applicable)"
+        },
+        {
+          "key": "undervoltage_limit",
+          "type": "number",
+          "description": "Limit (in Volts) under which undervoltage condition occurs (shown if applicable)"
+        },
+        {
+          "key": "current_limit",
+          "type": "number",
+          "description": "Number, limit (in Amperes) over which overcurrent condition occurs (shown if applicable)"
+        },
+        {
+          "key": "reverse",
+          "type": "boolean",
+          "description": "Reverse measurement direction of active power and energy. setting the reverse option requires restart (shown if applicable)"
+        },
+        {
+          "key": "counts.enable",
+          "type": "boolean",
+          "description": "Enable or disable the switch counters (shown if applicable)"
+        },
+        {
+          "key": "counts.power_thr",
+          "type": "number",
+          "description": "Active power threshold (in Watts) over which on_above_thr counter is incremented. Default value 100. (shown if applicable)"
+        }
+      ]
+    },
+    {
+      "name": "Sys",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "device.name",
+          "type": "string",
+          "description": "Name of the device"
+        },
+        {
+          "key": "device.eco_mode",
+          "type": "boolean",
+          "description": "Experimental Decreases power consumption when set to true, at the cost of reduced execution speed and increased network latency"
+        },
+        {
+          "key": "device.mac",
+          "type": "string",
+          "description": "Read-only base MAC address of the device"
+        },
+        {
+          "key": "device.fw_id",
+          "type": "string",
+          "description": "Read-only build identifier of the current firmware image"
+        },
+        {
+          "key": "device.profile",
+          "type": "string",
+          "description": "Name of the device profile (only applicable for multi-profile devices)"
+        },
+        {
+          "key": "device.discoverable",
+          "type": "boolean",
+          "description": "If true, device is shown in 'Discovered devices'. If false, the device is hidden."
+        },
+        {
+          "key": "device.addon_type",
+          "type": "string",
+          "nullable": true,
+          "enum": [
+            "sensor"
+          ],
+          "description": "Enable/disable addon board (if supported). Range of values: sensor(SensorAddon), sensor(ProSensorAddon), prooutput, LoRa; null to disable."
+        },
+        {
+          "key": "device.sys_btn_toggle",
+          "type": "boolean",
+          "description": "Enable/disable outputs toggle when the system (reset) button is pressed (shown if applicable)."
+        },
+        {
+          "key": "device.tls_check_cert_validity_time",
+          "type": "boolean",
+          "description": "(Since 2.0.0) When true, TLS certificate date/time validation is enforced for outbound connections. Can only be set to false when enhanced_security is false. This is a temporary option for users experiencing certificate validation issues due to time synchronization problems; subject to deprecation in future releases."
+        },
+        {
+          "key": "device.enhanced_security",
+          "type": "boolean",
+          "description": "(Since 2.0.0) Read-only on devices shipped with firmware 2.0.0+ from factory (always true). On devices with factory firmware prior to 2.0.0, can be set to true but can only be reset to false via factory reset. When enabled, enforces additional security measures (see Enhanced Security section below)."
+        },
+        {
+          "key": "location.tz",
+          "type": "string",
+          "nullable": true,
+          "description": "Timezone (null if unavailable)"
+        },
+        {
+          "key": "location.lat",
+          "type": "number",
+          "nullable": true,
+          "description": "Latitude in degrees (null if unavailable)"
+        },
+        {
+          "key": "location.lon",
+          "type": "number",
+          "nullable": true,
+          "description": "Longitude in degrees (null if unavailable)"
+        },
+        {
+          "key": "debug.mqtt.enable",
+          "type": "boolean",
+          "description": "True if enabled, false otherwise"
+        },
+        {
+          "key": "debug.websocket.enable",
+          "type": "boolean",
+          "description": "True if enabled, false otherwise"
+        },
+        {
+          "key": "debug.udp.addr",
+          "type": "string",
+          "nullable": true,
+          "description": "Address that the device log is streamed to (null to disable logs)"
+        },
+        {
+          "key": "debug.file_log.enable",
+          "type": "boolean",
+          "description": "True if enabled, false otherwise"
+        },
+        {
+          "key": "ui_data",
+          "type": "object",
+          "description": "User interface data"
+        },
+        {
+          "key": "rpc_udp.dst_addr",
+          "type": "string"
+        },
+        {
+          "key": "rpc_udp.listen_port",
+          "type": "number",
+          "nullable": true,
+          "description": "Port number for inbound UDP RPC channel, null disables. Restart is required for changes to apply"
+        },
+        {
+          "key": "sntp.server",
+          "type": "string",
+          "description": "Name of the sntp server"
+        },
+        {
+          "key": "cfg_rev",
+          "type": "number",
+          "description": "Configuration revision. This number will be incremented for every configuration change of a device component. If the new config value is the same as the old one there will be no change of this property. Can not be modified explicitly by a call to Sys.SetConfig"
+        }
+      ]
+    },
+    {
+      "name": "Temperature",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Temperature component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the Temperature instance. name length should not exceed 64 chars"
+        }
+      ]
+    },
+    {
+      "name": "Voltmeter",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": true,
+      "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Voltmeter component instance"
+        },
+        {
+          "key": "name",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the Voltmeter instance. name length should not exceed 64 chars"
+        },
+        {
+          "key": "report_thr",
+          "type": "number",
+          "description": "Voltmeter report threshold in volts. Accepted range is device-specific"
+        },
+        {
+          "key": "range",
+          "type": "number",
+          "description": "Input range, which is device-specific. See the table below."
+        },
+        {
+          "key": "xvoltage.expr",
+          "type": "string",
+          "nullable": true,
+          "description": "JS expression containg x, where x is the raw value to be transformed (status.voltage), for example \"x+1\". Accepted range: null or [0..100] chars. Both null and \"\" mean value transformation is disabled."
+        },
+        {
+          "key": "xvoltage.unit",
+          "type": "string",
+          "nullable": true,
+          "description": "Unit of the transformed value (status.xvoltage), for example \"m/s\". Accepted range: null or [0..20] chars. Both null and \"\" mean value transformation is disabled."
+        }
+      ]
+    },
+    {
+      "name": "Webhook",
+      "hasGetConfig": false,
+      "hasSetConfig": false,
+      "keyed": false
+    },
+    {
+      "name": "WiFi",
+      "goPrefix": "Wifi",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "ap.ssid",
+          "type": "string",
+          "nullable": true,
+          "description": "SSID of the access point (up to 29 symbols). Default is the deviceID, set to null to restore default. optional"
+        },
+        {
+          "key": "ap.pass",
+          "type": "string",
+          "nullable": true,
+          "description": "Password for the AP network, writeonly. Default is open network, set to null to restore default. optional"
+        },
+        {
+          "key": "ap.is_open",
+          "type": "boolean",
+          "description": "True if the access point is open, false otherwise"
+        },
+        {
+          "key": "ap.enable",
+          "type": "boolean",
+          "description": "True if the access point is enabled, false otherwise"
+        },
+        {
+          "key": "ap.range_extender.enable",
+          "type": "boolean",
+          "description": "True if range extender functionality is enabled, false otherwise"
+        },
+        {
+          "key": "sta.ssid",
+          "type": "string",
+          "nullable": true,
+          "description": "SSID of the network."
+        },
+        {
+          "key": "sta.pass",
+          "type": "string",
+          "nullable": true,
+          "description": "Password for the SSID, writeonly. Must be provided if you provide ssid"
+        },
+        {
+          "key": "sta.is_open",
+          "type": "boolean",
+          "description": "True if the network is open, i.e. no password is set, false otherwise, readonly"
+        },
+        {
+          "key": "sta.enable",
+          "type": "boolean",
+          "description": "True if the configuration is enabled, false otherwise"
+        },
+        {
+          "key": "sta.ipv4mode",
+          "type": "string",
+          "enum": [
+            "dhcp",
+            "static"
+          ],
+          "description": "IPv4 mode. Range of values: dhcp, static"
+        },
+        {
+          "key": "sta.ip",
+          "type": "string",
+          "nullable": true,
+          "description": "Ip to use when ipv4mode is static"
+        },
+        {
+          "key": "sta.netmask",
+          "type": "string",
+          "nullable": true,
+          "description": "Netmask to use when ipv4mode is static"
+        },
+        {
+          "key": "sta.gw",
+          "type": "string",
+          "nullable": true,
+          "description": "Gateway to use when ipv4mode is static"
+        },
+        {
+          "key": "sta.nameserver",
+          "type": "string",
+          "nullable": true,
+          "description": "Nameserver to use when ipv4mode is static"
+        },
+        {
+          "key": "sta1",
+          "type": "object",
+          "description": "Identical to sta. It will be used as fallback when the device is unable to connect to the sta network."
+        },
+        {
+          "key": "roam.rssi_thr",
+          "type": "number",
+          "description": "Rssi threshold - when reached will trigger the access point roaming. Default value: -80"
+        },
+        {
+          "key": "roam.interval",
+          "type": "number",
+          "description": "Interval at which to scan for better access points. Enabled if set to positive number, disabled if set to 0. Default value: 60"
+        }
+      ]
+    },
+    {
+      "name": "Ws",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "enable",
+          "type": "boolean",
+          "description": "true if websocket outbound connection is enabled, false otherwise"
+        },
+        {
+          "key": "server",
+          "type": "string",
+          "description": "Name of the server to which the device is connected. When prefixed with wss:// a TLS socket will be used"
+        }
+      ]
+    },
+    {
+      "name": "XMOD",
+      "hasGetConfig": false,
+      "hasSetConfig": false,
+      "keyed": false
+    },
+    {
+      "name": "Zigbee",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "enable",
+          "type": "boolean",
+          "description": "True if Zigbee connectivity is enabled, false otherwise"
+        }
+      ]
+    }
+  ]
+}

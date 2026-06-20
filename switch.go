@@ -2,67 +2,6 @@ package shelly
 
 import "resty.dev/v3"
 
-type SwitchGetConfigRequest struct {
-	// ID of the switch component instance.
-	ID int `json:"id"`
-}
-
-func (r *SwitchGetConfigRequest) Method() string {
-	return "Switch.GetConfig"
-}
-
-func (r *SwitchGetConfigRequest) Do(
-	client *resty.Client,
-) (
-	*SwitchConfig,
-	*Frame,
-	error,
-) {
-	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
-	return resp, raw, err
-}
-
-func (r *SwitchGetConfigRequest) NewTypedResponse() *SwitchConfig {
-	return &SwitchConfig{}
-}
-
-func (r *SwitchGetConfigRequest) NewResponse() any {
-	return r.NewTypedResponse()
-}
-
-type SwitchSetConfigRequest struct {
-	// ID of the switch component instance.
-	ID int `json:"id"`
-
-	// Config that the method takes.
-	Config SwitchConfig `json:"config"`
-}
-
-func (r *SwitchSetConfigRequest) Method() string {
-	return "Switch.SetConfig"
-}
-
-func (r *SwitchSetConfigRequest) Do(
-	client *resty.Client,
-) (
-	*SetConfigResponse,
-	*Frame,
-	error,
-) {
-	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
-	return resp, raw, err
-}
-
-func (r *SwitchSetConfigRequest) NewTypedResponse() *SetConfigResponse {
-	return &SetConfigResponse{}
-}
-
-func (r *SwitchSetConfigRequest) NewResponse() any {
-	return r.NewTypedResponse()
-}
-
 type SwitchGetStatusRequest struct {
 	// ID of the switch component instance.
 	ID int `json:"id"`
@@ -154,55 +93,6 @@ func (r *SwitchToggleRequest) NewTypedResponse() *SwitchActionResponse {
 
 func (r *SwitchToggleRequest) NewResponse() any {
 	return r.NewTypedResponse()
-}
-
-type SwitchConfig struct {
-	// ID of the switch component instance.
-	ID int `json:"id"`
-
-	// Name of the switch instance.
-	Name *string `json:"name"`
-
-	// InMode is the mode of the associated input. Range of values: momentary,
-	// follow, flip, detached, cycle (if applicable), activate (if applicable)
-	InMode *string `json:"in_mode,omitempty"`
-
-	// InitialState is the output state to set on power_on. Range of values: off,
-	// on, restore_last, match_input
-	InitialState *string `json:"initial_state,omitempty"`
-
-	// AutoOn is true if the "Automatic ON" function is enabled, false otherwise.
-	AutoOn *bool `json:"auto_on,omitempty"`
-
-	// AutoOnDelay is the number of seconds to pass until the component is
-	// switched back.
-	AutoOnDelay *float64 `json:"auto_on_delay,omitempty"`
-
-	// AutoOff is true if the "Automatic OFF" function is enabled, false otherwise.
-	AutoOff *bool `json:"auto_off,omitempty"`
-
-	// AutoOffDelay is the number of seconds to pass until the component is switched back off.
-	AutoOffDelay *float64 `json:"auto_off_delay,omitempty"`
-
-	// AutorecoverVoltageErrors is true if switch output state should be restored
-	// after over/undervoltage error is cleared, false otherwise (shown if applicable).
-	AutorecoverVoltageErrors *bool `json:"autorecover_voltage_errors,omitempty"`
-
-	// InputID is the ID of the Input component which controls the Switch.
-	// Applicable only to Pro1 and Pro1PM devices. Valid values: 0, 1
-	InputID *int `json:"input_id,omitempty"`
-
-	// PowerLimit (in Watts) over which overpower condition occurs (shown if applicable).
-	PowerLimit *float64 `json:"power_limit,omitempty"`
-
-	// VoltageLimit (in Volts) over which overvoltage condition occurs (shown if applicable).
-	VoltageLimit *float64 `json:"voltage_limit,omitempty"`
-
-	// UndervoltageLimit (in Volts) over which overvoltage condition occurs (shown if applicable)
-	UndervoltageLimit *float64 `json:"undervoltage_limit,omitempty"`
-
-	// CurrentLimit (in Amperes) over which overcurrent condition occurs (shown if applicable)
-	CurrentLimit *float64 `json:"current_limit,omitempty"`
 }
 
 type SwitchStatus struct {

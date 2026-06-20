@@ -2,69 +2,6 @@ package shelly
 
 import "resty.dev/v3"
 
-// HumidityGetConfigRequest contains parameters for the Humidity.GetConfig RPC request.
-type HumidityGetConfigRequest struct {
-	// ID of the humidity component instance.
-	ID int `json:"id"`
-}
-
-func (r *HumidityGetConfigRequest) Method() string {
-	return "Humidity.GetConfig"
-}
-
-func (r *HumidityGetConfigRequest) NewTypedResponse() *HumidityConfig {
-	return &HumidityConfig{}
-}
-
-func (r *HumidityGetConfigRequest) NewResponse() any {
-	return r.NewTypedResponse()
-}
-
-func (r *HumidityGetConfigRequest) Do(
-	client *resty.Client,
-) (
-	*HumidityConfig,
-	*Frame,
-	error,
-) {
-	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
-	return resp, raw, err
-}
-
-// HumiditySetConfigRequest contains parameters for the Humidity.SetConfig RPC request.
-type HumiditySetConfigRequest struct {
-	// ID of the humidity component instance.
-	ID int `json:"id"`
-
-	// Config that the method takes.
-	Config HumidityConfig `json:"config"`
-}
-
-func (r *HumiditySetConfigRequest) Method() string {
-	return "Humidity.SetConfig"
-}
-
-func (r *HumiditySetConfigRequest) NewTypedResponse() *SetConfigResponse {
-	return &SetConfigResponse{}
-}
-
-func (r *HumiditySetConfigRequest) NewResponse() any {
-	return r.NewTypedResponse()
-}
-
-func (r *HumiditySetConfigRequest) Do(
-	client *resty.Client,
-) (
-	*SetConfigResponse,
-	*Frame,
-	error,
-) {
-	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
-	return resp, raw, err
-}
-
 // HumidityGetStatusRequst contains parameters for the Humidity.GetStatus RPC request.
 type HumidityGetStatusRequest struct {
 	// ID of the humidity component instance.
@@ -93,22 +30,6 @@ func (r *HumidityGetStatusRequest) Do(
 	resp := r.NewTypedResponse()
 	raw, err := Do(client, r, resp)
 	return resp, raw, err
-}
-
-// HumidityConfig provides configuration for humidity component instances.
-type HumidityConfig struct {
-	// ID of the humidity component instance.
-	ID int `json:"id"`
-
-	// Name of the humidity instance.
-	Name *string `json:"name"`
-
-	// ReportTHR is the humidity report threshold in %. Accepted range is device-specific,
-	// default [1.0..20.0]% unless specified otherwise.
-	ReportTHR *float64 `json:"report_thr,omitempty"`
-
-	// Offset in %. Value is applied to measured humidity. Accepted range is device-specific, default [-50.0..50.0]% unless specified otherwise
-	Offset *float64 `json:"offset,omitempty"`
 }
 
 // HumidityStatus describes the status of humidity component instances.
