@@ -7,62 +7,6 @@ import (
 	"resty.dev/v3"
 )
 
-type MQTTSetConfigRequest struct {
-	Config MQTTConfig `json:"config"`
-}
-
-func (r *MQTTSetConfigRequest) Method() string {
-	return "MQTT.SetConfig"
-}
-
-func (r *MQTTSetConfigRequest) NewTypedResponse() *SetConfigResponse {
-	return &SetConfigResponse{}
-}
-
-func (r *MQTTSetConfigRequest) NewResponse() any {
-	return r.NewTypedResponse()
-}
-
-func (r *MQTTSetConfigRequest) Do(
-	client *resty.Client,
-) (
-	*SetConfigResponse,
-	*Frame,
-	error,
-) {
-	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
-	return resp, raw, err
-}
-
-type MQTTGetConfigRequest struct {
-	Config MQTTConfig `json:"config"`
-}
-
-func (r *MQTTGetConfigRequest) Method() string {
-	return "MQTT.GetConfig"
-}
-
-func (r *MQTTGetConfigRequest) NewTypedResponse() *MQTTConfig {
-	return &MQTTConfig{}
-}
-
-func (r *MQTTGetConfigRequest) NewResponse() any {
-	return r.NewTypedResponse()
-}
-
-func (r *MQTTGetConfigRequest) Do(
-	client *resty.Client,
-) (
-	*MQTTConfig,
-	*Frame,
-	error,
-) {
-	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
-	return resp, raw, err
-}
-
 // MQTT_SSL_CA is a type to differentiate between not-set (empty string), null (no TLS), and string
 // values.
 type MQTT_SSL_CA string
@@ -112,43 +56,6 @@ func (ca *MQTT_SSL_CA) MarshalJSON() ([]byte, error) {
 		return []byte("null"), nil
 	}
 	return []byte(`"` + *ca + `"`), nil
-}
-
-// MQTTConfig configures MQTT for Shelly.
-type MQTTConfig struct {
-	// Enbable is true if MQTT connection is enabled, false otherwise
-	Enable *bool `json:"enabled,omitempty"`
-	// Server is the hostname of the MQTT server. Can be followed by port number - host:port
-	Server *NullString `json:"server,omitempty"`
-	// ClientID identifies each MQTT client that connects to an MQTT brokers. Defaults if null to device id.
-	ClientID *NullString `json:"client_id,omitempty"`
-	// User is the username.
-	User *string `json:"user,omitempty"`
-	// Pass is the password.
-	Pass *NullString `json:"pass,omitempty"`
-	// SSL_CA determines the type of connection to make.
-	// If null, no TLS will be used.
-	// If `*` TLS connections will be made without server verification.
-	// If `user_ca.pem` TLS connection will be verified by the user-provided CA.
-	// If `ca.pem` TLS connections will be verified against the default CA list.
-	SSL_CA MQTT_SSL_CA `json:"ssl_ca,omitempty"`
-	// TopicPrefix is the prefix of the topics on which device publish/subscribe. Limited to 300
-	// characters. Could not start with $ and #, +, %, ? are not allowed.
-	TopicPrefix *NullString `json:"topic_prefix,omitempty"`
-	// RPC_NTF enables RPC notifications (NotifyStatus and NotifyEvent) to be published on
-	// <device_id|topic_prefix>/events/rpc (<topic_prefix> when a custom prefix is set, <device_id>
-	// otherwise). Default value: true.
-	RPC_NTF *bool `json:"rpc_ntf,omitempty"`
-	// Status_NTF Enables publishing the complete component status on
-	// <device_id|topic_prefix>/status/<component>:<id> (<topic_prefix> when a custom prefix is set,
-	// <device_id> otherwise). The complete status will be published if a signifficant change
-	// occurred. Default value: false
-	Status_NTF *bool `json:"status_ntf,omitempty"`
-	// UseClientCert enables or disables usage of client certifactes to use MQTT with encription,
-	// default: false
-	UseClientCert *bool `json:"use_client_cert,omitempty"`
-	// EnableControl enables the MQTT control feature. Defalut value: true
-	EnableControl *bool `json:"enable_control,omitempty"`
 }
 
 type MQTTGetStatusRequest struct{}

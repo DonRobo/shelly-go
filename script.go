@@ -4,17 +4,6 @@ import (
 	"resty.dev/v3"
 )
 
-type ScriptConfig struct {
-	// ID of the script component instance.
-	ID int `json:"id"`
-
-	// Name of the script instance.
-	Name *string `json:"name,omitempty"`
-
-	// Enable should true if the script runs by default on boot, false otherwise
-	Enable *bool `json:"enable,omitempty"`
-}
-
 type ScriptStatus struct {
 	// ID of the script component instance.
 	ID int `json:"id"`
@@ -27,67 +16,6 @@ type ScriptStatus struct {
 	// reference_error, type_error, out_of_memory, out_of_codespace, internal_error,
 	// not_implemented, file_read_error, bad_arguments.
 	Errors []string `json:"errors,omitempty"`
-}
-
-type ScriptGetConfigRequest struct {
-	// ID of the script component instance.
-	ID int `json:"id"`
-}
-
-func (r *ScriptGetConfigRequest) Method() string {
-	return "Script.GetConfig"
-}
-
-func (r *ScriptGetConfigRequest) Do(
-	client *resty.Client,
-) (
-	*ScriptConfig,
-	*Frame,
-	error,
-) {
-	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
-	return resp, raw, err
-}
-
-func (r *ScriptGetConfigRequest) NewTypedResponse() *ScriptConfig {
-	return &ScriptConfig{}
-}
-
-func (r *ScriptGetConfigRequest) NewResponse() any {
-	return r.NewTypedResponse()
-}
-
-type ScriptSetConfigRequest struct {
-	// ID of the script component instance.
-	ID int `json:"id"`
-
-	// Config that the method takes.
-	Config ScriptConfig `json:"config"`
-}
-
-func (r *ScriptSetConfigRequest) Method() string {
-	return "Script.SetConfig"
-}
-
-func (r *ScriptSetConfigRequest) Do(
-	client *resty.Client,
-) (
-	*SetConfigResponse,
-	*Frame,
-	error,
-) {
-	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
-	return resp, raw, err
-}
-
-func (r *ScriptSetConfigRequest) NewTypedResponse() *SetConfigResponse {
-	return &SetConfigResponse{}
-}
-
-func (r *ScriptSetConfigRequest) NewResponse() any {
-	return r.NewTypedResponse()
 }
 
 type ScriptGetStatusRequest struct {

@@ -1,6 +1,6 @@
 module github.com/DonRobo/go-shelly-lite
 
-go 1.21.1
+go 1.24.0
 
 require (
 	github.com/eclipse/paho.mqtt.golang v1.4.3

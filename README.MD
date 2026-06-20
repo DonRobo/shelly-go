@@ -38,6 +38,34 @@ func main() {
 }
 ```
 
+## Code generation
+
+The typed config client for many components is generated from the official
+[Shelly Gen2+ API docs](https://shelly-api-docs.shelly.cloud/gen2/ComponentsAndServices/)
+rather than written by hand, so coverage tracks the documentation.
+
+The generator (`./cmd/gen`, package `./gen`) runs in three stages:
+
+1. **fetch** — download the component doc pages into a local cache under
+   `gen/cache/` (gitignored; network is only used for pages not already cached);
+2. **parse** — turn the cached HTML into `gen/spec.json` (committed), the
+   machine-readable intermediate representation and source of truth for generation;
+3. **emit** — generate `<component>_config_gen.go` for every component that does
+   not already have a hand-written config type (so generation only fills gaps).
+
+Regenerate with:
+
+```
+go generate ./...          # uses the committed cache
+go run ./cmd/gen -refresh   # re-download the docs first
+```
+
+Per-component corrections the docs can't express generically live in
+`gen/exceptions.go`, kept separate from the generic parse/emit code.
+
+Integration tests talk to a real device and are gated behind a build tag:
+`go test -tags integration ./...`.
+
 ## Legal
 
 ### Liability

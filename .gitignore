@@ -1,0 +1,2 @@
+# Cached Shelly API docs HTML (re-fetched on demand; see gen/spec.json for the committed IR)
+/gen/cache/
