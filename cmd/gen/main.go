@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/DonRobo/go-shelly-lite/gen"
+	"github.com/DonRobo/shelly-go/gen"
 )
 
 func main() {

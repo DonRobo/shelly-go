@@ -1,4 +1,4 @@
-// Package gen contains the documentation-driven code generator for go-shelly-lite.
+// Package gen contains the documentation-driven code generator for shelly-go.
 //
 // The pipeline has three stages, run as one command (see ./cmd/gen):
 //

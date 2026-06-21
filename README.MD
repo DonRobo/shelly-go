@@ -1,5 +1,5 @@
-# go-shelly-lite
-go-shelly is an unofficial native go client for the [Shelly Gen2 API](https://shelly-api-docs.shelly.cloud/gen2/). It's forked from jcodybaker's excellent [go-shelly](https://github.com/jcodybaker/go-shelly) library. However with the dependency to [mos](github.com/mongoose-os/mos/) completely removed. As many of its transitive dependencies were causing issues for me.
+# shelly-go
+shelly-go is an unofficial native go client for the [Shelly Gen2 API](https://shelly-api-docs.shelly.cloud/gen2/). It's forked from jcodybaker's excellent [go-shelly](https://github.com/jcodybaker/go-shelly) library. However with the dependency to [mos](github.com/mongoose-os/mos/) completely removed. As many of its transitive dependencies were causing issues for me.
 
 Because of this change, this is not quite a drop in replacement, but it should be simple enough to make the required modifications.
 
@@ -7,14 +7,14 @@ Because of this change, this is not quite a drop in replacement, but it should b
 This library is mostly for my own personal amusement and no guarantees or promises about stability, functionality, documentation or test coverage are made.
 
 ## Usage
-In most cases, using the library is as simple building an Resty client and calling .Do().  See the [go doc](https://pkg.go.dev/github.com/DonRobo/go-shelly-lite), the [Resty doc](https://resty.dev/) and [Shelly Gen2 API documentation](https://shelly-api-docs.shelly.cloud/gen2/).
+In most cases, using the library is as simple building an Resty client and calling .Do().  See the [go doc](https://pkg.go.dev/github.com/DonRobo/shelly-go), the [Resty doc](https://resty.dev/) and [Shelly Gen2 API documentation](https://shelly-api-docs.shelly.cloud/gen2/).
 ```
 import (
 	"context"
 	"fmt"
     "log"
 
-	shelly "github.com/DonRobo/go-shelly-lite"
+	shelly "github.com/DonRobo/shelly-go"
 )
 
 const (

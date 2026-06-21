@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"resty.dev/v3"
 
-	shelly "github.com/DonRobo/go-shelly-lite"
+	shelly "github.com/DonRobo/shelly-go"
 )
 
 func GetCallWithVerify(t *testing.T, req shelly.RPCRequestBody, respBody interface{}) {

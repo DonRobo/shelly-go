@@ -1,4 +1,4 @@
-module github.com/DonRobo/go-shelly-lite
+module github.com/DonRobo/shelly-go
 
 go 1.24.0
 
