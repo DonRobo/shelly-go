@@ -5,7 +5,7 @@ package shelly_test
 import (
 	"testing"
 
-	"github.com/DonRobo/go-shelly-lite"
+	"github.com/DonRobo/shelly-go"
 )
 
 func TestInputGetConfig(t *testing.T) {

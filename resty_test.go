@@ -5,7 +5,7 @@ package shelly_test
 import (
 	"testing"
 
-	shelly "github.com/DonRobo/go-shelly-lite"
+	shelly "github.com/DonRobo/shelly-go"
 
 	"resty.dev/v3"
 )
