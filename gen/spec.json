@@ -2061,6 +2061,19 @@
       ]
     },
     {
+      "name": "Ui",
+      "hasGetConfig": true,
+      "hasSetConfig": true,
+      "keyed": false,
+      "fields": [
+        {
+          "key": "idle_brightness",
+          "type": "integer",
+          "description": "Brightness of the device's screen while idle, in percent (0-100). Not documented by Shelly; sourced via device introspection."
+        }
+      ]
+    },
+    {
       "name": "Voltmeter",
       "hasGetConfig": true,
       "hasSetConfig": true,
