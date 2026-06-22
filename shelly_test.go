@@ -375,7 +375,7 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 		assert.Nil(t, r.Eth.IP)
 		assert.Equal(t, "PickleTown", *r.Wifi.SSID)
 		assert.Equal(t, float64(-36), *r.Wifi.Rssi)
-		assert.Equal(t, "C8F09E87D088", r.Sys.Mac)
+		assert.Equal(t, "C8F09E87D088", *r.Sys.MAC)
 
 		// Keyed components routed to slices, uncapped (4 switches + 4 inputs).
 		require.Len(t, r.Inputs, 4)
@@ -409,7 +409,7 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 		require.NotNil(t, r.Cloud)
 		require.NotNil(t, r.Wifi)
 		assert.Equal(t, float64(-22), *r.Wifi.Rssi)
-		assert.Equal(t, "C8F09E883630", r.Sys.Mac)
+		assert.Equal(t, "C8F09E883630", *r.Sys.MAC)
 
 		require.Len(t, r.Inputs, 3)
 		require.Len(t, r.Switches, 3)
@@ -436,11 +436,15 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 		assert.True(t, *r.MQTT.Connected)
 		assert.Equal(t, "PickleTown_Garage", *r.Wifi.SSID)
 
-		// Battery-device sys extras.
-		require.NotNil(t, r.Sys.WakeUpReason)
-		assert.Equal(t, "deepsleep_wake", r.Sys.WakeUpReason.Boot)
-		assert.Equal(t, "status_update", r.Sys.WakeUpReason.Cause)
-		assert.Equal(t, float64(600), r.Sys.WakeUpPeriod)
+		// Battery-device sys extras. wakeup_reason is documented only in prose, so
+		// the generated shape comes from an exception; reset_reason is undocumented
+		// but injected to keep the coverage the hand type had.
+		require.NotNil(t, r.Sys.WakeupReason)
+		assert.Equal(t, "deepsleep_wake", *r.Sys.WakeupReason.Boot)
+		assert.Equal(t, "status_update", *r.Sys.WakeupReason.Cause)
+		assert.Equal(t, float64(600), *r.Sys.WakeupPeriod)
+		require.NotNil(t, r.Sys.ResetReason)
+		assert.Equal(t, 8, *r.Sys.ResetReason)
 
 		require.Len(t, r.DevicePowers, 1)
 		require.Len(t, r.Humidities, 1)

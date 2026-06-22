@@ -59,34 +59,74 @@ var fixes = []func(*Spec){
 	expandStatusObject("DevicePower", "external", []*Field{
 		{Key: "present", Type: "boolean", Description: "Whether an external power source is connected."},
 	}),
+	// Sys documents wakeup_reason as an object but lists its sub-fields only in
+	// prose (no nested table), so the parser drops the row entirely. Inject the
+	// documented shape; expandStatusObject appends it when the parent is absent.
+	expandStatusObject("Sys", "wakeup_reason", []*Field{
+		{Key: "boot", Type: "string", Description: "Boot type, one of: poweron, software_restart, deepsleep_wake, internal, unknown."},
+		{Key: "cause", Type: "string", Description: "Boot cause, one of: button, usb, periodic, status_update, alarm, alarm_test, undefined."},
+	}),
+	// reset_reason and safe_mode are undocumented but appear on real devices;
+	// keep the coverage the hand-written SysStatus carried before it moved to
+	// codegen. Sourced from observed responses; drop if Shelly documents them.
+	addStatusField("Sys", &Field{Key: "reset_reason", Type: "integer", Description: "Numeric reset reason. Not documented by Shelly; appears in firmware responses."}),
+	addStatusField("Sys", &Field{Key: "safe_mode", Type: "boolean", Description: "True if the device is operating in Safe Mode; present only in that mode. Not documented by Shelly."}),
 }
 
-// expandStatusObject returns a fix that replaces a single opaque "object" status
-// field (one the docs leave unbroken-down) with typed sub-fields, so the emitter
-// builds a proper nested struct instead of json.RawMessage. Sub-field keys are
-// relative; the parent key is prefixed.
+// expandStatusObject returns a fix that represents a status object the docs
+// leave unbroken-down with typed sub-fields, so the emitter builds a proper
+// nested struct instead of json.RawMessage. Sub-field keys are relative; the
+// parent key is prefixed. An opaque "object" leaf is replaced in place (keeping
+// field order stable); if the parser dropped the row entirely — as it does when
+// the docs describe the children only in prose (Sys.wakeup_reason) — the
+// sub-fields are appended instead.
 func expandStatusObject(comp, key string, sub []*Field) func(*Spec) {
 	return func(s *Spec) {
 		c := s.component(comp)
 		if c == nil {
 			return
 		}
+		expanded := make([]*Field, 0, len(sub))
+		for _, sf := range sub {
+			expanded = append(expanded, &Field{
+				Key:         key + "." + sf.Key,
+				Type:        sf.Type,
+				Elem:        sf.Elem,
+				Description: sf.Description,
+			})
+		}
 		out := make([]*Field, 0, len(c.StatusFields)+len(sub))
+		found := false
 		for _, f := range c.StatusFields {
 			if f.Key == key && f.Type == "object" {
-				for _, sf := range sub {
-					out = append(out, &Field{
-						Key:         key + "." + sf.Key,
-						Type:        sf.Type,
-						Elem:        sf.Elem,
-						Description: sf.Description,
-					})
-				}
+				out = append(out, expanded...)
+				found = true
 				continue
 			}
 			out = append(out, f)
 		}
+		if !found {
+			out = append(out, expanded...)
+		}
 		c.StatusFields = out
+	}
+}
+
+// addStatusField returns a fix that appends a status leaf the docs omit but real
+// devices return, so it generates as a typed field instead of being silently
+// dropped on unmarshal. No-op if the docs already document a field with that key.
+func addStatusField(comp string, f *Field) func(*Spec) {
+	return func(s *Spec) {
+		c := s.component(comp)
+		if c == nil {
+			return
+		}
+		for _, ex := range c.StatusFields {
+			if ex.Key == f.Key {
+				return
+			}
+		}
+		c.StatusFields = append(c.StatusFields, f)
 	}
 }
 
