@@ -5,11 +5,11 @@ package shelly_test
 import (
 	"testing"
 
-	"github.com/DonRobo/shelly-go"
+	"github.com/DonRobo/shelly-go/components"
 )
 
 func TestInputGetConfig(t *testing.T) {
-	req := &shelly.InputGetConfigRequest{
+	req := &components.InputGetConfigRequest{
 		ID: 0,
 	}
 	resp := req.NewTypedResponse()
@@ -17,7 +17,7 @@ func TestInputGetConfig(t *testing.T) {
 }
 
 func TestInputGetStatus(t *testing.T) {
-	req := &shelly.InputGetStatusRequest{
+	req := &components.InputGetStatusRequest{
 		ID: 0,
 	}
 	resp := req.NewTypedResponse()

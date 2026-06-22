@@ -11,15 +11,15 @@ import (
 	"github.com/stretchr/testify/require"
 	"resty.dev/v3"
 
-	shelly "github.com/DonRobo/shelly-go"
+	"github.com/DonRobo/shelly-go/rpc"
 )
 
-func GetCallWithVerify(t *testing.T, req shelly.RPCRequestBody, respBody interface{}) {
+func GetCallWithVerify(t *testing.T, req rpc.RPCRequestBody, respBody interface{}) {
 	client := resty.New()
 	client.SetBaseURL("http://192.168.1.169")
 	defer client.Close()
 
-	respFrame, err := shelly.Do(client, req, respBody)
+	respFrame, err := rpc.Do(client, req, respBody)
 	require.NoError(t, err)
 	fmt.Println(string(respFrame.Result))
 
