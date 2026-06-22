@@ -165,3 +165,120 @@ func (r *LightSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse
 	raw, err := rpc.Do(client, r, resp)
 	return resp, raw, err
 }
+
+// LightStatusTransitionTarget is generated from the Shelly API documentation.
+type LightStatusTransitionTarget struct {
+	// Output true if the output channel becomes on, false otherwise
+	Output *bool `json:"output,omitempty"`
+
+	// Brightness brightness level (in percent)
+	Brightness *float64 `json:"brightness,omitempty"`
+}
+
+// LightStatusTransition is generated from the Shelly API documentation.
+type LightStatusTransition struct {
+	Target *LightStatusTransitionTarget `json:"target,omitempty"`
+	// StartedAt unix timestamp, start time of the transition (in UTC)
+	StartedAt *float64 `json:"started_at,omitempty"`
+
+	// Duration duration of the transition in seconds
+	Duration *float64 `json:"duration,omitempty"`
+}
+
+// LightStatusTemperature is generated from the Shelly API documentation.
+type LightStatusTemperature struct {
+	// TC temperature in Celsius (null if temperature is out of the measurement range)
+	TC *float64 `json:"tC,omitempty"`
+
+	// TF temperature in Fahrenheit (null if temperature is out of the measurement
+	// range)
+	TF *float64 `json:"tF,omitempty"`
+}
+
+// LightStatusAenergy is generated from the Shelly API documentation.
+type LightStatusAenergy struct {
+	// Total total energy consumed in Watt-hours
+	Total *float64 `json:"total,omitempty"`
+
+	// ByMinute energy consumption in Milliwatt-hours for the last three complete
+	// minutes. The 0-th element indicates the counts accumulated during the minute
+	// preceding minute_ts. Present only if the device clock is synced.
+	ByMinute []float64 `json:"by_minute,omitempty"`
+
+	// MinuteTs unix timestamp marking the start of the current minute (in UTC).
+	MinuteTs *float64 `json:"minute_ts,omitempty"`
+}
+
+// LightStatusCalibration is generated from the Shelly API documentation.
+type LightStatusCalibration struct {
+	// Progess calibration progress in percent
+	Progess *float64 `json:"progess,omitempty"`
+}
+
+// LightStatus is generated from the Shelly API documentation.
+type LightStatus struct {
+	// ID id of the Light component instance
+	ID int `json:"id"`
+
+	// Source source of the last command, for example: init, WS_in, http, ...
+	Source *string `json:"source,omitempty"`
+
+	// Tag tag used to identify the origin of a state change
+	Tag *string `json:"tag,omitempty"`
+
+	// Output true if the output channel is currently on, false otherwise
+	Output *bool `json:"output,omitempty"`
+
+	// Brightness current brightness level (in percent)
+	Brightness *float64 `json:"brightness,omitempty"`
+
+	// TimerStartedAt unix timestamp, start time of the timer (in UTC) (shown if the
+	// timer is triggered)
+	TimerStartedAt *float64 `json:"timer_started_at,omitempty"`
+
+	// TimerDuration duration of the timer in seconds (shown if the timer is triggered)
+	TimerDuration *float64 `json:"timer_duration,omitempty"`
+
+	Transition  *LightStatusTransition  `json:"transition,omitempty"`
+	Temperature *LightStatusTemperature `json:"temperature,omitempty"`
+	Aenergy     *LightStatusAenergy     `json:"aenergy,omitempty"`
+	// Apower last measured instantaneous active power (in Watts) delivered to the
+	// attached load (shown if applicable)
+	Apower *float64 `json:"apower,omitempty"`
+
+	// Voltage last measured voltage in Volts (shown if applicable)
+	Voltage *float64 `json:"voltage,omitempty"`
+
+	// Current last measured current in Amperes (shown if applicable)
+	Current *float64 `json:"current,omitempty"`
+
+	Calibration *LightStatusCalibration `json:"calibration,omitempty"`
+	// Errors error conditions occurred, shown if at least one error is present.
+	// Depending on component capabilities may contain: overtemp, overpower,
+	// overvoltage, undervoltage, overcurrent, unsupported_load, cal_abort:interrupted,
+	// cal_abort:power_read, cal_abort:no_load, cal_abort:no_synchro,
+	// cal_abort:non_dimmable, cal_abort:overpower, cal_abort:unsupported_load
+	Errors []string `json:"errors,omitempty"`
+
+	// Flags communicates present conditions, shown if at least one flag is set.
+	// Depending on component capabilites may contain: no_load, uncalibrated
+	Flags []string `json:"flags,omitempty"`
+}
+
+// LightGetStatusRequest requests the status of the Light component.
+type LightGetStatusRequest struct {
+	// ID of the Light component instance.
+	ID int `json:"id"`
+}
+
+func (r *LightGetStatusRequest) Method() string { return "Light.GetStatus" }
+
+func (r *LightGetStatusRequest) NewTypedResponse() *LightStatus { return &LightStatus{} }
+
+func (r *LightGetStatusRequest) NewResponse() any { return r.NewTypedResponse() }
+
+func (r *LightGetStatusRequest) Do(client *resty.Client) (*LightStatus, *rpc.Frame, error) {
+	resp := r.NewTypedResponse()
+	raw, err := rpc.Do(client, r, resp)
+	return resp, raw, err
+}

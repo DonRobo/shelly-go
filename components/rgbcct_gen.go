@@ -3,7 +3,6 @@
 package components
 
 import (
-	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -21,7 +20,7 @@ type RGBCCTConfigNightMode struct {
 	// RGB color level when night mode is active. Red, Green, Blue [r,g,b] - each value
 	// represents level between 0..255. null overrides night_mode.rgb array with
 	// current rgb array when night mode starts. Default value 255 for each color
-	RGB json.RawMessage `json:"rgb,omitempty"`
+	RGB []float64 `json:"rgb,omitempty"`
 
 	// Ct color temperature level limit (in Kelvin) when night mode is active. null
 	// overrides night_mode.ct value with current ct value when night mode starts.
@@ -37,7 +36,7 @@ type RGBCCTConfigNightMode struct {
 	// the start of the period during which the night mode will be active, the second
 	// indicates the end of that period. Both start and end are strings in the format
 	// HH:MM, where HH and MM are hours and minutes with optinal leading zeros
-	ActiveBetween json.RawMessage `json:"active_between,omitempty"`
+	ActiveBetween []string `json:"active_between,omitempty"`
 }
 
 // RGBCCTConfig is generated from the Shelly API documentation.
@@ -122,7 +121,7 @@ type RGBCCTStatusTransitionTarget struct {
 	Output *bool `json:"output,omitempty"`
 
 	// RGB red, Green, Blue [r,g,b] level 0..255
-	RGB json.RawMessage `json:"rgb,omitempty"`
+	RGB []float64 `json:"rgb,omitempty"`
 
 	// Ct color temperature level (in Kelvin)
 	Ct *float64 `json:"ct,omitempty"`
@@ -149,7 +148,7 @@ type RGBCCTStatusAenergy struct {
 	// ByMinute energy consumption in Milliwatt-hours for the last three complete
 	// minutes. The 0-th element indicates the counts accumulated during the minute
 	// preceding minute_ts. Present only if the device clock is synced.
-	ByMinute json.RawMessage `json:"by_minute,omitempty"`
+	ByMinute []float64 `json:"by_minute,omitempty"`
 
 	// MinuteTs unix timestamp marking the start of the current minute (in UTC).
 	MinuteTs *float64 `json:"minute_ts,omitempty"`
@@ -173,7 +172,7 @@ type RGBCCTStatus struct {
 	Output *bool `json:"output,omitempty"`
 
 	// RGB current Red, Green, Blue [r,g,b] level 0..255
-	RGB json.RawMessage `json:"rgb,omitempty"`
+	RGB []float64 `json:"rgb,omitempty"`
 
 	// Ct current color temperature level (in Kelvin)
 	Ct *float64 `json:"ct,omitempty"`

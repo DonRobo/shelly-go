@@ -3,7 +3,6 @@
 package components
 
 import (
-	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -21,7 +20,7 @@ type EM1DataConfig struct {
 
 	// Errors error condition occurred. May contain database_error or ct_type_not_set,
 	// (shown if the error is present).
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 }
 
 // EM1DataGetConfigRequest requests the configuration of the EM1Data component.
@@ -78,7 +77,7 @@ type EM1DataStatus struct {
 
 	// Errors error condition occurred. May contain database_error or ct_type_not_set,
 	// (shown if the error is present).
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 }
 
 // EM1DataGetStatusRequest requests the status of the EM1Data component.

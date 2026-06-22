@@ -14,6 +14,14 @@ type TemperatureConfig struct {
 
 	// Name name of the Temperature instance. name length should not exceed 64 chars
 	Name *string `json:"name,omitempty"`
+
+	// ReportThrC temperature report threshold in Celsius. Accepted range is
+	// device-specific, default [0.5..5.0]C unless specified otherwise
+	ReportThrC *float64 `json:"report_thr_C,omitempty"`
+
+	// OffsetC offset in Celsius to be applied to the measured temperature. Accepted
+	// range is device-specific, default [-50.0 .. 50.0] unless specified otherwise
+	OffsetC *float64 `json:"offset_C,omitempty"`
 }
 
 // TemperatureGetConfigRequest requests the configuration of the Temperature component.
@@ -54,6 +62,42 @@ func (r *TemperatureSetConfigRequest) NewTypedResponse() *rpc.SetConfigResponse 
 func (r *TemperatureSetConfigRequest) NewResponse() any { return r.NewTypedResponse() }
 
 func (r *TemperatureSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse, *rpc.Frame, error) {
+	resp := r.NewTypedResponse()
+	raw, err := rpc.Do(client, r, resp)
+	return resp, raw, err
+}
+
+// TemperatureStatus is generated from the Shelly API documentation.
+type TemperatureStatus struct {
+	// ID id of the Temperature component instance
+	ID int `json:"id"`
+
+	// TC temperature in Celsius (null if valid value could not be obtained)
+	TC *float64 `json:"tC,omitempty"`
+
+	// TF temperature in Fahrenheit (null if valid value could not be obtained)
+	TF *float64 `json:"tF,omitempty"`
+
+	// Errors shown only if at least one error is present. May contain out_of_range,
+	// read when there is problem reading sensor
+	Errors []string `json:"errors,omitempty"`
+}
+
+// TemperatureGetStatusRequest requests the status of the Temperature component.
+type TemperatureGetStatusRequest struct {
+	// ID of the Temperature component instance.
+	ID int `json:"id"`
+}
+
+func (r *TemperatureGetStatusRequest) Method() string { return "Temperature.GetStatus" }
+
+func (r *TemperatureGetStatusRequest) NewTypedResponse() *TemperatureStatus {
+	return &TemperatureStatus{}
+}
+
+func (r *TemperatureGetStatusRequest) NewResponse() any { return r.NewTypedResponse() }
+
+func (r *TemperatureGetStatusRequest) Do(client *resty.Client) (*TemperatureStatus, *rpc.Frame, error) {
 	resp := r.NewTypedResponse()
 	raw, err := rpc.Do(client, r, resp)
 	return resp, raw, err

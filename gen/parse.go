@@ -105,10 +105,13 @@ func tableAfterHeading(nodes []*html.Node, headingID string) *html.Node {
 	return nil
 }
 
-// validKey matches a real Shelly config property key: lowercase, dotted for
-// nesting (e.g. "in_mode", "counts.power_thr"). This rejects continuation rows
-// some tables use to explain enum values, whose first cell is prose.
-var validKey = regexp.MustCompile(`^[a-z][a-z0-9_]*(\.[a-z0-9_]+)*$`)
+// validKey matches a real Shelly property key: starts lowercase, single token
+// (no spaces), dotted for nesting (e.g. "in_mode", "counts.power_thr"). Uppercase
+// letters are allowed inside a token so camelCase status keys are kept (Shelly
+// uses "tC"/"tF" for temperatures and "V" for battery voltage). Starting
+// lowercase with no spaces still rejects the prose continuation rows some tables
+// use to explain enum values.
+var validKey = regexp.MustCompile(`^[a-z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*$`)
 
 // parseRows turns a Property|Type|Description table into Fields. prefix is the
 // dotted path of the enclosing object ("" at the top level).
@@ -150,6 +153,10 @@ func parseRows(table *html.Node, prefix string) []*Field {
 		if base == "unknown" {
 			continue // prose in the type cell -> not a real property row
 		}
+		elem := ""
+		if base == "array" {
+			elem = arrayElem(textOf(cells[1]))
+		}
 		desc := ""
 		if len(cells) >= 3 {
 			desc = cleanText(textExcludingTables(cells[2]))
@@ -157,6 +164,7 @@ func parseRows(table *html.Node, prefix string) []*Field {
 		fields = append(fields, &Field{
 			Key:         fullKey,
 			Type:        base,
+			Elem:        elem,
 			Nullable:    nullable,
 			Enum:        enumValues(desc),
 			Description: desc,
@@ -192,6 +200,23 @@ func enumValues(desc string) []string {
 		return nil
 	}
 	return out
+}
+
+// arrayElem extracts the element base type from a doc type like "array of type
+// number" (-> "number"). Returns "" when the docs don't specify an element type,
+// in which case the array stays json.RawMessage.
+var arrayOfType = regexp.MustCompile(`(?i)array\s+of\s+(?:type\s+)?(\w+)`)
+
+func arrayElem(typeStr string) string {
+	m := arrayOfType.FindStringSubmatch(typeStr)
+	if m == nil {
+		return ""
+	}
+	base, _ := normaliseType(m[1])
+	if base == "unknown" {
+		return ""
+	}
+	return base
 }
 
 // normaliseType maps a doc type string to a base type and a nullable flag.

@@ -147,3 +147,79 @@ func (r *InputSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse
 	raw, err := rpc.Do(client, r, resp)
 	return resp, raw, err
 }
+
+// InputStatusCounts is generated from the Shelly API documentation.
+type InputStatusCounts struct {
+	// Total total pulses counted.
+	Total *float64 `json:"total,omitempty"`
+
+	// Xtotal total transformed with config.xcounts.expr. Present only when both
+	// config.xcounts.expr and config.xcounts.unit are set to non-empty values. null if
+	// config.xcounts.expr can not be evaluated.
+	Xtotal *float64 `json:"xtotal,omitempty"`
+
+	// ByMinute pulse counts for the last three complete minutes. The 0-th element
+	// indicates the counts accumulated during the minute preceding minute_ts. Present
+	// only if the device clock is synced.
+	ByMinute []float64 `json:"by_minute,omitempty"`
+
+	// XbyMinute by_minute values transformed with config.xcounts.expr. Present only
+	// when both config.xcounts.expr and config.xcounts.unit is set to non-empty values
+	// and the device clock is synced. null if config.xcounts.expr can not be
+	// evaluated.
+	XbyMinute *float64 `json:"xby_minute,omitempty"`
+
+	// MinuteTs unix timestamp marking the start of the current minute (in UTC).
+	MinuteTs *float64 `json:"minute_ts,omitempty"`
+}
+
+// InputStatus is generated from the Shelly API documentation.
+type InputStatus struct {
+	// ID id of the Input component instance
+	ID int `json:"id"`
+
+	// State (only for type switch, button) State of the input (null if the input
+	// instance is stateless, i.e. for type button)
+	State *bool `json:"state,omitempty"`
+
+	// Percent (only for type analog) Analog value in percent (null if the valid value
+	// could not be obtained)
+	Percent *float64 `json:"percent,omitempty"`
+
+	// Xpercent (only for type analog) percent transformed with config.xpercent.expr.
+	// Present only when both config.xpercent.expr and config.xpercent.unit are set to
+	// non-empty values. null if config.xpercent.expr can not be evaluated.
+	Xpercent *float64 `json:"xpercent,omitempty"`
+
+	Counts *InputStatusCounts `json:"counts,omitempty"`
+	// Freq (only for type count) Measured frequency in Hz. Determined at every elapsed
+	// freq_window period.
+	Freq *float64 `json:"freq,omitempty"`
+
+	// Xfreq (only for type count) freq transformed with config.xfreq.expr. Present
+	// only when both config.xfreq.expr and config.xfreq.unit are set to non-empty
+	// values. null if config.xfreq.expr can not be evaluated.
+	Xfreq *float64 `json:"xfreq,omitempty"`
+
+	// Errors shown only if at least one error is present. May contain out_of_range,
+	// read
+	Errors []string `json:"errors,omitempty"`
+}
+
+// InputGetStatusRequest requests the status of the Input component.
+type InputGetStatusRequest struct {
+	// ID of the Input component instance.
+	ID int `json:"id"`
+}
+
+func (r *InputGetStatusRequest) Method() string { return "Input.GetStatus" }
+
+func (r *InputGetStatusRequest) NewTypedResponse() *InputStatus { return &InputStatus{} }
+
+func (r *InputGetStatusRequest) NewResponse() any { return r.NewTypedResponse() }
+
+func (r *InputGetStatusRequest) Do(client *resty.Client) (*InputStatus, *rpc.Frame, error) {
+	resp := r.NewTypedResponse()
+	raw, err := rpc.Do(client, r, resp)
+	return resp, raw, err
+}

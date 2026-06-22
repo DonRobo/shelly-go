@@ -25,7 +25,7 @@ type DevicePowerConfig struct {
 	External json.RawMessage `json:"external,omitempty"`
 
 	// Errors whether external power source is connected
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 }
 
 // DevicePowerGetConfigRequest requests the configuration of the DevicePower component.
@@ -66,6 +66,49 @@ func (r *DevicePowerSetConfigRequest) NewTypedResponse() *rpc.SetConfigResponse 
 func (r *DevicePowerSetConfigRequest) NewResponse() any { return r.NewTypedResponse() }
 
 func (r *DevicePowerSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse, *rpc.Frame, error) {
+	resp := r.NewTypedResponse()
+	raw, err := rpc.Do(client, r, resp)
+	return resp, raw, err
+}
+
+// DevicePowerStatusBattery is generated from the Shelly API documentation.
+type DevicePowerStatusBattery struct {
+	// Percent battery charge level in % (null if valid value could not be obtained)
+	Percent *float64 `json:"percent,omitempty"`
+}
+
+// DevicePowerStatusExternal is generated from the Shelly API documentation.
+type DevicePowerStatusExternal struct {
+	// Present whether an external power source is connected.
+	Present *bool `json:"present,omitempty"`
+}
+
+// DevicePowerStatus is generated from the Shelly API documentation.
+type DevicePowerStatus struct {
+	// ID id of the DevicePower component instance
+	ID int `json:"id"`
+
+	Battery  *DevicePowerStatusBattery  `json:"battery,omitempty"`
+	External *DevicePowerStatusExternal `json:"external,omitempty"`
+	// Errors whether external power source is connected
+	Errors []string `json:"errors,omitempty"`
+}
+
+// DevicePowerGetStatusRequest requests the status of the DevicePower component.
+type DevicePowerGetStatusRequest struct {
+	// ID of the DevicePower component instance.
+	ID int `json:"id"`
+}
+
+func (r *DevicePowerGetStatusRequest) Method() string { return "DevicePower.GetStatus" }
+
+func (r *DevicePowerGetStatusRequest) NewTypedResponse() *DevicePowerStatus {
+	return &DevicePowerStatus{}
+}
+
+func (r *DevicePowerGetStatusRequest) NewResponse() any { return r.NewTypedResponse() }
+
+func (r *DevicePowerGetStatusRequest) Do(client *resty.Client) (*DevicePowerStatus, *rpc.Frame, error) {
 	resp := r.NewTypedResponse()
 	raw, err := rpc.Do(client, r, resp)
 	return resp, raw, err

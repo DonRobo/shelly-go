@@ -3,7 +3,6 @@
 package components
 
 import (
-	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -25,7 +24,7 @@ type DALIConfig struct {
 	Scan *DALIConfigScan `json:"scan,omitempty"`
 	// Errors shown only if at least one error is present. May contain
 	// control_gear_missing, driver
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 }
 
 // DALIGetConfigRequest requests the configuration of the DALI component.
@@ -81,7 +80,7 @@ type DALIStatus struct {
 	Scan *DALIStatusScan `json:"scan,omitempty"`
 	// Errors shown only if at least one error is present. May contain
 	// control_gear_missing, driver
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 }
 
 // DALIGetStatusRequest requests the status of the DALI component.

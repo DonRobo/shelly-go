@@ -120,3 +120,130 @@ func (r *SwitchSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigRespons
 	raw, err := rpc.Do(client, r, resp)
 	return resp, raw, err
 }
+
+// SwitchStatusAenergy is generated from the Shelly API documentation.
+type SwitchStatusAenergy struct {
+	// Total total energy consumed in Watt-hours
+	Total *float64 `json:"total,omitempty"`
+
+	// ByMinute total energy flow in Milliwatt-hours for the last three complete
+	// minutes. The 0-th element indicates the counts accumulated during the minute
+	// preceding minute_ts. Present only if the device clock is synced.
+	ByMinute []float64 `json:"by_minute,omitempty"`
+
+	// MinuteTs unix timestamp marking the start of the current minute (in UTC).
+	MinuteTs *float64 `json:"minute_ts,omitempty"`
+}
+
+// SwitchStatusRetAenergy is generated from the Shelly API documentation.
+type SwitchStatusRetAenergy struct {
+	// Total total returned energy consumed in Watt-hours
+	Total *float64 `json:"total,omitempty"`
+
+	// ByMinute returned energy in Milliwatt-hours for the last three complete minutes.
+	// The 0-th element indicates the counts accumulated during the minute preceding
+	// minute_ts. Present only if the device clock is synced.
+	ByMinute []float64 `json:"by_minute,omitempty"`
+
+	// MinuteTs unix timestamp marking the start of the current minute (in UTC).
+	MinuteTs *float64 `json:"minute_ts,omitempty"`
+}
+
+// SwitchStatusCounts is generated from the Shelly API documentation.
+type SwitchStatusCounts struct {
+	// OnTime total accumulated ON time in minutes
+	OnTime *float64 `json:"on_time,omitempty"`
+
+	// OnTimeRstTs unix timestamp marking the last reset of the on_time counter (in
+	// UTC).
+	OnTimeRstTs *float64 `json:"on_time_rst_ts,omitempty"`
+
+	// SwitchOn total accumulated OFF to ON cycles
+	SwitchOn *float64 `json:"switch_on,omitempty"`
+
+	// SwitchOnRstTs unix timestamp marking the last reset of the switch_on counter (in
+	// UTC).
+	SwitchOnRstTs *float64 `json:"switch_on_rst_ts,omitempty"`
+
+	// OnAboveThr total accumulated ON time above power threshold in minutes
+	OnAboveThr *float64 `json:"on_above_thr,omitempty"`
+
+	// OnAboveThrRstTs unix timestamp marking the last reset of the on_above_thr
+	// counter (in UTC).
+	OnAboveThrRstTs *float64 `json:"on_above_thr_rst_ts,omitempty"`
+}
+
+// SwitchStatusTemperature is generated from the Shelly API documentation.
+type SwitchStatusTemperature struct {
+	// TC temperature in Celsius (null if the temperature is out of the measurement
+	// range)
+	TC *float64 `json:"tC,omitempty"`
+
+	// TF temperature in Fahrenheit (null if the temperature is out of the measurement
+	// range)
+	TF *float64 `json:"tF,omitempty"`
+}
+
+// SwitchStatus is generated from the Shelly API documentation.
+type SwitchStatus struct {
+	// ID id of the Switch component instance
+	ID int `json:"id"`
+
+	// Source source of the last command, for example: init, WS_in, http, ...
+	Source *string `json:"source,omitempty"`
+
+	// Tag tag used to identify the origin of a state change
+	Tag *string `json:"tag,omitempty"`
+
+	// Output true if the output channel is currently on, false otherwise
+	Output *bool `json:"output,omitempty"`
+
+	// TimerStartedAt unix timestamp, start time of the timer (in UTC) (shown if the
+	// timer is triggered)
+	TimerStartedAt *float64 `json:"timer_started_at,omitempty"`
+
+	// TimerDuration duration of the timer in seconds (shown if the timer is triggered)
+	TimerDuration *float64 `json:"timer_duration,omitempty"`
+
+	// Apower last measured instantaneous active power (in Watts) delivered to the
+	// attached load (shown if applicable)
+	Apower *float64 `json:"apower,omitempty"`
+
+	// Voltage last measured voltage in Volts (shown if applicable)
+	Voltage *float64 `json:"voltage,omitempty"`
+
+	// Current last measured current in Amperes (shown if applicable)
+	Current *float64 `json:"current,omitempty"`
+
+	// Pf last measured power factor (shown if applicable)
+	Pf *float64 `json:"pf,omitempty"`
+
+	// Freq last measured network frequency in Hz (shown if applicable)
+	Freq *float64 `json:"freq,omitempty"`
+
+	Aenergy     *SwitchStatusAenergy     `json:"aenergy,omitempty"`
+	RetAenergy  *SwitchStatusRetAenergy  `json:"ret_aenergy,omitempty"`
+	Counts      *SwitchStatusCounts      `json:"counts,omitempty"`
+	Temperature *SwitchStatusTemperature `json:"temperature,omitempty"`
+	// Errors error conditions occurred. May contain overtemp, overpower, overvoltage,
+	// undervoltage, (shown if at least one error is present)
+	Errors []string `json:"errors,omitempty"`
+}
+
+// SwitchGetStatusRequest requests the status of the Switch component.
+type SwitchGetStatusRequest struct {
+	// ID of the Switch component instance.
+	ID int `json:"id"`
+}
+
+func (r *SwitchGetStatusRequest) Method() string { return "Switch.GetStatus" }
+
+func (r *SwitchGetStatusRequest) NewTypedResponse() *SwitchStatus { return &SwitchStatus{} }
+
+func (r *SwitchGetStatusRequest) NewResponse() any { return r.NewTypedResponse() }
+
+func (r *SwitchGetStatusRequest) Do(client *resty.Client) (*SwitchStatus, *rpc.Frame, error) {
+	resp := r.NewTypedResponse()
+	raw, err := rpc.Do(client, r, resp)
+	return resp, raw, err
+}
