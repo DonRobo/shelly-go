@@ -3790,6 +3790,26 @@
           "key": "utc_offset",
           "type": "number",
           "description": "Time offset (in seconds). This is the difference between the device local time and UTC"
+        },
+        {
+          "key": "wakeup_reason.boot",
+          "type": "string",
+          "description": "Boot type, one of: poweron, software_restart, deepsleep_wake, internal, unknown."
+        },
+        {
+          "key": "wakeup_reason.cause",
+          "type": "string",
+          "description": "Boot cause, one of: button, usb, periodic, status_update, alarm, alarm_test, undefined."
+        },
+        {
+          "key": "reset_reason",
+          "type": "integer",
+          "description": "Numeric reset reason. Not documented by Shelly; appears in firmware responses."
+        },
+        {
+          "key": "safe_mode",
+          "type": "boolean",
+          "description": "True if the device is operating in Safe Mode; present only in that mode. Not documented by Shelly."
         }
       ]
     },
