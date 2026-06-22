@@ -68,6 +68,16 @@ func parsePage(name string, htmlBytes []byte) (*Component, error) {
 			comp.HasSetConfig = true
 		case lname + "getstatus":
 			comp.HasGetStatus = true
+		case lname + "getdeviceinfo":
+			comp.HasGetDeviceInfo = true
+		}
+	}
+
+	// GetDeviceInfo (Shelly service only) is a one-off method: its response is the
+	// last table in the method's section (the first table is the request params).
+	if comp.HasGetDeviceInfo {
+		if t := lastTableInSection(nodes, lname+"getdeviceinfo"); t != nil {
+			comp.DeviceInfoFields = parseRows(t, "")
 		}
 	}
 
@@ -103,6 +113,38 @@ func tableAfterHeading(nodes []*html.Node, headingID string) *html.Node {
 		}
 	}
 	return nil
+}
+
+// lastTableInSection returns the last top-level <table> that appears between the
+// heading with the given id and the next heading of the same level (the next
+// method). The docs lay a method out as Request-then-Response, each with its own
+// table, so the response table is the last one in the section. Returns nil if the
+// heading or any table is missing.
+func lastTableInSection(nodes []*html.Node, headingID string) *html.Node {
+	start, level := -1, ""
+	for i, n := range nodes {
+		if n.Type == html.ElementNode && isHeading(n) && attrVal(n, "id") == headingID {
+			start, level = i, n.Data
+			break
+		}
+	}
+	if start < 0 {
+		return nil
+	}
+	var last *html.Node
+	for i := start + 1; i < len(nodes); i++ {
+		n := nodes[i]
+		if n.Type != html.ElementNode {
+			continue
+		}
+		if isHeading(n) && n.Data == level {
+			break // reached the next method at the same heading level
+		}
+		if n.Data == "table" {
+			last = n
+		}
+	}
+	return last
 }
 
 // validKey matches a real Shelly property key: starts lowercase, single token
