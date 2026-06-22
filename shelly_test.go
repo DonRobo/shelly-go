@@ -203,7 +203,8 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 			  }`,
 			expect: ShellyGetStatusResponse{
 				BLE: &BLEStatus{},
-				System: &SysStatus{
+				Ws:  &WsStatus{Connected: BoolPtr(false)},
+				Sys: &SysStatus{
 					Mac:              "C8F09E87D088",
 					RestartRequired:  false,
 					Time:             StrPtr("19:53"),
@@ -232,7 +233,7 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 					SSID:   StrPtr("PickleTown"),
 					Rssi:   Float64Ptr(-36),
 				},
-				Ethernet: &EthStatus{
+				Eth: &EthStatus{
 					IP: nil,
 				},
 				Inputs: []*InputStatus{
@@ -444,7 +445,8 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 			  }`,
 			expect: ShellyGetStatusResponse{
 				BLE: &BLEStatus{},
-				System: &SysStatus{
+				Ws:  &WsStatus{Connected: BoolPtr(false)},
+				Sys: &SysStatus{
 					Mac:              "C8F09E883630",
 					RestartRequired:  false,
 					Time:             StrPtr("19:52"),
@@ -473,7 +475,7 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 					SSID:   StrPtr("PickleTown"),
 					Rssi:   Float64Ptr(-22),
 				},
-				Ethernet: &EthStatus{
+				Eth: &EthStatus{
 					IP: nil,
 				},
 				Inputs: []*InputStatus{
@@ -584,7 +586,8 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 			}`,
 			expect: ShellyGetStatusResponse{
 				BLE: &BLEStatus{},
-				System: &SysStatus{
+				Ws:  &WsStatus{Connected: BoolPtr(false)},
+				Sys: &SysStatus{
 					Mac:              "C049EF8BB8F8",
 					RestartRequired:  false,
 					Time:             StrPtr("09:29"),
