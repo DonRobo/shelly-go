@@ -274,3 +274,11 @@ type AvailableUpdates struct {
 	// Beta indicates the new beta version of the firmware.
 	Beta *FirmwareUpdateVersion `json:"beta,omitempty"`
 }
+
+type FirmwareUpdateVersion struct {
+	// Version is the new version available.
+	Version string `json:"version,omitempty"`
+
+	// BuildID is the build ID of the update.
+	BuildID string `json:"build_id,omitempty"`
+}
