@@ -3,7 +3,6 @@
 package components
 
 import (
-	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -11,13 +10,13 @@ import (
 // EM1ConfigAlarms is generated from the Shelly API documentation.
 type EM1ConfigAlarms struct {
 	// Voltage ['under','over'] thresholds
-	Voltage json.RawMessage `json:"voltage,omitempty"`
+	Voltage []float64 `json:"voltage,omitempty"`
 
 	// Current ['under','over'] thresholds
-	Current json.RawMessage `json:"current,omitempty"`
+	Current []float64 `json:"current,omitempty"`
 
 	// Power ['under','over'] thresholds
-	Power json.RawMessage `json:"power,omitempty"`
+	Power []float64 `json:"power,omitempty"`
 }
 
 // EM1Config is generated from the Shelly API documentation.
@@ -109,12 +108,12 @@ type EM1Status struct {
 	// Errors eM1 component error conditions. May contain power_meter_failure,
 	// out_of_range:act_power, out_of_range:aprt_power, out_of_range:voltage,
 	// out_of_range:current or ct_type_not_set. Present in status only if not empty.
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 
 	// Flags communicates present conditions, shown if at least one flag is set.
 	// Depending on component capabilities may contain: count_disabled, undervoltage,
 	// overvoltage, undercurrent, overcurrent, underpower, overpower
-	Flags json.RawMessage `json:"flags,omitempty"`
+	Flags []string `json:"flags,omitempty"`
 }
 
 // EM1GetStatusRequest requests the status of the EM1 component.

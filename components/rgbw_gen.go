@@ -3,7 +3,6 @@
 package components
 
 import (
-	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -21,7 +20,7 @@ type RGBWConfigNightMode struct {
 	// RGB color level when night mode is active. Red, Green, Blue [r,g,b] - each value
 	// represents level between 0..255. null overrides night_mode.rgb array with
 	// current rgb array when night mode starts. Default value 255 for each color
-	RGB json.RawMessage `json:"rgb,omitempty"`
+	RGB []float64 `json:"rgb,omitempty"`
 
 	// White white level limit (in percent) when night mode is active. null overrides
 	// night_mode.white with current white when night mode starts. Default value 127.
@@ -31,7 +30,7 @@ type RGBWConfigNightMode struct {
 	// the start of the period during which the night mode will be active, the second
 	// indicates the end of that period. Both start and end are strings in the format
 	// HH:MM, where HH and MM are hours and minutes with optinal leading zeros
-	ActiveBetween json.RawMessage `json:"active_between,omitempty"`
+	ActiveBetween []string `json:"active_between,omitempty"`
 }
 
 // RGBWConfigButtonPresetsButtonDoublepush is generated from the Shelly API documentation.
@@ -44,7 +43,7 @@ type RGBWConfigButtonPresetsButtonDoublepush struct {
 	// RGB color level set on double click (if applicable). Red, Green, Blue [r,g,b] -
 	// each value represents level between 0..255. null overrides rgb array with
 	// current rgb array when preset is applied. Default value 255 for each color
-	RGB json.RawMessage `json:"rgb,omitempty"`
+	RGB []float64 `json:"rgb,omitempty"`
 
 	// White white level 0.255 set on double click (if applicable). null overrides
 	// white with current white when preset is applied. Default 255
@@ -159,7 +158,7 @@ type RGBWStatusTransitionTarget struct {
 	Output *bool `json:"output,omitempty"`
 
 	// RGB red, Green, Blue [r,g,b] level 0..255
-	RGB json.RawMessage `json:"rgb,omitempty"`
+	RGB []float64 `json:"rgb,omitempty"`
 
 	// Brightness brightness level (in percent)
 	Brightness *float64 `json:"brightness,omitempty"`
@@ -178,6 +177,16 @@ type RGBWStatusTransition struct {
 	Duration *float64 `json:"duration,omitempty"`
 }
 
+// RGBWStatusTemperature is generated from the Shelly API documentation.
+type RGBWStatusTemperature struct {
+	// TC temperature in Celsius (null if temperature is out of the measurement range)
+	TC *float64 `json:"tC,omitempty"`
+
+	// TF temperature in Fahrenheit (null if temperature is out of the measurement
+	// range)
+	TF *float64 `json:"tF,omitempty"`
+}
+
 // RGBWStatusAenergy is generated from the Shelly API documentation.
 type RGBWStatusAenergy struct {
 	// Total total energy consumed in Watt-hours
@@ -186,7 +195,7 @@ type RGBWStatusAenergy struct {
 	// ByMinute energy consumption in Milliwatt-hours for the last three complete
 	// minutes. The 0-th element indicates the counts accumulated during the minute
 	// preceding minute_ts. Present only if the device clock is synced.
-	ByMinute json.RawMessage `json:"by_minute,omitempty"`
+	ByMinute []float64 `json:"by_minute,omitempty"`
 
 	// MinuteTs unix timestamp marking the start of the current minute (in UTC).
 	MinuteTs *float64 `json:"minute_ts,omitempty"`
@@ -207,7 +216,7 @@ type RGBWStatus struct {
 	Output *bool `json:"output,omitempty"`
 
 	// RGB current Red, Green, Blue [r,g,b] level 0..255
-	RGB json.RawMessage `json:"rgb,omitempty"`
+	RGB []float64 `json:"rgb,omitempty"`
 
 	// Brightness current brightness level (in percent)
 	Brightness *float64 `json:"brightness,omitempty"`
@@ -222,8 +231,9 @@ type RGBWStatus struct {
 	// TimerDuration duration of the timer in seconds (shown if the timer is triggered)
 	TimerDuration *float64 `json:"timer_duration,omitempty"`
 
-	Transition *RGBWStatusTransition `json:"transition,omitempty"`
-	Aenergy    *RGBWStatusAenergy    `json:"aenergy,omitempty"`
+	Transition  *RGBWStatusTransition  `json:"transition,omitempty"`
+	Temperature *RGBWStatusTemperature `json:"temperature,omitempty"`
+	Aenergy     *RGBWStatusAenergy     `json:"aenergy,omitempty"`
 	// Apower last measured instantaneous active power (in Watts) delivered to the
 	// attached load (shown if applicable)
 	Apower *float64 `json:"apower,omitempty"`
@@ -236,7 +246,7 @@ type RGBWStatus struct {
 
 	// Errors error conditions occurred. May contain overtemp, (shown if at least one
 	// error is present)
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 }
 
 // RGBWGetStatusRequest requests the status of the RGBW component.

@@ -62,6 +62,10 @@ type Field struct {
 	// Type is the normalised base type: string, number, integer, boolean,
 	// object, array, or unknown.
 	Type string `json:"type"`
+	// Elem is the normalised element base type for Type == "array" when the docs
+	// specify it ("array of type number" -> "number"). Empty when unknown; the
+	// emitter then falls back to json.RawMessage for the array.
+	Elem string `json:"elem,omitempty"`
 	// Nullable is true when the docs describe the type as "<t> or null".
 	Nullable bool `json:"nullable,omitempty"`
 	// Enum holds the allowed values when the description specifies a

@@ -275,7 +275,22 @@ func goLeafType(key string, f *Field, needsJSON *bool) string {
 		return "*int"
 	case "boolean":
 		return "*bool"
-	default: // object, array, unknown
+	case "array":
+		// A slice of scalars when the docs name the element type; nil-able as-is.
+		switch f.Elem {
+		case "string":
+			return "[]string"
+		case "number":
+			return "[]float64"
+		case "integer":
+			return "[]int"
+		case "boolean":
+			return "[]bool"
+		default:
+			*needsJSON = true
+			return "json.RawMessage"
+		}
+	default: // object, unknown
 		*needsJSON = true
 		return "json.RawMessage"
 	}

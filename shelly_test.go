@@ -6,18 +6,20 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/DonRobo/shelly-go/components"
-	"github.com/DonRobo/shelly-go/rpc"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
+// TestShellyGetStatusResponseUnmarshall validates that the generated aggregate
+// and component status structs unmarshal real-device Shelly.GetStatus payloads
+// without losing structure or typing. The fixtures are verbatim captures from
+// three physical devices; the assertions spot-check the routing (singletons vs
+// keyed slices) and the richer nested status shapes the codegen now produces
+// (typed aenergy/temperature sub-structs, typed arrays, expanded objects).
 func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 	tcs := []struct {
-		name   string
-		input  string
-		expect ShellyGetStatusResponse
+		name  string
+		input string
 	}{
 		{
 			name: "pro pm 4",
@@ -204,168 +206,6 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 				  "connected": false
 				}
 			  }`,
-			expect: ShellyGetStatusResponse{
-				BLE: &components.BLEStatus{},
-				Ws:  &components.WsStatus{Connected: rpc.BoolPtr(false)},
-				Sys: &components.SysStatus{
-					Mac:              "C8F09E87D088",
-					RestartRequired:  false,
-					Time:             rpc.StrPtr("19:53"),
-					UnixTime:         rpc.IntPtr(1703811195),
-					Uptime:           97431,
-					RamSize:          241028,
-					RamFree:          100452,
-					FS_Size:          524288,
-					FS_Free:          196608,
-					CfgRev:           26,
-					KVRev:            1,
-					ScheduleRev:      rpc.IntPtr(0),
-					WebhookRev:       rpc.IntPtr(0),
-					AvailableUpdates: &components.AvailableUpdates{},
-					ResetReason:      rpc.IntPtr(3),
-				},
-				Cloud: &components.CloudStatus{
-					Connected: rpc.BoolPtr(true),
-				},
-				MQTT: &components.MQTTStatus{
-					Connected: rpc.BoolPtr(false),
-				},
-				Wifi: &components.WifiStatus{
-					StaIP:  rpc.StrPtr("192.168.1.24"),
-					Status: rpc.StrPtr("got ip"),
-					SSID:   rpc.StrPtr("PickleTown"),
-					Rssi:   rpc.Float64Ptr(-36),
-				},
-				Eth: &components.EthStatus{
-					IP: nil,
-				},
-				Inputs: []*components.InputStatus{
-					{
-						ID:    0,
-						State: rpc.BoolPtr(false),
-					},
-					{
-						ID:    1,
-						State: rpc.BoolPtr(false),
-					},
-					{
-						ID:    2,
-						State: rpc.BoolPtr(false),
-					},
-					{
-						ID:    3,
-						State: rpc.BoolPtr(false),
-					},
-				},
-				Switches: []*components.SwitchStatus{
-					{
-						ID:      0,
-						Source:  rpc.StrPtr("timer"),
-						Output:  rpc.BoolPtr(false),
-						APower:  rpc.Float64Ptr(0),
-						Voltage: rpc.Float64Ptr(120.8),
-						Freq:    rpc.Float64Ptr(60),
-						Current: rpc.Float64Ptr(0),
-						PF:      rpc.Float64Ptr(0),
-						AEnergy: &components.EnergyCounters{
-							Total:    1342.238,
-							ByMinute: []float64{0, 0, 0},
-							MinuteTS: 1703811193,
-						},
-						RetAEnergy: &components.EnergyCounters{
-							Total:    0,
-							ByMinute: []float64{0, 0, 0},
-							MinuteTS: 1703811193,
-						},
-						Temperature: &components.Temperature{
-							C: rpc.Float64Ptr(41.3),
-							F: rpc.Float64Ptr(106.3),
-						},
-					},
-					{
-						ID:      1,
-						Source:  rpc.StrPtr("HTTP_in"),
-						Output:  rpc.BoolPtr(true),
-						APower:  rpc.Float64Ptr(83.9),
-						Voltage: rpc.Float64Ptr(120.8),
-						Freq:    rpc.Float64Ptr(60),
-						Current: rpc.Float64Ptr(1.143),
-						PF:      rpc.Float64Ptr(0.61),
-						AEnergy: &components.EnergyCounters{
-							Total: 102650.773,
-							ByMinute: []float64{
-								344.204,
-								1475.177,
-								1474.888,
-							},
-							MinuteTS: 1703811193,
-						},
-						RetAEnergy: &components.EnergyCounters{
-							Total:    0,
-							ByMinute: []float64{0, 0, 0},
-							MinuteTS: 1703811193,
-						},
-						Temperature: &components.Temperature{
-							C: rpc.Float64Ptr(41.3),
-							F: rpc.Float64Ptr(106.3),
-						},
-					},
-					{
-						ID:      2,
-						Source:  rpc.StrPtr("HTTP_in"),
-						Output:  rpc.BoolPtr(true),
-						APower:  rpc.Float64Ptr(210.3),
-						Voltage: rpc.Float64Ptr(120.9),
-						Freq:    rpc.Float64Ptr(60),
-						Current: rpc.Float64Ptr(1.741),
-						PF:      rpc.Float64Ptr(1),
-						AEnergy: &components.EnergyCounters{
-							Total: 69346.948,
-							ByMinute: []float64{
-								840.825,
-								3605.178,
-								3624.834,
-							},
-							MinuteTS: 1703811193,
-						},
-						RetAEnergy: &components.EnergyCounters{
-							Total:    0,
-							ByMinute: []float64{0, 0, 0},
-							MinuteTS: 1703811193,
-						},
-						Temperature: &components.Temperature{
-							C: rpc.Float64Ptr(41.3),
-							F: rpc.Float64Ptr(106.3),
-						},
-					},
-					{
-						ID:      3,
-						Source:  rpc.StrPtr("init"),
-						Output:  rpc.BoolPtr(false),
-						APower:  rpc.Float64Ptr(0),
-						Voltage: rpc.Float64Ptr(120.9),
-						Freq:    rpc.Float64Ptr(60),
-						Current: rpc.Float64Ptr(0),
-						PF:      rpc.Float64Ptr(0),
-						AEnergy: &components.EnergyCounters{
-							Total: 13.264,
-							ByMinute: []float64{
-								0, 0, 0,
-							},
-							MinuteTS: 1703811193,
-						},
-						RetAEnergy: &components.EnergyCounters{
-							Total:    0,
-							ByMinute: []float64{0, 0, 0},
-							MinuteTS: 1703811193,
-						},
-						Temperature: &components.Temperature{
-							C: rpc.Float64Ptr(41.3),
-							F: rpc.Float64Ptr(106.3),
-						},
-					},
-				},
-			},
 		},
 		{
 			name: "pro 3",
@@ -446,85 +286,6 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 				  "connected": false
 				}
 			  }`,
-			expect: ShellyGetStatusResponse{
-				BLE: &components.BLEStatus{},
-				Ws:  &components.WsStatus{Connected: rpc.BoolPtr(false)},
-				Sys: &components.SysStatus{
-					Mac:              "C8F09E883630",
-					RestartRequired:  false,
-					Time:             rpc.StrPtr("19:52"),
-					UnixTime:         rpc.IntPtr(1703811156),
-					Uptime:           98059,
-					RamSize:          243420,
-					RamFree:          104384,
-					FS_Size:          524288,
-					FS_Free:          212992,
-					CfgRev:           16,
-					KVRev:            0,
-					ScheduleRev:      rpc.IntPtr(0),
-					WebhookRev:       rpc.IntPtr(0),
-					AvailableUpdates: &components.AvailableUpdates{},
-					ResetReason:      rpc.IntPtr(3),
-				},
-				Cloud: &components.CloudStatus{
-					Connected: rpc.BoolPtr(true),
-				},
-				MQTT: &components.MQTTStatus{
-					Connected: rpc.BoolPtr(false),
-				},
-				Wifi: &components.WifiStatus{
-					StaIP:  rpc.StrPtr("192.168.1.23"),
-					Status: rpc.StrPtr("got ip"),
-					SSID:   rpc.StrPtr("PickleTown"),
-					Rssi:   rpc.Float64Ptr(-22),
-				},
-				Eth: &components.EthStatus{
-					IP: nil,
-				},
-				Inputs: []*components.InputStatus{
-					{
-						ID:    0,
-						State: rpc.BoolPtr(false),
-					},
-					{
-						ID:    1,
-						State: rpc.BoolPtr(false),
-					},
-					{
-						ID:    2,
-						State: rpc.BoolPtr(false),
-					},
-				},
-				Switches: []*components.SwitchStatus{
-					{
-						ID:     0,
-						Source: rpc.StrPtr("init"),
-						Output: rpc.BoolPtr(false),
-						Temperature: &components.Temperature{
-							C: rpc.Float64Ptr(35.7),
-							F: rpc.Float64Ptr(96.2),
-						},
-					},
-					{
-						ID:     1,
-						Source: rpc.StrPtr("timer"),
-						Output: rpc.BoolPtr(false),
-						Temperature: &components.Temperature{
-							C: rpc.Float64Ptr(35.7),
-							F: rpc.Float64Ptr(96.2),
-						},
-					},
-					{
-						ID:     2,
-						Source: rpc.StrPtr("timer"),
-						Output: rpc.BoolPtr(false),
-						Temperature: &components.Temperature{
-							C: rpc.Float64Ptr(35.7),
-							F: rpc.Float64Ptr(96.2),
-						},
-					},
-				},
-			},
 		},
 		{
 			name: "shelly plus ht",
@@ -587,75 +348,115 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 					"connected": false
 				}
 			}`,
-			expect: ShellyGetStatusResponse{
-				BLE: &components.BLEStatus{},
-				Ws:  &components.WsStatus{Connected: rpc.BoolPtr(false)},
-				Sys: &components.SysStatus{
-					Mac:              "C049EF8BB8F8",
-					RestartRequired:  false,
-					Time:             rpc.StrPtr("09:29"),
-					UnixTime:         rpc.IntPtr(1733063380),
-					Uptime:           6,
-					RamSize:          247452,
-					RamFree:          159420,
-					FS_Size:          458752,
-					FS_Free:          176128,
-					CfgRev:           15,
-					KVRev:            0,
-					WebhookRev:       rpc.IntPtr(2),
-					AvailableUpdates: &components.AvailableUpdates{},
-					ResetReason:      rpc.IntPtr(8),
-					WakeUpReason: &components.WakeUpReason{
-						Boot:  "deepsleep_wake",
-						Cause: "status_update",
-					},
-					WakeUpPeriod: 600,
-				},
-				DevicePowers: []*components.DevicePowerStatus{
-					{
-						ID: 0,
-						Battery: &components.DevicePowerBatteryStatus{
-							V:       rpc.Float64Ptr(0.43),
-							Percent: rpc.Float64Ptr(0),
-						},
-						External: &components.DevicePowerExternalStatus{
-							Present: true,
-						},
-					},
-				},
-				Humidities: []*components.HumidityStatus{
-					{
-						ID: 0,
-						Rh: rpc.Float64Ptr(59.4),
-					},
-				},
-				Temperatures: []*components.TemperatureStatus{
-					{
-						ID: 0,
-						TC: rpc.Float64Ptr(2.7),
-						TF: rpc.Float64Ptr(36.8),
-					},
-				},
-				Cloud: &components.CloudStatus{
-					Connected: rpc.BoolPtr(true),
-				},
-				MQTT: &components.MQTTStatus{
-					Connected: rpc.BoolPtr(true),
-				},
-				Wifi: &components.WifiStatus{
-					StaIP:  rpc.StrPtr("192.168.1.199"),
-					Status: rpc.StrPtr("got ip"),
-					SSID:   rpc.StrPtr("PickleTown_Garage"),
-					Rssi:   rpc.Float64Ptr(-35),
-				},
-			},
 		},
 	}
+
+	by := make(map[string]ShellyGetStatusResponse, len(tcs))
 	for _, tc := range tcs {
-		t.Run(tc.name, func(t *testing.T) {
-			var got ShellyGetStatusResponse
-			require.NoError(t, json.Unmarshal([]byte(tc.input), &got))
-			assert.Equal(t, tc.expect, got)
-		})
+		var got ShellyGetStatusResponse
+		require.NoError(t, json.Unmarshal([]byte(tc.input), &got), tc.name)
+		by[tc.name] = got
 	}
+
+	t.Run("pro pm 4", func(t *testing.T) {
+		r := by["pro pm 4"]
+
+		// Singletons routed to pointer fields.
+		require.NotNil(t, r.BLE)
+		require.NotNil(t, r.Sys)
+		require.NotNil(t, r.Cloud)
+		require.NotNil(t, r.MQTT)
+		require.NotNil(t, r.Wifi)
+		require.NotNil(t, r.Eth)
+		require.NotNil(t, r.Ws)
+		assert.True(t, *r.Cloud.Connected)
+		assert.False(t, *r.MQTT.Connected)
+		assert.False(t, *r.Ws.Connected)
+		assert.Nil(t, r.Eth.IP)
+		assert.Equal(t, "PickleTown", *r.Wifi.SSID)
+		assert.Equal(t, float64(-36), *r.Wifi.Rssi)
+		assert.Equal(t, "C8F09E87D088", r.Sys.Mac)
+
+		// Keyed components routed to slices, uncapped (4 switches + 4 inputs).
+		require.Len(t, r.Inputs, 4)
+		require.Len(t, r.Switches, 4)
+		for i, in := range r.Inputs {
+			assert.Equal(t, i, in.ID)
+			assert.False(t, *in.State)
+		}
+
+		// Rich nested status: typed aenergy (typed by_minute array) + temperature.
+		s1 := r.Switches[1]
+		assert.Equal(t, 1, s1.ID)
+		assert.Equal(t, "HTTP_in", *s1.Source)
+		assert.True(t, *s1.Output)
+		assert.Equal(t, 83.9, *s1.Apower)
+		require.NotNil(t, s1.Aenergy)
+		assert.Equal(t, 102650.773, *s1.Aenergy.Total)
+		assert.Equal(t, []float64{344.204, 1475.177, 1474.888}, s1.Aenergy.ByMinute)
+		assert.Equal(t, float64(1703811193), *s1.Aenergy.MinuteTs)
+		require.NotNil(t, s1.RetAenergy)
+		assert.Equal(t, float64(0), *s1.RetAenergy.Total)
+		require.NotNil(t, s1.Temperature)
+		assert.Equal(t, 41.3, *s1.Temperature.TC)
+		assert.Equal(t, 106.3, *s1.Temperature.TF)
+	})
+
+	t.Run("pro 3", func(t *testing.T) {
+		r := by["pro 3"]
+
+		require.NotNil(t, r.Sys)
+		require.NotNil(t, r.Cloud)
+		require.NotNil(t, r.Wifi)
+		assert.Equal(t, float64(-22), *r.Wifi.Rssi)
+		assert.Equal(t, "C8F09E883630", r.Sys.Mac)
+
+		require.Len(t, r.Inputs, 3)
+		require.Len(t, r.Switches, 3)
+
+		s0 := r.Switches[0]
+		assert.Equal(t, "init", *s0.Source)
+		assert.False(t, *s0.Output)
+		require.NotNil(t, s0.Temperature)
+		assert.Equal(t, 35.7, *s0.Temperature.TC)
+		assert.Equal(t, 96.2, *s0.Temperature.TF)
+		// No power section on this device -> those pointers stay nil.
+		assert.Nil(t, s0.Apower)
+		assert.Nil(t, s0.Aenergy)
+	})
+
+	t.Run("shelly plus ht", func(t *testing.T) {
+		r := by["shelly plus ht"]
+
+		require.NotNil(t, r.Sys)
+		require.NotNil(t, r.Cloud)
+		require.NotNil(t, r.MQTT)
+		require.NotNil(t, r.Wifi)
+		assert.True(t, *r.Cloud.Connected)
+		assert.True(t, *r.MQTT.Connected)
+		assert.Equal(t, "PickleTown_Garage", *r.Wifi.SSID)
+
+		// Battery-device sys extras.
+		require.NotNil(t, r.Sys.WakeUpReason)
+		assert.Equal(t, "deepsleep_wake", r.Sys.WakeUpReason.Boot)
+		assert.Equal(t, "status_update", r.Sys.WakeUpReason.Cause)
+		assert.Equal(t, float64(600), r.Sys.WakeUpPeriod)
+
+		require.Len(t, r.DevicePowers, 1)
+		require.Len(t, r.Humidities, 1)
+		require.Len(t, r.Temperatures, 1)
+
+		dp := r.DevicePowers[0]
+		assert.Equal(t, 0, dp.ID)
+		require.NotNil(t, dp.Battery)
+		assert.Equal(t, float64(0), *dp.Battery.Percent)
+		// external was a bare "object" in the docs; expandStatusObject gives it a
+		// typed Present field.
+		require.NotNil(t, dp.External)
+		assert.True(t, *dp.External.Present)
+
+		assert.Equal(t, 59.4, *r.Humidities[0].Rh)
+		assert.Equal(t, 2.7, *r.Temperatures[0].TC)
+		assert.Equal(t, 36.8, *r.Temperatures[0].TF)
+	})
 }

@@ -3,7 +3,6 @@
 package components
 
 import (
-	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -79,7 +78,7 @@ type FloodStatus struct {
 
 	// Errors error conditions occurred. May contain cable_unplugged, (shown if at
 	// least one error is present)
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 }
 
 // FloodGetStatusRequest requests the status of the Flood component.

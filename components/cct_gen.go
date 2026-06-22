@@ -177,6 +177,16 @@ type CCTStatusTransition struct {
 	Duration *float64 `json:"duration,omitempty"`
 }
 
+// CCTStatusTemperature is generated from the Shelly API documentation.
+type CCTStatusTemperature struct {
+	// TC temperature in Celsius (null if temperature is out of the measurement range)
+	TC *float64 `json:"tC,omitempty"`
+
+	// TF temperature in Fahrenheit (null if temperature is out of the measurement
+	// range)
+	TF *float64 `json:"tF,omitempty"`
+}
+
 // CCTStatus is generated from the Shelly API documentation.
 type CCTStatus struct {
 	// ID id of the CCT component instance
@@ -204,7 +214,8 @@ type CCTStatus struct {
 	// TimerDuration duration of the timer in seconds (shown if the timer is triggered)
 	TimerDuration *float64 `json:"timer_duration,omitempty"`
 
-	Transition *CCTStatusTransition `json:"transition,omitempty"`
+	Transition  *CCTStatusTransition  `json:"transition,omitempty"`
+	Temperature *CCTStatusTemperature `json:"temperature,omitempty"`
 	// Apower last measured instantaneous active power (in Watts) delivered to the
 	// attached load (shown if applicable)
 	Apower *float64 `json:"apower,omitempty"`
@@ -217,7 +228,7 @@ type CCTStatus struct {
 
 	// Errors error conditions occurred. May contain overtemp, (shown if at least one
 	// error is present)
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 }
 
 // CCTGetStatusRequest requests the status of the CCT component.

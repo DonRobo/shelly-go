@@ -3,7 +3,6 @@
 package components
 
 import (
-	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -94,7 +93,7 @@ type VoltmeterStatus struct {
 
 	// Errors shown only if at least one error is present. May contain out_of_range,
 	// read when there is problem reading sensor
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 }
 
 // VoltmeterGetStatusRequest requests the status of the Voltmeter component.

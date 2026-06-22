@@ -42,6 +42,52 @@ var fixes = []func(*Spec){
 			Description: "Brightness of the device's screen while idle, in percent (0-100). Not documented by Shelly; sourced via device introspection.",
 		}},
 	}),
+
+	// A few status fields are documented as a bare "object" with no sub-table, so
+	// the parser can only produce json.RawMessage. Inject the known shapes (from
+	// the docs prose / a live device) so they generate as typed nested structs.
+	// Cover's aenergy mirrors the shape Switch documents in full.
+	expandStatusObject("Cover", "aenergy", []*Field{
+		{Key: "total", Type: "number", Description: "Total energy consumed in Watt-hours."},
+		{Key: "by_minute", Type: "array", Elem: "number", Description: "Energy consumption by minute (in Milliwatt-hours) for the last three minutes."},
+		{Key: "minute_ts", Type: "integer", Description: "Unix timestamp of the first second of the last minute."},
+	}),
+	expandStatusObject("Cover", "temperature", []*Field{
+		{Key: "tC", Type: "number", Description: "Temperature in Celsius (null if temperature is out of the measurement range)."},
+		{Key: "tF", Type: "number", Description: "Temperature in Fahrenheit (null if temperature is out of the measurement range)."},
+	}),
+	expandStatusObject("DevicePower", "external", []*Field{
+		{Key: "present", Type: "boolean", Description: "Whether an external power source is connected."},
+	}),
+}
+
+// expandStatusObject returns a fix that replaces a single opaque "object" status
+// field (one the docs leave unbroken-down) with typed sub-fields, so the emitter
+// builds a proper nested struct instead of json.RawMessage. Sub-field keys are
+// relative; the parent key is prefixed.
+func expandStatusObject(comp, key string, sub []*Field) func(*Spec) {
+	return func(s *Spec) {
+		c := s.component(comp)
+		if c == nil {
+			return
+		}
+		out := make([]*Field, 0, len(c.StatusFields)+len(sub))
+		for _, f := range c.StatusFields {
+			if f.Key == key && f.Type == "object" {
+				for _, sf := range sub {
+					out = append(out, &Field{
+						Key:         key + "." + sf.Key,
+						Type:        sf.Type,
+						Elem:        sf.Elem,
+						Description: sf.Description,
+					})
+				}
+				continue
+			}
+			out = append(out, f)
+		}
+		c.StatusFields = out
+	}
 }
 
 // addComponent returns a fix that appends a component the docs do not express,

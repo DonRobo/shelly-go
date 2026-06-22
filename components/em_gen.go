@@ -3,7 +3,6 @@
 package components
 
 import (
-	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -26,37 +25,37 @@ type EMConfigReverse struct {
 // EMConfigAlarmsA is generated from the Shelly API documentation.
 type EMConfigAlarmsA struct {
 	// Voltage ['under','over'] thresholds
-	Voltage json.RawMessage `json:"voltage,omitempty"`
+	Voltage []float64 `json:"voltage,omitempty"`
 
 	// Current ['under','over'] thresholds
-	Current json.RawMessage `json:"current,omitempty"`
+	Current []float64 `json:"current,omitempty"`
 
 	// Power ['under','over'] thresholds
-	Power json.RawMessage `json:"power,omitempty"`
+	Power []float64 `json:"power,omitempty"`
 }
 
 // EMConfigAlarmsB is generated from the Shelly API documentation.
 type EMConfigAlarmsB struct {
 	// Voltage ['under','over'] thresholds
-	Voltage json.RawMessage `json:"voltage,omitempty"`
+	Voltage []float64 `json:"voltage,omitempty"`
 
 	// Current ['under','over'] thresholds
-	Current json.RawMessage `json:"current,omitempty"`
+	Current []float64 `json:"current,omitempty"`
 
 	// Power ['under','over'] thresholds
-	Power json.RawMessage `json:"power,omitempty"`
+	Power []float64 `json:"power,omitempty"`
 }
 
 // EMConfigAlarmsC is generated from the Shelly API documentation.
 type EMConfigAlarmsC struct {
 	// Voltage ['under','over'] thresholds
-	Voltage json.RawMessage `json:"voltage,omitempty"`
+	Voltage []float64 `json:"voltage,omitempty"`
 
 	// Current ['under','over'] thresholds
-	Current json.RawMessage `json:"current,omitempty"`
+	Current []float64 `json:"current,omitempty"`
 
 	// Power ['under','over'] thresholds
-	Power json.RawMessage `json:"power,omitempty"`
+	Power []float64 `json:"power,omitempty"`
 }
 
 // EMConfigAlarms is generated from the Shelly API documentation.
@@ -159,11 +158,11 @@ type EMStatus struct {
 	// AErrors phase A error conditions occurred. May contain
 	// out_of_range:active_power, out_of_range:apparent_power, out_of_range:voltage,
 	// out_of_range:current,(shown if at least one error is present)
-	AErrors json.RawMessage `json:"a_errors,omitempty"`
+	AErrors []string `json:"a_errors,omitempty"`
 
 	// AFlags phase A flags. May contain: undervoltage, overvoltage, undercurrent,
 	// overcurrent, underpower, overpower (shown if at least one flag is set)
-	AFlags json.RawMessage `json:"a_flags,omitempty"`
+	AFlags []string `json:"a_flags,omitempty"`
 
 	// BCurrent phase B current measurement value, [A]
 	BCurrent *float64 `json:"b_current,omitempty"`
@@ -186,11 +185,11 @@ type EMStatus struct {
 	// BErrors phase B error conditions occurred. May contain
 	// out_of_range:active_power, out_of_range:apparent_power, out_of_range:voltage,
 	// out_of_range:current,(shown if at least one error is present)
-	BErrors json.RawMessage `json:"b_errors,omitempty"`
+	BErrors []string `json:"b_errors,omitempty"`
 
 	// BFlags phase B flags. May contain: undervoltage, overvoltage, undercurrent,
 	// overcurrent, underpower, overpower (shown if at least one flag is set)
-	BFlags json.RawMessage `json:"b_flags,omitempty"`
+	BFlags []string `json:"b_flags,omitempty"`
 
 	// CCurrent phase C current measurement value, [A]
 	CCurrent *float64 `json:"c_current,omitempty"`
@@ -213,18 +212,18 @@ type EMStatus struct {
 	// CErrors phase C error conditions occurred. May contain
 	// out_of_range:active_power, out_of_range:apparent_power, out_of_range:voltage,
 	// out_of_range:current,(shown if at least one error is present)
-	CErrors json.RawMessage `json:"c_errors,omitempty"`
+	CErrors []string `json:"c_errors,omitempty"`
 
 	// CFlags phase C flags. May contain: undervoltage, overvoltage, undercurrent,
 	// overcurrent, underpower, overpower (shown if at least one flag is set)
-	CFlags json.RawMessage `json:"c_flags,omitempty"`
+	CFlags []string `json:"c_flags,omitempty"`
 
 	// NCurrent neutral current measurement value, [A] (if supported)
 	NCurrent *float64 `json:"n_current,omitempty"`
 
 	// NErrors neutral error conditions occurred. May contain
 	// out_of_range:current,(shown if error is present)
-	NErrors json.RawMessage `json:"n_errors,omitempty"`
+	NErrors []string `json:"n_errors,omitempty"`
 
 	// TotalCurrent sum of the current on all phases(excluding neutral readings if
 	// available)
@@ -237,11 +236,11 @@ type EMStatus struct {
 	TotalAprtPower *float64 `json:"total_aprt_power,omitempty"`
 
 	// UserCalibratedPhase indicates which phase was user calibrated
-	UserCalibratedPhase json.RawMessage `json:"user_calibrated_phase,omitempty"`
+	UserCalibratedPhase []string `json:"user_calibrated_phase,omitempty"`
 
 	// Errors eM component error conditions. May contain power_meter_failure,
 	// phase_sequence or ct_type_not_set. Present in status only if not empty.
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 }
 
 // EMGetStatusRequest requests the status of the EM component.

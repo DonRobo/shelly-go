@@ -3,7 +3,6 @@
 package components
 
 import (
-	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -84,7 +83,7 @@ type BLEStatus struct {
 	// "scanning", "advertising", "connected". When Bluetooth is idle, this property is
 	// absent from the response. Status change notifications are emitted whenever the
 	// flags array changes.
-	Flags json.RawMessage `json:"flags,omitempty"`
+	Flags []string `json:"flags,omitempty"`
 
 	Pairing     *BLEStatusPairing     `json:"pairing,omitempty"`
 	BlutrvAssoc *BLEStatusBlutrvAssoc `json:"blutrv_assoc,omitempty"`

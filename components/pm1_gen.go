@@ -3,7 +3,6 @@
 package components
 
 import (
-	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -11,13 +10,13 @@ import (
 // PM1ConfigAlarms is generated from the Shelly API documentation.
 type PM1ConfigAlarms struct {
 	// Voltage ['under','over'] thresholds
-	Voltage json.RawMessage `json:"voltage,omitempty"`
+	Voltage []float64 `json:"voltage,omitempty"`
 
 	// Current ['under','over'] thresholds
-	Current json.RawMessage `json:"current,omitempty"`
+	Current []float64 `json:"current,omitempty"`
 
 	// Power ['under','over'] thresholds
-	Power json.RawMessage `json:"power,omitempty"`
+	Power []float64 `json:"power,omitempty"`
 }
 
 // PM1Config is generated from the Shelly API documentation.
@@ -84,7 +83,7 @@ type PM1StatusAenergy struct {
 	// ByMinute energy consumption in Milliwatt-hours for the last three complete
 	// minutes. The 0-th element indicates the counts accumulated during the minute
 	// preceding minute_ts. Present only if the device clock is synced.
-	ByMinute json.RawMessage `json:"by_minute,omitempty"`
+	ByMinute []float64 `json:"by_minute,omitempty"`
 
 	// MinuteTs unix timestamp marking the start of the current minute (in UTC).
 	MinuteTs *float64 `json:"minute_ts,omitempty"`
@@ -98,7 +97,7 @@ type PM1StatusRetAenergy struct {
 	// ByMinute returned energy consumption by minute (in Milliwatt-hours) for the last
 	// three minutes (the lower the index of the element in the array, the closer to
 	// the current moment the minute)
-	ByMinute json.RawMessage `json:"by_minute,omitempty"`
+	ByMinute []float64 `json:"by_minute,omitempty"`
 
 	// MinuteTs unix timestamp marking the start of the current minute (in UTC).
 	MinuteTs *float64 `json:"minute_ts,omitempty"`
@@ -134,12 +133,12 @@ type PM1Status struct {
 	// Errors error conditions occurred. May contain power_meter_failure,
 	// out_of_range:voltage, out_of_range:current, out_of_range:aprtpower,
 	// out_of_range:apower(shown if at least one error is present)
-	Errors json.RawMessage `json:"errors,omitempty"`
+	Errors []string `json:"errors,omitempty"`
 
 	// Flags communicates present conditions, shown if at least one flag is set. May
 	// contain: undervoltage, overvoltage, undercurrent, overcurrent, underpower,
 	// overpower
-	Flags json.RawMessage `json:"flags,omitempty"`
+	Flags []string `json:"flags,omitempty"`
 }
 
 // PM1GetStatusRequest requests the status of the PM1 component.

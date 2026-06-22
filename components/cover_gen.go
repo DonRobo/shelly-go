@@ -3,6 +3,7 @@
 package components
 
 import (
+	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -161,6 +162,117 @@ func (r *CoverSetConfigRequest) NewTypedResponse() *rpc.SetConfigResponse {
 func (r *CoverSetConfigRequest) NewResponse() any { return r.NewTypedResponse() }
 
 func (r *CoverSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse, *rpc.Frame, error) {
+	resp := r.NewTypedResponse()
+	raw, err := rpc.Do(client, r, resp)
+	return resp, raw, err
+}
+
+// CoverStatusAenergy is generated from the Shelly API documentation.
+type CoverStatusAenergy struct {
+	// Total total energy consumed in Watt-hours.
+	Total *float64 `json:"total,omitempty"`
+
+	// ByMinute energy consumption by minute (in Milliwatt-hours) for the last three
+	// minutes.
+	ByMinute []float64 `json:"by_minute,omitempty"`
+
+	// MinuteTs unix timestamp of the first second of the last minute.
+	MinuteTs *int `json:"minute_ts,omitempty"`
+}
+
+// CoverStatusTemperature is generated from the Shelly API documentation.
+type CoverStatusTemperature struct {
+	// TC temperature in Celsius (null if temperature is out of the measurement range).
+	TC *float64 `json:"tC,omitempty"`
+
+	// TF temperature in Fahrenheit (null if temperature is out of the measurement
+	// range).
+	TF *float64 `json:"tF,omitempty"`
+}
+
+// CoverStatus is generated from the Shelly API documentation.
+type CoverStatus struct {
+	// ID the numeric ID of the Cover component instance
+	ID int `json:"id"`
+
+	// Source source of the last command
+	Source *string `json:"source,omitempty"`
+
+	// Tag tag used to identify the origin of a state change
+	Tag *string `json:"tag,omitempty"`
+
+	// State one of open (Cover is fully open), closed (Cover is fully closed), opening
+	// (Cover is actively opening), closing (Cover is actively closing), stopped (Cover
+	// is not moving, and is neither fully open nor fully closed, or the open/close
+	// state is unknown), calibrating (Cover is performing a calibration procedure)
+	State *string `json:"state,omitempty"`
+
+	// Apower active power in Watts
+	Apower *float64 `json:"apower,omitempty"`
+
+	// Voltage volts
+	Voltage *float64 `json:"voltage,omitempty"`
+
+	// Current amperes
+	Current *float64 `json:"current,omitempty"`
+
+	// Pf power factor
+	Pf *float64 `json:"pf,omitempty"`
+
+	// Freq network frequency, Hz
+	Freq *float64 `json:"freq,omitempty"`
+
+	Aenergy *CoverStatusAenergy `json:"aenergy,omitempty"`
+	// CurrentPos only present if Cover is calibrated. Represents current position in
+	// percent from 0 (fully closed) to 100 (fully open); null if the position is
+	// unknown
+	CurrentPos *float64 `json:"current_pos,omitempty"`
+
+	// TargetPos only present if Cover is calibrated and is actively moving to a
+	// requested position in either open or closed directions. Represents the target
+	// position in percent from 0 (fully closed) to 100 (fully open); null if target
+	// position has been reached or the movement was canceled
+	TargetPos *float64 `json:"target_pos,omitempty"`
+
+	// MoveTimeout seconds, only present if Cover is actively moving in either open or
+	// closed directions. Cover will automatically stop after the timeout expires
+	MoveTimeout *float64 `json:"move_timeout,omitempty"`
+
+	// MoveStartedAt only present if Cover is actively moving in either open or closed
+	// directions. Represents the time at which the movement has begun
+	MoveStartedAt *float64 `json:"move_started_at,omitempty"`
+
+	// PosControl false if Cover is not calibrated and only discrete open/close is
+	// possible; true if Cover is calibrated and can be commanded to go to arbitrary
+	// positions between fully open and fully closed
+	PosControl *bool `json:"pos_control,omitempty"`
+
+	// LastDirection direction of the last movement: open/close or null when unknown
+	LastDirection *string `json:"last_direction,omitempty"`
+
+	Temperature *CoverStatusTemperature `json:"temperature,omitempty"`
+	// SlatPos only present if slat control is supported and enabled. Represents
+	// current slat position in percent from 0 (fully closed) to 100 (fully open); null
+	// if the position is unknown
+	SlatPos *float64 `json:"slat_pos,omitempty"`
+
+	// Errors only present if an error condition has occurred
+	Errors json.RawMessage `json:"errors,omitempty"`
+}
+
+// CoverGetStatusRequest requests the status of the Cover component.
+type CoverGetStatusRequest struct {
+	// ID of the Cover component instance.
+	ID int `json:"id"`
+}
+
+func (r *CoverGetStatusRequest) Method() string { return "Cover.GetStatus" }
+
+func (r *CoverGetStatusRequest) NewTypedResponse() *CoverStatus { return &CoverStatus{} }
+
+func (r *CoverGetStatusRequest) NewResponse() any { return r.NewTypedResponse() }
+
+func (r *CoverGetStatusRequest) Do(client *resty.Client) (*CoverStatus, *rpc.Frame, error) {
 	resp := r.NewTypedResponse()
 	raw, err := rpc.Do(client, r, resp)
 	return resp, raw, err
