@@ -5,25 +5,21 @@ import (
 	"go/format"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 )
 
-// EmitClient writes one <comp>_gen.go file per component into outDir. Each file
-// defines the component's typed Config and/or Status structs (with nested
-// structs for dotted keys), plus GetConfig/SetConfig/GetStatus request wrappers
-// in the same shape as the hand-written client.
+// EmitClient writes one <comp>_gen.go file per component into componentsDir,
+// plus the shelly-package aggregate into shellyDir. Each component file defines
+// its typed Config and/or Status structs (with nested structs for dotted keys)
+// and the GetConfig/SetConfig/GetStatus request wrappers.
 //
-// Config and status are skipped independently: a component whose <Name>Config or
-// <Name>Status type already exists in hand-written (non-generated) source keeps
-// that part hand-written, so generation only fills gaps and never collides.
-// Deleting a hand-written type later causes generation to take it over — the
-// migration path to a fully generated client.
+// Every component is generated unconditionally: the whole client is generated,
+// so there is no hand-written code to coexist with or skip.
 func EmitClient(spec *Spec, componentsDir, shellyDir string) error {
 	if err := os.MkdirAll(componentsDir, 0o755); err != nil {
 		return err
 	}
-	// Remove previously generated files first, so a change to the skip-set
+	// Remove previously generated files first, so a renamed or dropped component
 	// never leaves a stale *_gen.go behind.
 	if err := removeGenerated(componentsDir); err != nil {
 		return err
@@ -31,68 +27,36 @@ func EmitClient(spec *Spec, componentsDir, shellyDir string) error {
 	if err := os.Remove(filepath.Join(shellyDir, "shelly_gen.go")); err != nil && !os.IsNotExist(err) {
 		return err
 	}
-	handConfig, handStatus, err := handWrittenComponents(componentsDir)
-	if err != nil {
-		return err
-	}
 	for _, c := range spec.Components {
 		if c.Name == "Shelly" {
 			continue // the Shelly service is the aggregate, emitted below — not a component
 		}
-		key := strings.ToLower(c.Name)
-		genConfig := (c.HasGetConfig || c.HasSetConfig) && !handConfig[key]
-		genStatus := c.HasGetStatus && !handStatus[key]
+		genConfig := c.HasGetConfig || c.HasSetConfig
+		genStatus := c.HasGetStatus
 		if !genConfig && !genStatus {
-			continue // nothing to generate, or both parts hand-written
+			continue // a pure-action service the config/status generator can't model
 		}
 		src, err := emitComponent(c, genConfig, genStatus)
 		if err != nil {
 			return fmt.Errorf("emit %s: %w", c.Name, err)
 		}
-		dst := filepath.Join(componentsDir, key+"_gen.go")
+		dst := filepath.Join(componentsDir, strings.ToLower(c.Name)+"_gen.go")
 		if err := os.WriteFile(dst, src, 0o644); err != nil { //nolint:gosec // generated source.
 			return err
 		}
 	}
 
 	// The Shelly.GetConfig/GetStatus aggregates (one field per component) are
-	// generated from the full component list — complete and uncapped, unlike a
-	// hand-curated list. They live in the root shelly package and reference the
-	// component types. Gap-filled like the rest: skipped while a hand-written
-	// aggregate still exists.
-	if !handAggregate(shellyDir) {
-		agg, err := emitAggregates(spec)
-		if err != nil {
-			return fmt.Errorf("emit aggregate: %w", err)
-		}
-		if err := os.WriteFile(filepath.Join(shellyDir, "shelly_gen.go"), agg, 0o644); err != nil { //nolint:gosec // generated source.
-			return err
-		}
+	// generated from the full component list — complete and uncapped. They live in
+	// the root shelly package and reference the component types.
+	agg, err := emitAggregates(spec)
+	if err != nil {
+		return fmt.Errorf("emit aggregate: %w", err)
+	}
+	if err := os.WriteFile(filepath.Join(shellyDir, "shelly_gen.go"), agg, 0o644); err != nil { //nolint:gosec // generated source.
+		return err
 	}
 	return nil
-}
-
-// handAggregate reports whether a hand-written ShellyGet*Response aggregate
-// still exists in the shelly package dir (so generation does not collide).
-func handAggregate(dir string) bool {
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		return false
-	}
-	for _, e := range entries {
-		if e.IsDir() || !strings.HasSuffix(e.Name(), ".go") || strings.HasSuffix(e.Name(), "_gen.go") {
-			continue
-		}
-		b, err := os.ReadFile(filepath.Join(dir, e.Name()))
-		if err != nil {
-			continue
-		}
-		if strings.Contains(string(b), "type ShellyGetStatusResponse struct") ||
-			strings.Contains(string(b), "type ShellyGetConfigResponse struct") {
-			return true
-		}
-	}
-	return false
 }
 
 func removeGenerated(dir string) error {
@@ -106,53 +70,6 @@ func removeGenerated(dir string) error {
 		}
 	}
 	return nil
-}
-
-// configIdentifier captures the base component name from a hand-written config
-// type (FooConfig) or config request (FooGetConfigRequest / FooSetConfigRequest).
-var configIdentifier = regexp.MustCompile(`type\s+(\w+?)(?:Config|GetConfigRequest|SetConfigRequest)\s+struct`)
-
-// statusIdentifier captures the base component name from a hand-written status
-// type (FooStatus) or status request (FooGetStatusRequest). Nested sub-status
-// types (FooBarStatus) also match and add harmless extra keys that never
-// correspond to a real component name.
-var statusIdentifier = regexp.MustCompile(`type\s+(\w+?)(?:Status|GetStatusRequest)\s+struct`)
-
-// handWrittenComponents returns two sets of component base names (lower-cased):
-// those with a hand-written config type/request, and those with a hand-written
-// status type/request. Config and status are tracked separately so each part is
-// skipped independently. Lower-casing makes detection robust to casing
-// differences between the docs and the hand-written client (WiFi vs Wifi).
-func handWrittenComponents(dir string) (config, status map[string]bool, err error) {
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		return nil, nil, err
-	}
-	config = map[string]bool{}
-	status = map[string]bool{}
-	for _, e := range entries {
-		name := e.Name()
-		if e.IsDir() || !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_gen.go") {
-			continue
-		}
-		b, err := os.ReadFile(filepath.Join(dir, name))
-		if err != nil {
-			return nil, nil, err
-		}
-		for _, m := range configIdentifier.FindAllSubmatch(b, -1) {
-			base := strings.ToLower(string(m[1]))
-			if base != "" && base != "set" { // ignore the shared SetConfigResponse helper
-				config[base] = true
-			}
-		}
-		for _, m := range statusIdentifier.FindAllSubmatch(b, -1) {
-			base := strings.ToLower(string(m[1]))
-			if base != "" {
-				status[base] = true
-			}
-		}
-	}
-	return config, status, nil
 }
 
 // emitComponent renders and gofmt-formats a single component's generated file,
