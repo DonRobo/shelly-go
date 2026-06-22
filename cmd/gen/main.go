@@ -17,7 +17,8 @@ import (
 func main() {
 	cacheDir := flag.String("cache", "gen/cache", "directory for persisted docs HTML")
 	specOut := flag.String("spec", "gen/spec.json", "output path for the parsed IR")
-	clientOut := flag.String("client", ".", "directory to write generated client code into")
+	componentsOut := flag.String("components", "components", "directory for generated component code")
+	shellyOut := flag.String("shelly", ".", "directory for the generated aggregate (shelly package)")
 	refresh := flag.Bool("refresh", false, "re-download docs even if cached")
 	flag.Parse()
 
@@ -34,8 +35,8 @@ func main() {
 	check(os.WriteFile(*specOut, append(b, '\n'), 0o644))
 	fmt.Fprintf(os.Stderr, "wrote %s (%d components)\n", *specOut, len(spec.Components))
 
-	check(gen.EmitClient(spec, *clientOut))
-	fmt.Fprintf(os.Stderr, "wrote generated client to %s\n", *clientOut)
+	check(gen.EmitClient(spec, *componentsOut, *shellyOut))
+	fmt.Fprintf(os.Stderr, "wrote components to %s, aggregate to %s\n", *componentsOut, *shellyOut)
 }
 
 func check(err error) {

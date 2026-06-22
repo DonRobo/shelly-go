@@ -5,11 +5,11 @@ package shelly_test
 import (
 	"testing"
 
-	"github.com/DonRobo/shelly-go"
+	"github.com/DonRobo/shelly-go/components"
 )
 
 func TestSwitchGetConfig(t *testing.T) {
-	req := &shelly.SwitchGetConfigRequest{
+	req := &components.SwitchGetConfigRequest{
 		ID: 0,
 	}
 	resp := req.NewTypedResponse()
@@ -17,7 +17,7 @@ func TestSwitchGetConfig(t *testing.T) {
 }
 
 func TestSwitchGetStatus(t *testing.T) {
-	req := &shelly.SwitchGetStatusRequest{
+	req := &components.SwitchGetStatusRequest{
 		ID: 0,
 	}
 	resp := req.NewTypedResponse()

@@ -6,47 +6,49 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/DonRobo/shelly-go/components"
+	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
 
 // ShellyGetStatusResponse is the aggregate status of every component, returned by Shelly.GetStatus.
 type ShellyGetStatusResponse struct {
-	BLE           *BLEStatus            `json:"ble,omitempty"`
-	Cloud         *CloudStatus          `json:"cloud,omitempty"`
-	DALI          *DALIStatus           `json:"dali,omitempty"`
-	Eth           *EthStatus            `json:"eth,omitempty"`
-	Matter        *MatterStatus         `json:"matter,omitempty"`
-	MbRtuClient   *MbRtuClientStatus    `json:"mbrtuclient,omitempty"`
-	Modbus        *ModbusStatus         `json:"modbus,omitempty"`
-	MQTT          *MQTTStatus           `json:"mqtt,omitempty"`
-	Pill          *PillStatus           `json:"pill,omitempty"`
-	Presence      *PresenceStatus       `json:"presence,omitempty"`
-	Sys           *SysStatus            `json:"sys,omitempty"`
-	Wifi          *WifiStatus           `json:"wifi,omitempty"`
-	Ws            *WsStatus             `json:"ws,omitempty"`
-	Zigbee        *ZigbeeStatus         `json:"zigbee,omitempty"`
-	CCTs          []*CCTStatus          `json:"ccts,omitempty"`
-	Covers        []*CoverStatus        `json:"covers,omitempty"`
-	DevicePowers  []*DevicePowerStatus  `json:"devicepowers,omitempty"`
-	EMs           []*EMStatus           `json:"ems,omitempty"`
-	EM1s          []*EM1Status          `json:"em1s,omitempty"`
-	EM1Datas      []*EM1DataStatus      `json:"em1datas,omitempty"`
-	EMDatas       []*EMDataStatus       `json:"emdatas,omitempty"`
-	Floods        []*FloodStatus        `json:"floods,omitempty"`
-	Humidities    []*HumidityStatus     `json:"humidities,omitempty"`
-	Illuminances  []*IlluminanceStatus  `json:"illuminances,omitempty"`
-	Inputs        []*InputStatus        `json:"inputs,omitempty"`
-	Lights        []*LightStatus        `json:"lights,omitempty"`
-	PM1s          []*PM1Status          `json:"pm1s,omitempty"`
-	PresenceZones []*PresenceZoneStatus `json:"presencezones,omitempty"`
-	RGBs          []*RGBStatus          `json:"rgbs,omitempty"`
-	RGBCCTs       []*RGBCCTStatus       `json:"rgbccts,omitempty"`
-	RGBWs         []*RGBWStatus         `json:"rgbws,omitempty"`
-	Scripts       []*ScriptStatus       `json:"scripts,omitempty"`
-	Smokes        []*SmokeStatus        `json:"smokes,omitempty"`
-	Switches      []*SwitchStatus       `json:"switches,omitempty"`
-	Temperatures  []*TemperatureStatus  `json:"temperatures,omitempty"`
-	Voltmeters    []*VoltmeterStatus    `json:"voltmeters,omitempty"`
+	BLE           *components.BLEStatus            `json:"ble,omitempty"`
+	Cloud         *components.CloudStatus          `json:"cloud,omitempty"`
+	DALI          *components.DALIStatus           `json:"dali,omitempty"`
+	Eth           *components.EthStatus            `json:"eth,omitempty"`
+	Matter        *components.MatterStatus         `json:"matter,omitempty"`
+	MbRtuClient   *components.MbRtuClientStatus    `json:"mbrtuclient,omitempty"`
+	Modbus        *components.ModbusStatus         `json:"modbus,omitempty"`
+	MQTT          *components.MQTTStatus           `json:"mqtt,omitempty"`
+	Pill          *components.PillStatus           `json:"pill,omitempty"`
+	Presence      *components.PresenceStatus       `json:"presence,omitempty"`
+	Sys           *components.SysStatus            `json:"sys,omitempty"`
+	Wifi          *components.WifiStatus           `json:"wifi,omitempty"`
+	Ws            *components.WsStatus             `json:"ws,omitempty"`
+	Zigbee        *components.ZigbeeStatus         `json:"zigbee,omitempty"`
+	CCTs          []*components.CCTStatus          `json:"ccts,omitempty"`
+	Covers        []*components.CoverStatus        `json:"covers,omitempty"`
+	DevicePowers  []*components.DevicePowerStatus  `json:"devicepowers,omitempty"`
+	EMs           []*components.EMStatus           `json:"ems,omitempty"`
+	EM1s          []*components.EM1Status          `json:"em1s,omitempty"`
+	EM1Datas      []*components.EM1DataStatus      `json:"em1datas,omitempty"`
+	EMDatas       []*components.EMDataStatus       `json:"emdatas,omitempty"`
+	Floods        []*components.FloodStatus        `json:"floods,omitempty"`
+	Humidities    []*components.HumidityStatus     `json:"humidities,omitempty"`
+	Illuminances  []*components.IlluminanceStatus  `json:"illuminances,omitempty"`
+	Inputs        []*components.InputStatus        `json:"inputs,omitempty"`
+	Lights        []*components.LightStatus        `json:"lights,omitempty"`
+	PM1s          []*components.PM1Status          `json:"pm1s,omitempty"`
+	PresenceZones []*components.PresenceZoneStatus `json:"presencezones,omitempty"`
+	RGBs          []*components.RGBStatus          `json:"rgbs,omitempty"`
+	RGBCCTs       []*components.RGBCCTStatus       `json:"rgbccts,omitempty"`
+	RGBWs         []*components.RGBWStatus         `json:"rgbws,omitempty"`
+	Scripts       []*components.ScriptStatus       `json:"scripts,omitempty"`
+	Smokes        []*components.SmokeStatus        `json:"smokes,omitempty"`
+	Switches      []*components.SwitchStatus       `json:"switches,omitempty"`
+	Temperatures  []*components.TemperatureStatus  `json:"temperatures,omitempty"`
+	Voltmeters    []*components.VoltmeterStatus    `json:"voltmeters,omitempty"`
 }
 
 func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
@@ -55,98 +57,98 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	if v, ok := raw["ble"]; ok {
-		var s BLEStatus
+		var s components.BLEStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.BLE = &s
 	}
 	if v, ok := raw["cloud"]; ok {
-		var s CloudStatus
+		var s components.CloudStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Cloud = &s
 	}
 	if v, ok := raw["dali"]; ok {
-		var s DALIStatus
+		var s components.DALIStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.DALI = &s
 	}
 	if v, ok := raw["eth"]; ok {
-		var s EthStatus
+		var s components.EthStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Eth = &s
 	}
 	if v, ok := raw["matter"]; ok {
-		var s MatterStatus
+		var s components.MatterStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Matter = &s
 	}
 	if v, ok := raw["mbrtuclient"]; ok {
-		var s MbRtuClientStatus
+		var s components.MbRtuClientStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.MbRtuClient = &s
 	}
 	if v, ok := raw["modbus"]; ok {
-		var s ModbusStatus
+		var s components.ModbusStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Modbus = &s
 	}
 	if v, ok := raw["mqtt"]; ok {
-		var s MQTTStatus
+		var s components.MQTTStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.MQTT = &s
 	}
 	if v, ok := raw["pill"]; ok {
-		var s PillStatus
+		var s components.PillStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Pill = &s
 	}
 	if v, ok := raw["presence"]; ok {
-		var s PresenceStatus
+		var s components.PresenceStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Presence = &s
 	}
 	if v, ok := raw["sys"]; ok {
-		var s SysStatus
+		var s components.SysStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Sys = &s
 	}
 	if v, ok := raw["wifi"]; ok {
-		var s WifiStatus
+		var s components.WifiStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Wifi = &s
 	}
 	if v, ok := raw["ws"]; ok {
-		var s WsStatus
+		var s components.WsStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Ws = &s
 	}
 	if v, ok := raw["zigbee"]; ok {
-		var s ZigbeeStatus
+		var s components.ZigbeeStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -157,7 +159,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s CCTStatus
+		var s components.CCTStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -168,7 +170,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s CoverStatus
+		var s components.CoverStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -179,7 +181,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s DevicePowerStatus
+		var s components.DevicePowerStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -190,7 +192,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s EMStatus
+		var s components.EMStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -201,7 +203,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s EM1Status
+		var s components.EM1Status
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -212,7 +214,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s EM1DataStatus
+		var s components.EM1DataStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -223,7 +225,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s EMDataStatus
+		var s components.EMDataStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -234,7 +236,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s FloodStatus
+		var s components.FloodStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -245,7 +247,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s HumidityStatus
+		var s components.HumidityStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -256,7 +258,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s IlluminanceStatus
+		var s components.IlluminanceStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -267,7 +269,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s InputStatus
+		var s components.InputStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -278,7 +280,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s LightStatus
+		var s components.LightStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -289,7 +291,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s PM1Status
+		var s components.PM1Status
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -300,7 +302,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s PresenceZoneStatus
+		var s components.PresenceZoneStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -311,7 +313,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s RGBStatus
+		var s components.RGBStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -322,7 +324,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s RGBCCTStatus
+		var s components.RGBCCTStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -333,7 +335,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s RGBWStatus
+		var s components.RGBWStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -344,7 +346,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s ScriptStatus
+		var s components.ScriptStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -355,7 +357,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s SmokeStatus
+		var s components.SmokeStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -366,7 +368,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s SwitchStatus
+		var s components.SwitchStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -377,7 +379,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s TemperatureStatus
+		var s components.TemperatureStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -388,7 +390,7 @@ func (r *ShellyGetStatusResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s VoltmeterStatus
+		var s components.VoltmeterStatus
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -408,52 +410,52 @@ func (r *ShellyGetStatusRequest) NewTypedResponse() *ShellyGetStatusResponse {
 
 func (r *ShellyGetStatusRequest) NewResponse() any { return r.NewTypedResponse() }
 
-func (r *ShellyGetStatusRequest) Do(client *resty.Client) (*ShellyGetStatusResponse, *Frame, error) {
+func (r *ShellyGetStatusRequest) Do(client *resty.Client) (*ShellyGetStatusResponse, *rpc.Frame, error) {
 	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
+	raw, err := rpc.Do(client, r, resp)
 	return resp, raw, err
 }
 
 // ShellyGetConfigResponse is the aggregate config of every component, returned by Shelly.GetConfig.
 type ShellyGetConfigResponse struct {
-	BLE           *BLEConfig            `json:"ble,omitempty"`
-	Cloud         *CloudConfig          `json:"cloud,omitempty"`
-	DALI          *DALIConfig           `json:"dali,omitempty"`
-	Eth           *EthConfig            `json:"eth,omitempty"`
-	Matter        *MatterConfig         `json:"matter,omitempty"`
-	MbRtuClient   *MbRtuClientConfig    `json:"mbrtuclient,omitempty"`
-	Modbus        *ModbusConfig         `json:"modbus,omitempty"`
-	MQTT          *MQTTConfig           `json:"mqtt,omitempty"`
-	Pill          *PillConfig           `json:"pill,omitempty"`
-	Presence      *PresenceConfig       `json:"presence,omitempty"`
-	Sys           *SysConfig            `json:"sys,omitempty"`
-	Ui            *UiConfig             `json:"ui,omitempty"`
-	Wifi          *WifiConfig           `json:"wifi,omitempty"`
-	Ws            *WsConfig             `json:"ws,omitempty"`
-	Zigbee        *ZigbeeConfig         `json:"zigbee,omitempty"`
-	CCTs          []*CCTConfig          `json:"ccts,omitempty"`
-	Covers        []*CoverConfig        `json:"covers,omitempty"`
-	DevicePowers  []*DevicePowerConfig  `json:"devicepowers,omitempty"`
-	EMs           []*EMConfig           `json:"ems,omitempty"`
-	EM1s          []*EM1Config          `json:"em1s,omitempty"`
-	EM1Datas      []*EM1DataConfig      `json:"em1datas,omitempty"`
-	EMDatas       []*EMDataConfig       `json:"emdatas,omitempty"`
-	Floods        []*FloodConfig        `json:"floods,omitempty"`
-	Humidities    []*HumidityConfig     `json:"humidities,omitempty"`
-	Illuminances  []*IlluminanceConfig  `json:"illuminances,omitempty"`
-	Inputs        []*InputConfig        `json:"inputs,omitempty"`
-	Lights        []*LightConfig        `json:"lights,omitempty"`
-	PM1s          []*PM1Config          `json:"pm1s,omitempty"`
-	PresenceZones []*PresenceZoneConfig `json:"presencezones,omitempty"`
-	RGBs          []*RGBConfig          `json:"rgbs,omitempty"`
-	RGBCCTs       []*RGBCCTConfig       `json:"rgbccts,omitempty"`
-	RGBWs         []*RGBWConfig         `json:"rgbws,omitempty"`
-	Scripts       []*ScriptConfig       `json:"scripts,omitempty"`
-	Serials       []*SerialConfig       `json:"serials,omitempty"`
-	Smokes        []*SmokeConfig        `json:"smokes,omitempty"`
-	Switches      []*SwitchConfig       `json:"switches,omitempty"`
-	Temperatures  []*TemperatureConfig  `json:"temperatures,omitempty"`
-	Voltmeters    []*VoltmeterConfig    `json:"voltmeters,omitempty"`
+	BLE           *components.BLEConfig            `json:"ble,omitempty"`
+	Cloud         *components.CloudConfig          `json:"cloud,omitempty"`
+	DALI          *components.DALIConfig           `json:"dali,omitempty"`
+	Eth           *components.EthConfig            `json:"eth,omitempty"`
+	Matter        *components.MatterConfig         `json:"matter,omitempty"`
+	MbRtuClient   *components.MbRtuClientConfig    `json:"mbrtuclient,omitempty"`
+	Modbus        *components.ModbusConfig         `json:"modbus,omitempty"`
+	MQTT          *components.MQTTConfig           `json:"mqtt,omitempty"`
+	Pill          *components.PillConfig           `json:"pill,omitempty"`
+	Presence      *components.PresenceConfig       `json:"presence,omitempty"`
+	Sys           *components.SysConfig            `json:"sys,omitempty"`
+	Ui            *components.UiConfig             `json:"ui,omitempty"`
+	Wifi          *components.WifiConfig           `json:"wifi,omitempty"`
+	Ws            *components.WsConfig             `json:"ws,omitempty"`
+	Zigbee        *components.ZigbeeConfig         `json:"zigbee,omitempty"`
+	CCTs          []*components.CCTConfig          `json:"ccts,omitempty"`
+	Covers        []*components.CoverConfig        `json:"covers,omitempty"`
+	DevicePowers  []*components.DevicePowerConfig  `json:"devicepowers,omitempty"`
+	EMs           []*components.EMConfig           `json:"ems,omitempty"`
+	EM1s          []*components.EM1Config          `json:"em1s,omitempty"`
+	EM1Datas      []*components.EM1DataConfig      `json:"em1datas,omitempty"`
+	EMDatas       []*components.EMDataConfig       `json:"emdatas,omitempty"`
+	Floods        []*components.FloodConfig        `json:"floods,omitempty"`
+	Humidities    []*components.HumidityConfig     `json:"humidities,omitempty"`
+	Illuminances  []*components.IlluminanceConfig  `json:"illuminances,omitempty"`
+	Inputs        []*components.InputConfig        `json:"inputs,omitempty"`
+	Lights        []*components.LightConfig        `json:"lights,omitempty"`
+	PM1s          []*components.PM1Config          `json:"pm1s,omitempty"`
+	PresenceZones []*components.PresenceZoneConfig `json:"presencezones,omitempty"`
+	RGBs          []*components.RGBConfig          `json:"rgbs,omitempty"`
+	RGBCCTs       []*components.RGBCCTConfig       `json:"rgbccts,omitempty"`
+	RGBWs         []*components.RGBWConfig         `json:"rgbws,omitempty"`
+	Scripts       []*components.ScriptConfig       `json:"scripts,omitempty"`
+	Serials       []*components.SerialConfig       `json:"serials,omitempty"`
+	Smokes        []*components.SmokeConfig        `json:"smokes,omitempty"`
+	Switches      []*components.SwitchConfig       `json:"switches,omitempty"`
+	Temperatures  []*components.TemperatureConfig  `json:"temperatures,omitempty"`
+	Voltmeters    []*components.VoltmeterConfig    `json:"voltmeters,omitempty"`
 }
 
 func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
@@ -462,105 +464,105 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	if v, ok := raw["ble"]; ok {
-		var s BLEConfig
+		var s components.BLEConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.BLE = &s
 	}
 	if v, ok := raw["cloud"]; ok {
-		var s CloudConfig
+		var s components.CloudConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Cloud = &s
 	}
 	if v, ok := raw["dali"]; ok {
-		var s DALIConfig
+		var s components.DALIConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.DALI = &s
 	}
 	if v, ok := raw["eth"]; ok {
-		var s EthConfig
+		var s components.EthConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Eth = &s
 	}
 	if v, ok := raw["matter"]; ok {
-		var s MatterConfig
+		var s components.MatterConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Matter = &s
 	}
 	if v, ok := raw["mbrtuclient"]; ok {
-		var s MbRtuClientConfig
+		var s components.MbRtuClientConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.MbRtuClient = &s
 	}
 	if v, ok := raw["modbus"]; ok {
-		var s ModbusConfig
+		var s components.ModbusConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Modbus = &s
 	}
 	if v, ok := raw["mqtt"]; ok {
-		var s MQTTConfig
+		var s components.MQTTConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.MQTT = &s
 	}
 	if v, ok := raw["pill"]; ok {
-		var s PillConfig
+		var s components.PillConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Pill = &s
 	}
 	if v, ok := raw["presence"]; ok {
-		var s PresenceConfig
+		var s components.PresenceConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Presence = &s
 	}
 	if v, ok := raw["sys"]; ok {
-		var s SysConfig
+		var s components.SysConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Sys = &s
 	}
 	if v, ok := raw["ui"]; ok {
-		var s UiConfig
+		var s components.UiConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Ui = &s
 	}
 	if v, ok := raw["wifi"]; ok {
-		var s WifiConfig
+		var s components.WifiConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Wifi = &s
 	}
 	if v, ok := raw["ws"]; ok {
-		var s WsConfig
+		var s components.WsConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
 		r.Ws = &s
 	}
 	if v, ok := raw["zigbee"]; ok {
-		var s ZigbeeConfig
+		var s components.ZigbeeConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -571,7 +573,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s CCTConfig
+		var s components.CCTConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -582,7 +584,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s CoverConfig
+		var s components.CoverConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -593,7 +595,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s DevicePowerConfig
+		var s components.DevicePowerConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -604,7 +606,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s EMConfig
+		var s components.EMConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -615,7 +617,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s EM1Config
+		var s components.EM1Config
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -626,7 +628,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s EM1DataConfig
+		var s components.EM1DataConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -637,7 +639,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s EMDataConfig
+		var s components.EMDataConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -648,7 +650,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s FloodConfig
+		var s components.FloodConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -659,7 +661,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s HumidityConfig
+		var s components.HumidityConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -670,7 +672,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s IlluminanceConfig
+		var s components.IlluminanceConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -681,7 +683,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s InputConfig
+		var s components.InputConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -692,7 +694,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s LightConfig
+		var s components.LightConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -703,7 +705,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s PM1Config
+		var s components.PM1Config
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -714,7 +716,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s PresenceZoneConfig
+		var s components.PresenceZoneConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -725,7 +727,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s RGBConfig
+		var s components.RGBConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -736,7 +738,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s RGBCCTConfig
+		var s components.RGBCCTConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -747,7 +749,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s RGBWConfig
+		var s components.RGBWConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -758,7 +760,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s ScriptConfig
+		var s components.ScriptConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -769,7 +771,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s SerialConfig
+		var s components.SerialConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -780,7 +782,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s SmokeConfig
+		var s components.SmokeConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -791,7 +793,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s SwitchConfig
+		var s components.SwitchConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -802,7 +804,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s TemperatureConfig
+		var s components.TemperatureConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -813,7 +815,7 @@ func (r *ShellyGetConfigResponse) UnmarshalJSON(b []byte) error {
 		if !ok {
 			break
 		}
-		var s VoltmeterConfig
+		var s components.VoltmeterConfig
 		if err := json.Unmarshal(v, &s); err != nil {
 			return err
 		}
@@ -833,8 +835,8 @@ func (r *ShellyGetConfigRequest) NewTypedResponse() *ShellyGetConfigResponse {
 
 func (r *ShellyGetConfigRequest) NewResponse() any { return r.NewTypedResponse() }
 
-func (r *ShellyGetConfigRequest) Do(client *resty.Client) (*ShellyGetConfigResponse, *Frame, error) {
+func (r *ShellyGetConfigRequest) Do(client *resty.Client) (*ShellyGetConfigResponse, *rpc.Frame, error) {
 	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
+	raw, err := rpc.Do(client, r, resp)
 	return resp, raw, err
 }

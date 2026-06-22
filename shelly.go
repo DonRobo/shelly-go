@@ -3,6 +3,7 @@ package shelly
 import (
 	"encoding/json"
 
+	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
 
@@ -27,11 +28,11 @@ func (r *ShellyGetDeviceInfoRequest) Do(
 	client *resty.Client,
 ) (
 	*ShellyGetDeviceInfoResponse,
-	*Frame,
+	*rpc.Frame,
 	error,
 ) {
 	resp := r.NewTypedResponse()
-	raw, err := Do(client, r, resp)
+	raw, err := rpc.Do(client, r, resp)
 	return resp, raw, err
 }
 
@@ -78,5 +79,3 @@ type ShellyGetDeviceInfoResponse struct {
 	// FW_SBits are shelly internal flags, present only when the ident parameter is set to true.
 	FW_SBits string
 }
-
-// ShellyCheckForUpdateRequest
