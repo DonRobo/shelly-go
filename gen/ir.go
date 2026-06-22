@@ -36,6 +36,12 @@ type Component struct {
 	// HasGetStatus records whether the docs expose a GetStatus RPC, i.e. whether
 	// a typed <Name>Status + <Name>GetStatusRequest can be generated.
 	HasGetStatus bool `json:"hasGetStatus"`
+	// HasGetDeviceInfo records whether the docs expose a GetDeviceInfo RPC (only
+	// the Shelly service does). DeviceInfoFields then holds its response shape.
+	HasGetDeviceInfo bool `json:"hasGetDeviceInfo,omitempty"`
+	// DeviceInfoFields are the response properties of the GetDeviceInfo RPC, in
+	// document order. Empty unless HasGetDeviceInfo.
+	DeviceInfoFields []*Field `json:"deviceInfoFields,omitempty"`
 	// Keyed is true when component instances are addressed by a numeric id
 	// (Switch:0, Input:1, ...). Singletons like Sys/WiFi/Cloud are not keyed.
 	Keyed bool `json:"keyed"`

@@ -840,3 +840,85 @@ func (r *ShellyGetConfigRequest) Do(client *resty.Client) (*ShellyGetConfigRespo
 	raw, err := rpc.Do(client, r, resp)
 	return resp, raw, err
 }
+
+// ShellyGetDeviceInfoResponse is generated from the Shelly API documentation.
+type ShellyGetDeviceInfoResponse struct {
+	// ID id of the device
+	ID string `json:"id"`
+
+	// MAC mac address of the device
+	MAC *string `json:"mac,omitempty"`
+
+	// Model model of the device
+	Model *string `json:"model,omitempty"`
+
+	// Gen generation of the device
+	Gen *float64 `json:"gen,omitempty"`
+
+	// FWID id of the firmware of the device
+	FWID *string `json:"fw_id,omitempty"`
+
+	// Ver version of the firmware of the device
+	Ver *string `json:"ver,omitempty"`
+
+	// App application name
+	App *string `json:"app,omitempty"`
+
+	// Profile name of the device profile (only applicable for multi-profile devices)
+	Profile *string `json:"profile,omitempty"`
+
+	// AuthEn true if authentication is enabled, false otherwise
+	AuthEn *bool `json:"auth_en,omitempty"`
+
+	// AuthDomain name of the domain (null if authentication is not enabled)
+	AuthDomain *string `json:"auth_domain,omitempty"`
+
+	// Discoverable present only when false. If true, device is shown in 'Discovered
+	// devices'. If false, the device is hidden.
+	Discoverable *bool `json:"discoverable,omitempty"`
+
+	// Provision (since 1.7.5) Indicates the provisioning state of the device. Possible
+	// values: "pending" (initial unprovisioned state: open AP & BLE RPC are available
+	// for 15 minutes setup window, or 3 minutes on battery-powered devices),
+	// "confirmed" (first IP acquisition over Wi-Fi/Ethernet: open AP & BLE RPC are
+	// available for 5 minutes grace window; on battery-powered devices, the original
+	// 3-minute setup timer continues instead), "complete" (grace window expired: AP
+	// (unless protected with a password) & BLE RPC are disabled), "locked" (initial
+	// setup window expired without going online: AP (unless protected with a password)
+	// & BLE RPC are temporarily shut down until device is power-cycled, a
+	// factory/network reset occurs, or user button is pressed (latter only applicable
+	// to battery-powered devices)). See Secure provisioning for more details.
+	Provision *string `json:"provision,omitempty"`
+
+	// Key cloud key of the device (see note below), present only when the ident
+	// parameter is set to true
+	Key *string `json:"key,omitempty"`
+
+	// Batch batch used to provision the device, present only when the ident parameter
+	// is set to true
+	Batch *string `json:"batch,omitempty"`
+
+	// FWSbits shelly internal flags, present only when the ident parameter is set to
+	// true
+	FWSbits *string `json:"fw_sbits,omitempty"`
+}
+
+// ShellyGetDeviceInfoRequest requests static device information via Shelly.GetDeviceInfo.
+type ShellyGetDeviceInfoRequest struct {
+	// Ident includes extra identifying fields (key, batch, fw_sbits) when true.
+	Ident *bool `json:"ident,omitempty"`
+}
+
+func (r *ShellyGetDeviceInfoRequest) Method() string { return "Shelly.GetDeviceInfo" }
+
+func (r *ShellyGetDeviceInfoRequest) NewTypedResponse() *ShellyGetDeviceInfoResponse {
+	return &ShellyGetDeviceInfoResponse{}
+}
+
+func (r *ShellyGetDeviceInfoRequest) NewResponse() any { return r.NewTypedResponse() }
+
+func (r *ShellyGetDeviceInfoRequest) Do(client *resty.Client) (*ShellyGetDeviceInfoResponse, *rpc.Frame, error) {
+	resp := r.NewTypedResponse()
+	raw, err := rpc.Do(client, r, resp)
+	return resp, raw, err
+}

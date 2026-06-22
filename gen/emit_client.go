@@ -259,11 +259,15 @@ func emitStructs(b *strings.Builder, typeName string, n *node, needsJSON *bool) 
 	b.WriteString("}\n\n")
 }
 
-// goLeafType maps an IR leaf field to a Go type. The keyed "id" field is a bare
+// goLeafType maps an IR leaf field to a Go type. A keyed "id" field is a bare
 // int (matching the hand-written client); everything else is a pointer so unset
-// config values are omitted.
+// config values are omitted. The Shelly.GetDeviceInfo response also has an "id",
+// but it is a string device identifier, so the documented type wins there.
 func goLeafType(key string, f *Field, needsJSON *bool) string {
 	if key == "id" {
+		if f.Type == "string" {
+			return "string"
+		}
 		return "int"
 	}
 	switch f.Type {
@@ -367,6 +371,15 @@ func emitAggregates(spec *Spec) ([]byte, error) {
 	emitAggregate(&b, spec, "Status")
 	emitAggregate(&b, spec, "Config")
 
+	// The Shelly service also exposes GetDeviceInfo, a one-off method whose flat
+	// response the docs document directly. Emit it alongside the aggregates so the
+	// whole Shelly service is generated.
+	for _, c := range spec.Components {
+		if c.Name == "Shelly" && c.HasGetDeviceInfo {
+			emitDeviceInfo(&b, c)
+		}
+	}
+
 	formatted, err := format.Source([]byte(b.String()))
 	if err != nil {
 		return nil, fmt.Errorf("%w\n--- source ---\n%s", err, b.String())
@@ -432,6 +445,28 @@ func emitAggregate(b *strings.Builder, spec *Spec, kind string) {
 	fmt.Fprintf(b, "// %s requests the aggregate %s of every component.\n", req, strings.ToLower(kind))
 	fmt.Fprintf(b, "type %s struct{}\n\n", req)
 	fmt.Fprintf(b, "func (r *%s) Method() string { return %q }\n\n", req, method)
+	fmt.Fprintf(b, "func (r *%s) NewTypedResponse() *%s { return &%s{} }\n\n", req, resp, resp)
+	fmt.Fprintf(b, "func (r *%s) NewResponse() any { return r.NewTypedResponse() }\n\n", req)
+	fmt.Fprintf(b, "func (r *%s) Do(client *resty.Client) (*%s, *rpc.Frame, error) {\n", req, resp)
+	b.WriteString("\tresp := r.NewTypedResponse()\n\traw, err := rpc.Do(client, r, resp)\n\treturn resp, raw, err\n}\n\n")
+}
+
+// emitDeviceInfo renders the ShellyGetDeviceInfoResponse struct (from the docs'
+// flat response table) and its request wrapper. The request carries the single
+// documented `ident` parameter.
+func emitDeviceInfo(b *strings.Builder, c *Component) {
+	resp := "ShellyGetDeviceInfoResponse"
+	req := "ShellyGetDeviceInfoRequest"
+
+	needsJSON := false
+	emitStructs(b, resp, buildTree(c.DeviceInfoFields), &needsJSON)
+
+	fmt.Fprintf(b, "// %s requests static device information via Shelly.GetDeviceInfo.\n", req)
+	fmt.Fprintf(b, "type %s struct {\n", req)
+	b.WriteString("\t// Ident includes extra identifying fields (key, batch, fw_sbits) when true.\n")
+	b.WriteString("\tIdent *bool `json:\"ident,omitempty\"`\n")
+	b.WriteString("}\n\n")
+	fmt.Fprintf(b, "func (r *%s) Method() string { return %q }\n\n", req, "Shelly.GetDeviceInfo")
 	fmt.Fprintf(b, "func (r *%s) NewTypedResponse() *%s { return &%s{} }\n\n", req, resp, resp)
 	fmt.Fprintf(b, "func (r *%s) NewResponse() any { return r.NewTypedResponse() }\n\n", req)
 	fmt.Fprintf(b, "func (r *%s) Do(client *resty.Client) (*%s, *rpc.Frame, error) {\n", req, resp)

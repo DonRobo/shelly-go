@@ -3269,6 +3269,85 @@
       "hasGetConfig": true,
       "hasSetConfig": false,
       "hasGetStatus": true,
+      "hasGetDeviceInfo": true,
+      "deviceInfoFields": [
+        {
+          "key": "id",
+          "type": "string",
+          "description": "Id of the device"
+        },
+        {
+          "key": "mac",
+          "type": "string",
+          "description": "Mac address of the device"
+        },
+        {
+          "key": "model",
+          "type": "string",
+          "description": "Model of the device"
+        },
+        {
+          "key": "gen",
+          "type": "number",
+          "description": "Generation of the device"
+        },
+        {
+          "key": "fw_id",
+          "type": "string",
+          "description": "Id of the firmware of the device"
+        },
+        {
+          "key": "ver",
+          "type": "string",
+          "description": "Version of the firmware of the device"
+        },
+        {
+          "key": "app",
+          "type": "string",
+          "description": "Application name"
+        },
+        {
+          "key": "profile",
+          "type": "string",
+          "description": "Name of the device profile (only applicable for multi-profile devices)"
+        },
+        {
+          "key": "auth_en",
+          "type": "boolean",
+          "description": "true if authentication is enabled, false otherwise"
+        },
+        {
+          "key": "auth_domain",
+          "type": "string",
+          "nullable": true,
+          "description": "Name of the domain (null if authentication is not enabled)"
+        },
+        {
+          "key": "discoverable",
+          "type": "boolean",
+          "description": "Present only when false. If true, device is shown in 'Discovered devices'. If false, the device is hidden."
+        },
+        {
+          "key": "provision",
+          "type": "string",
+          "description": "(since 1.7.5) Indicates the provisioning state of the device. Possible values: \"pending\" (initial unprovisioned state: open AP \u0026 BLE RPC are available for 15 minutes setup window, or 3 minutes on battery-powered devices), \"confirmed\" (first IP acquisition over Wi-Fi/Ethernet: open AP \u0026 BLE RPC are available for 5 minutes grace window; on battery-powered devices, the original 3-minute setup timer continues instead), \"complete\" (grace window expired: AP (unless protected with a password) \u0026 BLE RPC are disabled), \"locked\" (initial setup window expired without going online: AP (unless protected with a password) \u0026 BLE RPC are temporarily shut down until device is power-cycled, a factory/network reset occurs, or user button is pressed (latter only applicable to battery-powered devices)). See Secure provisioning for more details."
+        },
+        {
+          "key": "key",
+          "type": "string",
+          "description": "Cloud key of the device (see note below), present only when the ident parameter is set to true"
+        },
+        {
+          "key": "batch",
+          "type": "string",
+          "description": "Batch used to provision the device, present only when the ident parameter is set to true"
+        },
+        {
+          "key": "fw_sbits",
+          "type": "string",
+          "description": "Shelly internal flags, present only when the ident parameter is set to true"
+        }
+      ],
       "keyed": false
     },
     {
