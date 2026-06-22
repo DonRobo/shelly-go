@@ -5,6 +5,7 @@
       "name": "BLE",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
@@ -12,12 +13,45 @@
           "type": "boolean",
           "description": "True if rpc service is enabled, false otherwise"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "addr",
+          "type": "string",
+          "description": "The device's Bluetooth MAC address with type suffix: ,p (public), ,rs (random static), ,rn (random non-resolvable), or ,rr (random resolvable). Example: \"AA:BB:CC:DD:EE:FF,p\""
+        },
+        {
+          "key": "flags",
+          "type": "array",
+          "description": "(Since 2.0.0) When Bluetooth is active, contains one or more of: \"scanning\", \"advertising\", \"connected\". When Bluetooth is idle, this property is absent from the response. Status change notifications are emitted whenever the flags array changes."
+        },
+        {
+          "key": "pairing.started_at",
+          "type": "integer",
+          "description": "Unix timestamp when pairing mode was enabled"
+        },
+        {
+          "key": "pairing.duration",
+          "type": "integer",
+          "description": "Duration in seconds for which pairing mode is enabled"
+        },
+        {
+          "key": "blutrv_assoc.duration",
+          "type": "integer",
+          "description": "Duration of the current associations procedure in seconds"
+        },
+        {
+          "key": "blutrv_assoc.started_at",
+          "type": "integer",
+          "description": "Unix timestamp of the start of the associations procedure"
+        }
       ]
     },
     {
       "name": "CCT",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -137,12 +171,101 @@
           "type": "number",
           "description": "Limit (in Volts) over which overvoltage condition occurs (shown if applicable)"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the CCT component instance"
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "description": "Source of the last command, for example: init, WS_in, http, ..."
+        },
+        {
+          "key": "tag",
+          "type": "string",
+          "nullable": true,
+          "description": "Tag used to identify the origin of a state change"
+        },
+        {
+          "key": "output",
+          "type": "boolean",
+          "description": "True if the output channel is currently on, false otherwise"
+        },
+        {
+          "key": "brightness",
+          "type": "number",
+          "description": "Current brightness level (in percent)"
+        },
+        {
+          "key": "ct",
+          "type": "number",
+          "description": "Current color temperature level (in Kelvin)"
+        },
+        {
+          "key": "timer_started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the timer (in UTC) (shown if the timer is triggered)"
+        },
+        {
+          "key": "timer_duration",
+          "type": "number",
+          "description": "Duration of the timer in seconds (shown if the timer is triggered)"
+        },
+        {
+          "key": "transition.target.output",
+          "type": "boolean",
+          "description": "True if the output channel becomes on, false otherwise"
+        },
+        {
+          "key": "transition.target.brightness",
+          "type": "number",
+          "description": "Brightness level (in percent)"
+        },
+        {
+          "key": "transition.target.ct",
+          "type": "number",
+          "description": "Color temperature level (in Kelvin)"
+        },
+        {
+          "key": "transition.started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the transition (in UTC)"
+        },
+        {
+          "key": "transition.duration",
+          "type": "number",
+          "description": "Duration of the transition in seconds"
+        },
+        {
+          "key": "apower",
+          "type": "number",
+          "description": "Last measured instantaneous active power (in Watts) delivered to the attached load (shown if applicable)"
+        },
+        {
+          "key": "voltage",
+          "type": "number",
+          "description": "Last measured voltage in Volts (shown if applicable)"
+        },
+        {
+          "key": "current",
+          "type": "number",
+          "description": "Last measured current in Amperes (shown if applicable)"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Error conditions occurred. May contain overtemp, (shown if at least one error is present)"
+        }
       ]
     },
     {
       "name": "Cloud",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
@@ -156,12 +279,20 @@
           "nullable": true,
           "description": "Name of the server to which the device is connected"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "connected",
+          "type": "boolean",
+          "description": "True if the device is connected to the Shelly cloud, false otherwise"
+        }
       ]
     },
     {
       "name": "Cover",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -289,14 +420,139 @@
           "type": "boolean",
           "description": "This property only applies when cover (vertical) position is less than one full slat rotation away from the fully closed position. If this condition is met, any slat movement will always go through fully closed position first. This improves slat positioning accuracy, yet is slower to execute."
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "The numeric ID of the Cover component instance"
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "description": "Source of the last command"
+        },
+        {
+          "key": "tag",
+          "type": "string",
+          "nullable": true,
+          "description": "Tag used to identify the origin of a state change"
+        },
+        {
+          "key": "state",
+          "type": "string",
+          "description": "One of open (Cover is fully open), closed (Cover is fully closed), opening (Cover is actively opening), closing (Cover is actively closing), stopped (Cover is not moving, and is neither fully open nor fully closed, or the open/close state is unknown), calibrating (Cover is performing a calibration procedure)"
+        },
+        {
+          "key": "apower",
+          "type": "number",
+          "description": "Active power in Watts"
+        },
+        {
+          "key": "voltage",
+          "type": "number",
+          "description": "Volts"
+        },
+        {
+          "key": "current",
+          "type": "number",
+          "description": "Amperes"
+        },
+        {
+          "key": "pf",
+          "type": "number",
+          "description": "power factor"
+        },
+        {
+          "key": "freq",
+          "type": "number",
+          "description": "network frequency, Hz"
+        },
+        {
+          "key": "aenergy",
+          "type": "object",
+          "description": "Energy counter information, same as in the Switch component status"
+        },
+        {
+          "key": "current_pos",
+          "type": "number",
+          "nullable": true,
+          "description": "Only present if Cover is calibrated. Represents current position in percent from 0 (fully closed) to 100 (fully open); null if the position is unknown"
+        },
+        {
+          "key": "target_pos",
+          "type": "number",
+          "nullable": true,
+          "description": "Only present if Cover is calibrated and is actively moving to a requested position in either open or closed directions. Represents the target position in percent from 0 (fully closed) to 100 (fully open); null if target position has been reached or the movement was canceled"
+        },
+        {
+          "key": "move_timeout",
+          "type": "number",
+          "description": "Seconds, only present if Cover is actively moving in either open or closed directions. Cover will automatically stop after the timeout expires"
+        },
+        {
+          "key": "move_started_at",
+          "type": "number",
+          "description": "Only present if Cover is actively moving in either open or closed directions. Represents the time at which the movement has begun"
+        },
+        {
+          "key": "pos_control",
+          "type": "boolean",
+          "description": "False if Cover is not calibrated and only discrete open/close is possible; true if Cover is calibrated and can be commanded to go to arbitrary positions between fully open and fully closed"
+        },
+        {
+          "key": "last_direction",
+          "type": "string",
+          "nullable": true,
+          "description": "Direction of the last movement: open/close or null when unknown"
+        },
+        {
+          "key": "temperature",
+          "type": "object",
+          "description": "Temperature sensor information, only present if a temperature monitor is associated with the Cover instance"
+        },
+        {
+          "key": "slat_pos",
+          "type": "number",
+          "description": "Only present if slat control is supported and enabled. Represents current slat position in percent from 0 (fully closed) to 100 (fully open); null if the position is unknown"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Only present if an error condition has occurred"
+        }
       ]
     },
     {
       "name": "DALI",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
+        {
+          "key": "cg_count",
+          "type": "number",
+          "nullable": true,
+          "description": "Number of scanned control gears (null if scan has never been executed)"
+        },
+        {
+          "key": "scan.cg_count",
+          "type": "number",
+          "description": "Number of found control gears during scan"
+        },
+        {
+          "key": "scan.started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the scan process (in UTC)"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Shown only if at least one error is present. May contain control_gear_missing, driver"
+        }
+      ],
+      "statusFields": [
         {
           "key": "cg_count",
           "type": "number",
@@ -324,8 +580,32 @@
       "name": "DevicePower",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the DevicePower component instance"
+        },
+        {
+          "key": "battery.percent",
+          "type": "number",
+          "nullable": true,
+          "description": "Battery charge level in % (null if valid value could not be obtained)"
+        },
+        {
+          "key": "external",
+          "type": "object",
+          "description": "Information about the external power source (only available if external power source is supported)"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Whether external power source is connected"
+        }
+      ],
+      "statusFields": [
         {
           "key": "id",
           "type": "number",
@@ -353,6 +633,7 @@
       "name": "EM",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -465,12 +746,197 @@
           "type": "string",
           "description": "Select the type of Shelly current transformer attached to the device."
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the EM component instance"
+        },
+        {
+          "key": "a_current",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase A current measurement value, [A]"
+        },
+        {
+          "key": "a_voltage",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase A voltage measurement value, [V]"
+        },
+        {
+          "key": "a_act_power",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase A active power measurement value, [W]"
+        },
+        {
+          "key": "a_aprt_power",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase A apparent power measurement value, [VA]"
+        },
+        {
+          "key": "a_pf",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase A power factor measurement value"
+        },
+        {
+          "key": "a_freq",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase A network frequency measurement value"
+        },
+        {
+          "key": "a_errors",
+          "type": "array",
+          "description": "Phase A error conditions occurred. May contain out_of_range:active_power, out_of_range:apparent_power, out_of_range:voltage, out_of_range:current,(shown if at least one error is present)"
+        },
+        {
+          "key": "a_flags",
+          "type": "array",
+          "description": "Phase A flags. May contain: undervoltage, overvoltage, undercurrent, overcurrent, underpower, overpower (shown if at least one flag is set)"
+        },
+        {
+          "key": "b_current",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase B current measurement value, [A]"
+        },
+        {
+          "key": "b_voltage",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase B voltage measurement value, [V]"
+        },
+        {
+          "key": "b_act_power",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase B active power measurement value, [W]"
+        },
+        {
+          "key": "b_aprt_power",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase B apparent power measurement value, [VA]"
+        },
+        {
+          "key": "b_pf",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase B power factor measurement value"
+        },
+        {
+          "key": "b_freq",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase B network frequency measurement value"
+        },
+        {
+          "key": "b_errors",
+          "type": "array",
+          "description": "Phase B error conditions occurred. May contain out_of_range:active_power, out_of_range:apparent_power, out_of_range:voltage, out_of_range:current,(shown if at least one error is present)"
+        },
+        {
+          "key": "b_flags",
+          "type": "array",
+          "description": "Phase B flags. May contain: undervoltage, overvoltage, undercurrent, overcurrent, underpower, overpower (shown if at least one flag is set)"
+        },
+        {
+          "key": "c_current",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase C current measurement value, [A]"
+        },
+        {
+          "key": "c_voltage",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase C voltage measurement value, [V]"
+        },
+        {
+          "key": "c_act_power",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase C active power measurement value, [W]"
+        },
+        {
+          "key": "c_aprt_power",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase C apparent power measurement value, [VA]"
+        },
+        {
+          "key": "c_pf",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase C power factor measurement value"
+        },
+        {
+          "key": "c_freq",
+          "type": "number",
+          "nullable": true,
+          "description": "Phase C network frequency measurement value"
+        },
+        {
+          "key": "c_errors",
+          "type": "array",
+          "description": "Phase C error conditions occurred. May contain out_of_range:active_power, out_of_range:apparent_power, out_of_range:voltage, out_of_range:current,(shown if at least one error is present)"
+        },
+        {
+          "key": "c_flags",
+          "type": "array",
+          "description": "Phase C flags. May contain: undervoltage, overvoltage, undercurrent, overcurrent, underpower, overpower (shown if at least one flag is set)"
+        },
+        {
+          "key": "n_current",
+          "type": "number",
+          "nullable": true,
+          "description": "Neutral current measurement value, [A] (if supported)"
+        },
+        {
+          "key": "n_errors",
+          "type": "array",
+          "description": "Neutral error conditions occurred. May contain out_of_range:current,(shown if error is present)"
+        },
+        {
+          "key": "total_current",
+          "type": "number",
+          "nullable": true,
+          "description": "Sum of the current on all phases(excluding neutral readings if available)"
+        },
+        {
+          "key": "total_act_power",
+          "type": "number",
+          "nullable": true,
+          "description": "Sum of the active power on all phases"
+        },
+        {
+          "key": "total_aprt_power",
+          "type": "number",
+          "nullable": true,
+          "description": "Sum of the apparent power on all phases"
+        },
+        {
+          "key": "user_calibrated_phase",
+          "type": "array",
+          "description": "Indicates which phase was user calibrated"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "EM component error conditions. May contain power_meter_failure, phase_sequence or ct_type_not_set. Present in status only if not empty."
+        }
       ]
     },
     {
       "name": "EM1",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -512,14 +978,95 @@
           "nullable": true,
           "description": "['under','over'] thresholds"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the EM1 component instance"
+        },
+        {
+          "key": "current",
+          "type": "number",
+          "nullable": true,
+          "description": "Current measurement value, [A]"
+        },
+        {
+          "key": "voltage",
+          "type": "number",
+          "nullable": true,
+          "description": "Voltage measurement value, [V]"
+        },
+        {
+          "key": "act_power",
+          "type": "number",
+          "nullable": true,
+          "description": "Active power measurement value, [W]"
+        },
+        {
+          "key": "aprt_power",
+          "type": "number",
+          "nullable": true,
+          "description": "Apparent power measurement value, [VA] (if applicable)"
+        },
+        {
+          "key": "pf",
+          "type": "number",
+          "nullable": true,
+          "description": "Power factor measurement value (if applicable)"
+        },
+        {
+          "key": "freq",
+          "type": "number",
+          "nullable": true,
+          "description": "Network frequency measurement value (if applicable)"
+        },
+        {
+          "key": "calibration",
+          "type": "string",
+          "description": "Indicates factory calibration or which EM1:id is the source for calibration"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "EM1 component error conditions. May contain power_meter_failure, out_of_range:act_power, out_of_range:aprt_power, out_of_range:voltage, out_of_range:current or ct_type_not_set. Present in status only if not empty."
+        },
+        {
+          "key": "flags",
+          "type": "array",
+          "description": "Communicates present conditions, shown if at least one flag is set. Depending on component capabilities may contain: count_disabled, undervoltage, overvoltage, undercurrent, overcurrent, underpower, overpower"
+        }
       ]
     },
     {
       "name": "EM1Data",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the EM1Data component instance"
+        },
+        {
+          "key": "total_act_energy",
+          "type": "number",
+          "description": "Total active energy, Wh"
+        },
+        {
+          "key": "total_act_ret_energy",
+          "type": "number",
+          "description": "Total active returned energy, Wh"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Error condition occurred. May contain database_error or ct_type_not_set, (shown if the error is present)."
+        }
+      ],
+      "statusFields": [
         {
           "key": "id",
           "type": "number",
@@ -546,8 +1093,61 @@
       "name": "EMData",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the EMData component instance"
+        },
+        {
+          "key": "a_total_act_energy",
+          "type": "number",
+          "description": "Total active energy on phase A, Wh"
+        },
+        {
+          "key": "a_total_act_ret_energy",
+          "type": "number",
+          "description": "Total active returned energy on phase A, Wh"
+        },
+        {
+          "key": "b_total_act_energy",
+          "type": "number",
+          "description": "Total active energy on phase B, Wh"
+        },
+        {
+          "key": "b_total_act_ret_energy",
+          "type": "number",
+          "description": "Total active returned energy on phase B, Wh"
+        },
+        {
+          "key": "c_total_act_energy",
+          "type": "number",
+          "description": "Total active energy on phase C, Wh"
+        },
+        {
+          "key": "c_total_act_ret_energy",
+          "type": "number",
+          "description": "Total active returned energy on phase C, Wh"
+        },
+        {
+          "key": "total_act",
+          "type": "number",
+          "description": "Total active energy on all phases, Wh"
+        },
+        {
+          "key": "total_act_ret",
+          "type": "number",
+          "description": "Total active returned energy on all phases, Wh"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Error condition occurred. May contain database_error or ct_type_not_set, (shown if the error is present)."
+        }
+      ],
+      "statusFields": [
         {
           "key": "id",
           "type": "number",
@@ -604,6 +1204,7 @@
       "name": "Eth",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
@@ -659,12 +1260,21 @@
           "type": "string",
           "description": "DHCP range ending IP address for the DHCP server in server mode. Applicable only for server mode. Required if not already set"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "ip",
+          "type": "string",
+          "nullable": true,
+          "description": "IP of the device in the network"
+        }
       ]
     },
     {
       "name": "Flood",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -689,18 +1299,42 @@
           "type": "number",
           "description": "Time waited before reporting flood status. For this period status must be steady. Accepted values are between 0-60 sec with step 5 sec"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Flood component instance"
+        },
+        {
+          "key": "alarm",
+          "type": "boolean",
+          "description": "Alarm state"
+        },
+        {
+          "key": "mute",
+          "type": "boolean",
+          "description": "Mute state"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Error conditions occurred. May contain cable_unplugged, (shown if at least one error is present)"
+        }
       ]
     },
     {
       "name": "HTTP",
       "hasGetConfig": false,
       "hasSetConfig": false,
+      "hasGetStatus": false,
       "keyed": false
     },
     {
       "name": "Humidity",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -724,12 +1358,31 @@
           "type": "number",
           "description": "Humidity offset in %. Value is applied to measured humidity. Accepted range is device-specific, default [-50.0..50.0]% unless specified otherwise"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Humidity component instance"
+        },
+        {
+          "key": "rh",
+          "type": "number",
+          "nullable": true,
+          "description": "Relative humidity in % (null if valid value could not be obtained)"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Shown only if at least one error is present. May contain out_of_range, read when there is problem reading sensor"
+        }
       ]
     },
     {
       "name": "Illuminance",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -752,12 +1405,37 @@
           "type": "number",
           "description": "bright threshold in lux. Accepted range is device-specific"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Illuminance component instance"
+        },
+        {
+          "key": "lux",
+          "type": "number",
+          "nullable": true,
+          "description": "Illuminance in lux (null if valid value could not be obtained) (if applicable)"
+        },
+        {
+          "key": "illumination",
+          "type": "string",
+          "nullable": true,
+          "description": "Illuminance level interpreted according to dark_thr/bright_thr (null if valid value could not be obtained): lux below dark_thr is interpreted as dark, lux between dark_thr and bright_thr is interpreted as twilight, lux above bright_thr is interpreted as bright"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Shown only if at least one error is present. May contain out_of_range, read when there is problem reading sensor"
+        }
       ]
     },
     {
       "name": "Input",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -858,18 +1536,88 @@
           "nullable": true,
           "description": "Unit of the transformed value (status.xfreq), for example, \"m/s\". Accepted range: null or [0..20] chars. Both null and \"\" mean value transformation is disabled."
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Input component instance"
+        },
+        {
+          "key": "state",
+          "type": "boolean",
+          "nullable": true,
+          "description": "(only for type switch, button) State of the input (null if the input instance is stateless, i.e. for type button)"
+        },
+        {
+          "key": "percent",
+          "type": "number",
+          "nullable": true,
+          "description": "(only for type analog) Analog value in percent (null if the valid value could not be obtained)"
+        },
+        {
+          "key": "xpercent",
+          "type": "number",
+          "nullable": true,
+          "description": "(only for type analog) percent transformed with config.xpercent.expr. Present only when both config.xpercent.expr and config.xpercent.unit are set to non-empty values. null if config.xpercent.expr can not be evaluated."
+        },
+        {
+          "key": "counts.total",
+          "type": "number",
+          "description": "Total pulses counted."
+        },
+        {
+          "key": "counts.xtotal",
+          "type": "number",
+          "nullable": true,
+          "description": "total transformed with config.xcounts.expr. Present only when both config.xcounts.expr and config.xcounts.unit are set to non-empty values. null if config.xcounts.expr can not be evaluated."
+        },
+        {
+          "key": "counts.by_minute",
+          "type": "array",
+          "description": "Pulse counts for the last three complete minutes. The 0-th element indicates the counts accumulated during the minute preceding minute_ts. Present only if the device clock is synced."
+        },
+        {
+          "key": "counts.xby_minute",
+          "type": "number",
+          "nullable": true,
+          "description": "by_minute values transformed with config.xcounts.expr. Present only when both config.xcounts.expr and config.xcounts.unit is set to non-empty values and the device clock is synced. null if config.xcounts.expr can not be evaluated."
+        },
+        {
+          "key": "counts.minute_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the start of the current minute (in UTC)."
+        },
+        {
+          "key": "freq",
+          "type": "number",
+          "description": "(only for type count) Measured frequency in Hz. Determined at every elapsed freq_window period."
+        },
+        {
+          "key": "xfreq",
+          "type": "number",
+          "nullable": true,
+          "description": "(only for type count) freq transformed with config.xfreq.expr. Present only when both config.xfreq.expr and config.xfreq.unit are set to non-empty values. null if config.xfreq.expr can not be evaluated."
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Shown only if at least one error is present. May contain out_of_range, read"
+        }
       ]
     },
     {
       "name": "KVS",
       "hasGetConfig": false,
       "hasSetConfig": false,
+      "hasGetStatus": false,
       "keyed": false
     },
     {
       "name": "Light",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -1012,12 +1760,116 @@
           "type": "number",
           "description": "Time period during which warmup_brightness will be on. Range 20-1000 milliseconds."
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Light component instance"
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "description": "Source of the last command, for example: init, WS_in, http, ..."
+        },
+        {
+          "key": "tag",
+          "type": "string",
+          "nullable": true,
+          "description": "Tag used to identify the origin of a state change"
+        },
+        {
+          "key": "output",
+          "type": "boolean",
+          "description": "True if the output channel is currently on, false otherwise"
+        },
+        {
+          "key": "brightness",
+          "type": "number",
+          "description": "Current brightness level (in percent)"
+        },
+        {
+          "key": "timer_started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the timer (in UTC) (shown if the timer is triggered)"
+        },
+        {
+          "key": "timer_duration",
+          "type": "number",
+          "description": "Duration of the timer in seconds (shown if the timer is triggered)"
+        },
+        {
+          "key": "transition.target.output",
+          "type": "boolean",
+          "description": "True if the output channel becomes on, false otherwise"
+        },
+        {
+          "key": "transition.target.brightness",
+          "type": "number",
+          "description": "Brightness level (in percent)"
+        },
+        {
+          "key": "transition.started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the transition (in UTC)"
+        },
+        {
+          "key": "transition.duration",
+          "type": "number",
+          "description": "Duration of the transition in seconds"
+        },
+        {
+          "key": "aenergy.total",
+          "type": "number",
+          "description": "Total energy consumed in Watt-hours"
+        },
+        {
+          "key": "aenergy.by_minute",
+          "type": "array",
+          "description": "Energy consumption in Milliwatt-hours for the last three complete minutes. The 0-th element indicates the counts accumulated during the minute preceding minute_ts. Present only if the device clock is synced."
+        },
+        {
+          "key": "aenergy.minute_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the start of the current minute (in UTC)."
+        },
+        {
+          "key": "apower",
+          "type": "number",
+          "description": "Last measured instantaneous active power (in Watts) delivered to the attached load (shown if applicable)"
+        },
+        {
+          "key": "voltage",
+          "type": "number",
+          "description": "Last measured voltage in Volts (shown if applicable)"
+        },
+        {
+          "key": "current",
+          "type": "number",
+          "description": "Last measured current in Amperes (shown if applicable)"
+        },
+        {
+          "key": "calibration.progess",
+          "type": "number",
+          "description": "Calibration progress in percent"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Error conditions occurred, shown if at least one error is present. Depending on component capabilities may contain: overtemp, overpower, overvoltage, undervoltage, overcurrent, unsupported_load, cal_abort:interrupted, cal_abort:power_read, cal_abort:no_load, cal_abort:no_synchro, cal_abort:non_dimmable, cal_abort:overpower, cal_abort:unsupported_load"
+        },
+        {
+          "key": "flags",
+          "type": "array",
+          "description": "Communicates present conditions, shown if at least one flag is set. Depending on component capabilites may contain: no_load, uncalibrated"
+        }
       ]
     },
     {
       "name": "Matter",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
@@ -1025,24 +1877,45 @@
           "type": "boolean",
           "description": "Set true to enable."
         }
+      ],
+      "statusFields": [
+        {
+          "key": "num_fabrics",
+          "type": "number",
+          "description": "The number of Matter fabrics that the device has joined."
+        },
+        {
+          "key": "commissionable",
+          "type": "boolean",
+          "description": "true if the device can be joined to an existing Matter fabric. false means that the device is either already joined, or the commissioning window is closed due to timeout. In the latter case, the device should be restarted before adding to a fabric."
+        }
       ]
     },
     {
       "name": "MbRtuClient",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false
     },
     {
       "name": "Modbus",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
           "key": "enable",
           "type": "boolean",
           "description": "Set true to enable."
+        }
+      ],
+      "statusFields": [
+        {
+          "key": "enabled",
+          "type": "boolean",
+          "description": "true if enabled, false if disabled."
         }
       ]
     },
@@ -1051,6 +1924,7 @@
       "goPrefix": "MQTT",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
@@ -1090,12 +1964,20 @@
           "type": "boolean",
           "description": "Enable the MQTT control feature. Defalut value: true"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "connected",
+          "type": "boolean",
+          "description": "True if the device is MQTT connected, false otherwise"
+        }
       ]
     },
     {
       "name": "PM1",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -1132,12 +2014,90 @@
           "nullable": true,
           "description": "['under','over'] thresholds"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the PM1 component instance"
+        },
+        {
+          "key": "voltage",
+          "type": "number",
+          "description": "Last measured voltage in Volts"
+        },
+        {
+          "key": "current",
+          "type": "number",
+          "description": "Last measured current in Amperes"
+        },
+        {
+          "key": "apower",
+          "type": "number",
+          "description": "Last measured instantaneous active power (in Watts) delivered to the attached load"
+        },
+        {
+          "key": "aprtpower",
+          "type": "number",
+          "description": "Last measured instantaneous apparent power (in Volt-Amperes) delivered to the attached load (shown if applicable)"
+        },
+        {
+          "key": "pf",
+          "type": "number",
+          "description": "Last measured power factor (shown if applicable)"
+        },
+        {
+          "key": "freq",
+          "type": "number",
+          "description": "Last measured network frequency (shown if applicable)"
+        },
+        {
+          "key": "aenergy.total",
+          "type": "number",
+          "description": "Total energy consumed in Watt-hours"
+        },
+        {
+          "key": "aenergy.by_minute",
+          "type": "array",
+          "description": "Energy consumption in Milliwatt-hours for the last three complete minutes. The 0-th element indicates the counts accumulated during the minute preceding minute_ts. Present only if the device clock is synced."
+        },
+        {
+          "key": "aenergy.minute_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the start of the current minute (in UTC)."
+        },
+        {
+          "key": "ret_aenergy.total",
+          "type": "number",
+          "description": "Total returned energy consumed in Watt-hours"
+        },
+        {
+          "key": "ret_aenergy.by_minute",
+          "type": "array",
+          "description": "Returned energy consumption by minute (in Milliwatt-hours) for the last three minutes (the lower the index of the element in the array, the closer to the current moment the minute)"
+        },
+        {
+          "key": "ret_aenergy.minute_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the start of the current minute (in UTC)."
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Error conditions occurred. May contain power_meter_failure, out_of_range:voltage, out_of_range:current, out_of_range:aprtpower, out_of_range:apower(shown if at least one error is present)"
+        },
+        {
+          "key": "flags",
+          "type": "array",
+          "description": "Communicates present conditions, shown if at least one flag is set. May contain: undervoltage, overvoltage, undercurrent, overcurrent, underpower, overpower"
+        }
       ]
     },
     {
       "name": "Pill",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
@@ -1166,6 +2126,7 @@
       "name": "Presence",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
@@ -1295,12 +2256,30 @@
           "type": "string",
           "description": "Default presence zone key. (readonly)"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "live_track.timer_started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of live tracking (in UTC)"
+        },
+        {
+          "key": "live_track.timer_duration",
+          "type": "number",
+          "description": "Duration of live tracking before stop (in seconds)"
+        },
+        {
+          "key": "live_track.interval",
+          "type": "number",
+          "description": "Interval between events (in seconds)"
+        }
       ]
     },
     {
       "name": "PresenceZone",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -1341,12 +2320,30 @@
           "type": "array",
           "description": "Zone area definition"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the component instance"
+        },
+        {
+          "key": "value",
+          "type": "boolean",
+          "description": "State of zone presence"
+        },
+        {
+          "key": "num_objects",
+          "type": "number",
+          "description": "Number of objects located in zone"
+        }
       ]
     },
     {
       "name": "RGB",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -1466,12 +2463,116 @@
           "type": "number",
           "description": "Limit (in Volts) over which overvoltage condition occurs (shown if applicable)"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the RGB component instance"
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "description": "Source of the last command, for example: init, WS_in, http, ..."
+        },
+        {
+          "key": "tag",
+          "type": "string",
+          "nullable": true,
+          "description": "Tag used to identify the origin of a state change"
+        },
+        {
+          "key": "output",
+          "type": "boolean",
+          "description": "True if the output channel is currently on, false otherwise"
+        },
+        {
+          "key": "rgb",
+          "type": "array",
+          "description": "Current Red, Green, Blue [r,g,b] level 0..255"
+        },
+        {
+          "key": "brightness",
+          "type": "number",
+          "description": "Current brightness level (in percent)"
+        },
+        {
+          "key": "timer_started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the timer (in UTC) (shown if the timer is triggered)"
+        },
+        {
+          "key": "timer_duration",
+          "type": "number",
+          "description": "Duration of the timer in seconds (shown if the timer is triggered)"
+        },
+        {
+          "key": "transition.target.output",
+          "type": "boolean",
+          "description": "True if the output channel becomes on, false otherwise"
+        },
+        {
+          "key": "transition.target.rgb",
+          "type": "array",
+          "description": "Red, Green, Blue [r,g,b] level 0..255"
+        },
+        {
+          "key": "transition.target.brightness",
+          "type": "number",
+          "description": "Brightness level (in percent)"
+        },
+        {
+          "key": "transition.started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the transition (in UTC)"
+        },
+        {
+          "key": "transition.duration",
+          "type": "number",
+          "description": "Duration of the transition in seconds"
+        },
+        {
+          "key": "aenergy.total",
+          "type": "number",
+          "description": "Total energy consumed in Watt-hours"
+        },
+        {
+          "key": "aenergy.by_minute",
+          "type": "array",
+          "description": "Energy consumption in Milliwatt-hours for the last three complete minutes. The 0-th element indicates the counts accumulated during the minute preceding minute_ts. Present only if the device clock is synced."
+        },
+        {
+          "key": "aenergy.minute_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the start of the current minute (in UTC)."
+        },
+        {
+          "key": "apower",
+          "type": "number",
+          "description": "Last measured instantaneous active power (in Watts) delivered to the attached load (shown if applicable)"
+        },
+        {
+          "key": "voltage",
+          "type": "number",
+          "description": "Last measured voltage in Volts (shown if applicable)"
+        },
+        {
+          "key": "current",
+          "type": "number",
+          "description": "Last measured current in Amperes (shown if applicable)"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Error conditions occurred. May contain overtemp, (shown if at least one error is present)"
+        }
       ]
     },
     {
       "name": "RGBCCT",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -1562,12 +2663,116 @@
           "type": "array",
           "description": "Containing 2 elements of type string, the first element indicates the start of the period during which the night mode will be active, the second indicates the end of that period. Both start and end are strings in the format HH:MM, where HH and MM are hours and minutes with optinal leading zeros"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the RGBCCT component instance"
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "description": "Source of the last command, for example: init, WS_in, http, ..."
+        },
+        {
+          "key": "tag",
+          "type": "string",
+          "nullable": true,
+          "description": "Tag used to identify the origin of a state change"
+        },
+        {
+          "key": "mode",
+          "type": "string",
+          "description": "Current operating mode of the light output, rgb or cct"
+        },
+        {
+          "key": "output",
+          "type": "boolean",
+          "description": "True if the output channel is currently on, false otherwise"
+        },
+        {
+          "key": "rgb",
+          "type": "array",
+          "description": "Current Red, Green, Blue [r,g,b] level 0..255"
+        },
+        {
+          "key": "ct",
+          "type": "number",
+          "description": "Current color temperature level (in Kelvin)"
+        },
+        {
+          "key": "brightness",
+          "type": "number",
+          "description": "Current brightness level (in percent)"
+        },
+        {
+          "key": "timer_started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the timer (in UTC) (shown if the timer is triggered)"
+        },
+        {
+          "key": "timer_duration",
+          "type": "number",
+          "description": "Duration of the timer in seconds (shown if the timer is triggered)"
+        },
+        {
+          "key": "transition.target.output",
+          "type": "boolean",
+          "description": "True if the output channel becomes on, false otherwise"
+        },
+        {
+          "key": "transition.target.rgb",
+          "type": "array",
+          "description": "Red, Green, Blue [r,g,b] level 0..255"
+        },
+        {
+          "key": "transition.target.ct",
+          "type": "number",
+          "description": "Color temperature level (in Kelvin)"
+        },
+        {
+          "key": "transition.target.brightness",
+          "type": "number",
+          "description": "Brightness level (in percent)"
+        },
+        {
+          "key": "transition.started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the transition (in UTC)"
+        },
+        {
+          "key": "transition.duration",
+          "type": "number",
+          "description": "Duration of the transition in seconds"
+        },
+        {
+          "key": "aenergy.total",
+          "type": "number",
+          "description": "Total energy consumed in Watt-hours"
+        },
+        {
+          "key": "aenergy.by_minute",
+          "type": "array",
+          "description": "Energy consumption in Milliwatt-hours for the last three complete minutes. The 0-th element indicates the counts accumulated during the minute preceding minute_ts. Present only if the device clock is synced."
+        },
+        {
+          "key": "aenergy.minute_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the start of the current minute (in UTC)."
+        },
+        {
+          "key": "apower",
+          "type": "number",
+          "description": "Last measured instantaneous active power (in Watts) delivered to the attached load (shown if applicable)"
+        }
       ]
     },
     {
       "name": "RGBW",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -1699,18 +2904,133 @@
           "type": "number",
           "description": "Limit (in Volts) over which overvoltage condition occurs (shown if applicable)"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the RGBW component instance"
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "description": "Source of the last command, for example: init, WS_in, http, ..."
+        },
+        {
+          "key": "tag",
+          "type": "string",
+          "nullable": true,
+          "description": "Tag used to identify the origin of a state change"
+        },
+        {
+          "key": "output",
+          "type": "boolean",
+          "description": "True if the output channel is currently on, false otherwise"
+        },
+        {
+          "key": "rgb",
+          "type": "array",
+          "description": "Current Red, Green, Blue [r,g,b] level 0..255"
+        },
+        {
+          "key": "brightness",
+          "type": "number",
+          "description": "Current brightness level (in percent)"
+        },
+        {
+          "key": "white",
+          "type": "number",
+          "description": "Current white level 0..255"
+        },
+        {
+          "key": "timer_started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the timer (in UTC) (shown if the timer is triggered)"
+        },
+        {
+          "key": "timer_duration",
+          "type": "number",
+          "description": "Duration of the timer in seconds (shown if the timer is triggered)"
+        },
+        {
+          "key": "transition.target.output",
+          "type": "boolean",
+          "description": "True if the output channel becomes on, false otherwise"
+        },
+        {
+          "key": "transition.target.rgb",
+          "type": "array",
+          "description": "Red, Green, Blue [r,g,b] level 0..255"
+        },
+        {
+          "key": "transition.target.brightness",
+          "type": "number",
+          "description": "Brightness level (in percent)"
+        },
+        {
+          "key": "transition.target.white",
+          "type": "number",
+          "description": "White level 0..255"
+        },
+        {
+          "key": "transition.started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the transition (in UTC)"
+        },
+        {
+          "key": "transition.duration",
+          "type": "number",
+          "description": "Duration of the transition in seconds"
+        },
+        {
+          "key": "aenergy.total",
+          "type": "number",
+          "description": "Total energy consumed in Watt-hours"
+        },
+        {
+          "key": "aenergy.by_minute",
+          "type": "array",
+          "description": "Energy consumption in Milliwatt-hours for the last three complete minutes. The 0-th element indicates the counts accumulated during the minute preceding minute_ts. Present only if the device clock is synced."
+        },
+        {
+          "key": "aenergy.minute_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the start of the current minute (in UTC)."
+        },
+        {
+          "key": "apower",
+          "type": "number",
+          "description": "Last measured instantaneous active power (in Watts) delivered to the attached load (shown if applicable)"
+        },
+        {
+          "key": "voltage",
+          "type": "number",
+          "description": "Last measured voltage in Volts (shown if applicable)"
+        },
+        {
+          "key": "current",
+          "type": "number",
+          "description": "Last measured current in Amperes (shown if applicable)"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Error conditions occurred. May contain overtemp, (shown if at least one error is present)"
+        }
       ]
     },
     {
       "name": "Schedule",
       "hasGetConfig": false,
       "hasSetConfig": false,
+      "hasGetStatus": false,
       "keyed": false
     },
     {
       "name": "Script",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -1728,12 +3048,45 @@
           "type": "boolean",
           "description": "true if the script runs by default on boot, false otherwise"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the script"
+        },
+        {
+          "key": "running",
+          "type": "boolean",
+          "description": "true if the script is currently running, false otherwise"
+        },
+        {
+          "key": "mem_used",
+          "type": "number",
+          "description": "Bytes of memory currently used by this script"
+        },
+        {
+          "key": "mem_peak",
+          "type": "number",
+          "description": "Peak memory used by this script since it was started"
+        },
+        {
+          "key": "mem_free",
+          "type": "number",
+          "description": "Available memory for all scripts (memory pool for JS is shared among script instances)"
+        },
+        {
+          "key": "cpu",
+          "type": "number",
+          "description": "(since 1.7.0) Portion of time spent in the JS interpreter of this script instance, calculated every 10 seconds"
+        }
       ]
     },
     {
       "name": "Serial",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": false,
       "keyed": true,
       "fields": [
         {
@@ -1782,12 +3135,14 @@
       "name": "Shelly",
       "hasGetConfig": true,
       "hasSetConfig": false,
+      "hasGetStatus": true,
       "keyed": false
     },
     {
       "name": "Smoke",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -1801,12 +3156,30 @@
           "nullable": true,
           "description": "Name of the Smoke instance. name length should not exceed 64 chars"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Smoke component instance"
+        },
+        {
+          "key": "alarm",
+          "type": "boolean",
+          "description": "Alarm state"
+        },
+        {
+          "key": "mute",
+          "type": "boolean",
+          "description": "Mute state"
+        }
       ]
     },
     {
       "name": "Switch",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -1913,12 +3286,136 @@
           "type": "number",
           "description": "Active power threshold (in Watts) over which on_above_thr counter is incremented. Default value 100. (shown if applicable)"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Switch component instance"
+        },
+        {
+          "key": "source",
+          "type": "string",
+          "description": "Source of the last command, for example: init, WS_in, http, ..."
+        },
+        {
+          "key": "tag",
+          "type": "string",
+          "nullable": true,
+          "description": "Tag used to identify the origin of a state change"
+        },
+        {
+          "key": "output",
+          "type": "boolean",
+          "description": "true if the output channel is currently on, false otherwise"
+        },
+        {
+          "key": "timer_started_at",
+          "type": "number",
+          "description": "Unix timestamp, start time of the timer (in UTC) (shown if the timer is triggered)"
+        },
+        {
+          "key": "timer_duration",
+          "type": "number",
+          "description": "Duration of the timer in seconds (shown if the timer is triggered)"
+        },
+        {
+          "key": "apower",
+          "type": "number",
+          "description": "Last measured instantaneous active power (in Watts) delivered to the attached load (shown if applicable)"
+        },
+        {
+          "key": "voltage",
+          "type": "number",
+          "description": "Last measured voltage in Volts (shown if applicable)"
+        },
+        {
+          "key": "current",
+          "type": "number",
+          "description": "Last measured current in Amperes (shown if applicable)"
+        },
+        {
+          "key": "pf",
+          "type": "number",
+          "description": "Last measured power factor (shown if applicable)"
+        },
+        {
+          "key": "freq",
+          "type": "number",
+          "description": "Last measured network frequency in Hz (shown if applicable)"
+        },
+        {
+          "key": "aenergy.total",
+          "type": "number",
+          "description": "Total energy consumed in Watt-hours"
+        },
+        {
+          "key": "aenergy.by_minute",
+          "type": "array",
+          "description": "Total energy flow in Milliwatt-hours for the last three complete minutes. The 0-th element indicates the counts accumulated during the minute preceding minute_ts. Present only if the device clock is synced."
+        },
+        {
+          "key": "aenergy.minute_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the start of the current minute (in UTC)."
+        },
+        {
+          "key": "ret_aenergy.total",
+          "type": "number",
+          "description": "Total returned energy consumed in Watt-hours"
+        },
+        {
+          "key": "ret_aenergy.by_minute",
+          "type": "array",
+          "description": "Returned energy in Milliwatt-hours for the last three complete minutes. The 0-th element indicates the counts accumulated during the minute preceding minute_ts. Present only if the device clock is synced."
+        },
+        {
+          "key": "ret_aenergy.minute_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the start of the current minute (in UTC)."
+        },
+        {
+          "key": "counts.on_time",
+          "type": "number",
+          "description": "Total accumulated ON time in minutes"
+        },
+        {
+          "key": "counts.on_time_rst_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the last reset of the on_time counter (in UTC)."
+        },
+        {
+          "key": "counts.switch_on",
+          "type": "number",
+          "description": "Total accumulated OFF to ON cycles"
+        },
+        {
+          "key": "counts.switch_on_rst_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the last reset of the switch_on counter (in UTC)."
+        },
+        {
+          "key": "counts.on_above_thr",
+          "type": "number",
+          "description": "Total accumulated ON time above power threshold in minutes"
+        },
+        {
+          "key": "counts.on_above_thr_rst_ts",
+          "type": "number",
+          "description": "Unix timestamp marking the last reset of the on_above_thr counter (in UTC)."
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Error conditions occurred. May contain overtemp, overpower, overvoltage, undervoltage, (shown if at least one error is present)"
+        }
       ]
     },
     {
       "name": "Sys",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
@@ -2039,12 +3536,120 @@
           "type": "number",
           "description": "Configuration revision. This number will be incremented for every configuration change of a device component. If the new config value is the same as the old one there will be no change of this property. Can not be modified explicitly by a call to Sys.SetConfig"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "mac",
+          "type": "string",
+          "description": "Mac address of the device"
+        },
+        {
+          "key": "restart_required",
+          "type": "boolean",
+          "description": "True if restart is required, false otherwise"
+        },
+        {
+          "key": "time",
+          "type": "string",
+          "description": "Current time in the format HH:MM (24-hour time format in the current timezone with leading zero). null when time is not synced from NTP server."
+        },
+        {
+          "key": "unixtime",
+          "type": "number",
+          "description": "Unix timestamp (in UTC), null when time is not synced from NTP server."
+        },
+        {
+          "key": "last_sync_ts",
+          "type": "number",
+          "description": "Last time the system synced time from NTP server (in UTC), null when time is not synced from NTP server."
+        },
+        {
+          "key": "uptime",
+          "type": "number",
+          "description": "Time in seconds since last reboot"
+        },
+        {
+          "key": "ram_size",
+          "type": "number",
+          "description": "Total size of the RAM in the system in Bytes"
+        },
+        {
+          "key": "ram_free",
+          "type": "number",
+          "description": "Size of the free RAM in the system in Bytes"
+        },
+        {
+          "key": "fs_size",
+          "type": "number",
+          "description": "Total size of the file system in Bytes"
+        },
+        {
+          "key": "fs_free",
+          "type": "number",
+          "description": "Size of the free file system in Bytes"
+        },
+        {
+          "key": "cfg_rev",
+          "type": "number",
+          "description": "Configuration revision number"
+        },
+        {
+          "key": "kvs_rev",
+          "type": "number",
+          "description": "KVS (Key-Value Store) revision number"
+        },
+        {
+          "key": "schedule_rev",
+          "type": "number",
+          "description": "Schedules revision number, present if schedules are enabled"
+        },
+        {
+          "key": "webhook_rev",
+          "type": "number",
+          "description": "Webhooks revision number, present if webhooks are enabled"
+        },
+        {
+          "key": "knx_rev",
+          "type": "number",
+          "description": "KNX configuration revision number, present on devices supporting KNX with KNX enabled"
+        },
+        {
+          "key": "btrelay_rev",
+          "type": "number",
+          "description": "BLE cloud relay configuration revision number, present on devices supporting BLE cloud relay functionality"
+        },
+        {
+          "key": "bthc_rev",
+          "type": "number",
+          "description": "BTHomeControl configuration revision number, present when device supports control with BLU devices"
+        },
+        {
+          "key": "available_updates.beta.version",
+          "type": "string",
+          "description": "Version of the new firmware"
+        },
+        {
+          "key": "available_updates.stable.version",
+          "type": "string",
+          "description": "Version of the new firmware"
+        },
+        {
+          "key": "wakeup_period",
+          "type": "number",
+          "description": "Period (in seconds) at which device wakes up and sends \"keep-alive\" packet to cloud, readonly. Count starts from last full wakeup"
+        },
+        {
+          "key": "utc_offset",
+          "type": "number",
+          "description": "Time offset (in seconds). This is the difference between the device local time and UTC"
+        }
       ]
     },
     {
       "name": "Temperature",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -2058,12 +3663,25 @@
           "nullable": true,
           "description": "Name of the Temperature instance. name length should not exceed 64 chars"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Temperature component instance"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Shown only if at least one error is present. May contain out_of_range, read when there is problem reading sensor"
+        }
       ]
     },
     {
       "name": "Ui",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": false,
       "keyed": false,
       "fields": [
         {
@@ -2077,6 +3695,7 @@
       "name": "Voltmeter",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": true,
       "fields": [
         {
@@ -2112,12 +3731,37 @@
           "nullable": true,
           "description": "Unit of the transformed value (status.xvoltage), for example \"m/s\". Accepted range: null or [0..20] chars. Both null and \"\" mean value transformation is disabled."
         }
+      ],
+      "statusFields": [
+        {
+          "key": "id",
+          "type": "number",
+          "description": "Id of the Voltmeter component instance"
+        },
+        {
+          "key": "voltage",
+          "type": "number",
+          "nullable": true,
+          "description": "Voltage in volts (null if valid value could not be obtained)"
+        },
+        {
+          "key": "xvoltage",
+          "type": "number",
+          "nullable": true,
+          "description": "voltage transformed with config.xvoltage.expr. Present only when both config.xvoltage.expr and config.xvoltage.unit are set to non-empty values. null if config.xvoltage.expr can not be evaluated."
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Shown only if at least one error is present. May contain out_of_range, read when there is problem reading sensor"
+        }
       ]
     },
     {
       "name": "Webhook",
       "hasGetConfig": false,
       "hasSetConfig": false,
+      "hasGetStatus": false,
       "keyed": false
     },
     {
@@ -2125,6 +3769,7 @@
       "goPrefix": "Wifi",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
@@ -2224,12 +3869,57 @@
           "type": "number",
           "description": "Interval at which to scan for better access points. Enabled if set to positive number, disabled if set to 0. Default value: 60"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "sta_ip",
+          "type": "string",
+          "nullable": true,
+          "description": "Ip of the device in the network (null if disconnected)"
+        },
+        {
+          "key": "status",
+          "type": "string",
+          "enum": [
+            "disconnected",
+            "connecting",
+            "connected"
+          ],
+          "description": "Status of the connection. Range of values: disconnected, connecting, connected, got ip"
+        },
+        {
+          "key": "ssid",
+          "type": "string",
+          "nullable": true,
+          "description": "SSID of the network (null if disconnected)"
+        },
+        {
+          "key": "bssid",
+          "type": "string",
+          "description": "BSSID of the currently connected AP, only when connected"
+        },
+        {
+          "key": "channel",
+          "type": "number",
+          "description": "Channel of the network (only present when connected)"
+        },
+        {
+          "key": "rssi",
+          "type": "number",
+          "description": "Strength of the signal in dBms"
+        },
+        {
+          "key": "ap_client_count",
+          "type": "number",
+          "description": "Number of clients connected to the access point. Present only when AP is enabled and range extender functionality is present and enabled."
+        }
       ]
     },
     {
       "name": "Ws",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
@@ -2242,24 +3932,47 @@
           "type": "string",
           "description": "Name of the server to which the device is connected. When prefixed with wss:// a TLS socket will be used"
         }
+      ],
+      "statusFields": [
+        {
+          "key": "connected",
+          "type": "boolean",
+          "description": "true if device is connected to a websocket outbound connection or false otherwise."
+        }
       ]
     },
     {
       "name": "XMOD",
       "hasGetConfig": false,
       "hasSetConfig": false,
+      "hasGetStatus": false,
       "keyed": false
     },
     {
       "name": "Zigbee",
       "hasGetConfig": true,
       "hasSetConfig": true,
+      "hasGetStatus": true,
       "keyed": false,
       "fields": [
         {
           "key": "enable",
           "type": "boolean",
           "description": "True if Zigbee connectivity is enabled, false otherwise"
+        }
+      ],
+      "statusFields": [
+        {
+          "key": "network_state",
+          "type": "string",
+          "enum": [
+            "disabled",
+            "initializing",
+            "steering",
+            "joined",
+            "failed"
+          ],
+          "description": "Status of the connection. Range of values: disabled, initializing, steering, joined, failed"
         }
       ]
     }

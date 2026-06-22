@@ -9,40 +9,41 @@ import (
 	"strings"
 )
 
-// EmitClient writes one <comp>_config_gen.go file per config-bearing component
-// into outDir. Each file defines the component's typed Config struct (with
-// nested structs for dotted keys), plus GetConfig/SetConfig request wrappers in
-// the same shape as the hand-written client.
+// EmitClient writes one <comp>_gen.go file per component into outDir. Each file
+// defines the component's typed Config and/or Status structs (with nested
+// structs for dotted keys), plus GetConfig/SetConfig/GetStatus request wrappers
+// in the same shape as the hand-written client.
 //
-// Components whose <Name>Config type already exists in hand-written (non-
-// generated) source are skipped, so generation only fills gaps and never
-// collides. Deleting a hand-written type later causes generation to take it
-// over — the migration path to a fully generated client.
+// Config and status are skipped independently: a component whose <Name>Config or
+// <Name>Status type already exists in hand-written (non-generated) source keeps
+// that part hand-written, so generation only fills gaps and never collides.
+// Deleting a hand-written type later causes generation to take it over — the
+// migration path to a fully generated client.
 func EmitClient(spec *Spec, outDir string) error {
 	if err := os.MkdirAll(outDir, 0o755); err != nil {
 		return err
 	}
 	// Remove previously generated files first, so a change to the skip-set
-	// never leaves a stale *_config_gen.go behind.
+	// never leaves a stale *_gen.go behind.
 	if err := removeGenerated(outDir); err != nil {
 		return err
 	}
-	handWritten, err := handWrittenComponents(outDir)
+	handConfig, handStatus, err := handWrittenComponents(outDir)
 	if err != nil {
 		return err
 	}
 	for _, c := range spec.Components {
-		if !c.HasGetConfig && !c.HasSetConfig {
-			continue
+		key := strings.ToLower(c.Name)
+		genConfig := (c.HasGetConfig || c.HasSetConfig) && !handConfig[key]
+		genStatus := c.HasGetStatus && !handStatus[key]
+		if !genConfig && !genStatus {
+			continue // nothing to generate, or both parts hand-written
 		}
-		if handWritten[strings.ToLower(c.Name)] {
-			continue // already implemented by hand; leave it untouched
-		}
-		src, err := emitComponent(c)
+		src, err := emitComponent(c, genConfig, genStatus)
 		if err != nil {
 			return fmt.Errorf("emit %s: %w", c.Name, err)
 		}
-		dst := filepath.Join(outDir, strings.ToLower(c.Name)+"_config_gen.go")
+		dst := filepath.Join(outDir, key+"_gen.go")
 		if err := os.WriteFile(dst, src, 0o644); err != nil { //nolint:gosec // generated source.
 			return err
 		}
@@ -51,7 +52,7 @@ func EmitClient(spec *Spec, outDir string) error {
 }
 
 func removeGenerated(dir string) error {
-	matches, err := filepath.Glob(filepath.Join(dir, "*_config_gen.go"))
+	matches, err := filepath.Glob(filepath.Join(dir, "*_gen.go"))
 	if err != nil {
 		return err
 	}
@@ -67,16 +68,24 @@ func removeGenerated(dir string) error {
 // type (FooConfig) or config request (FooGetConfigRequest / FooSetConfigRequest).
 var configIdentifier = regexp.MustCompile(`type\s+(\w+?)(?:Config|GetConfigRequest|SetConfigRequest)\s+struct`)
 
-// handWrittenComponents returns the set of component base names (lower-cased)
-// that already have a config type or request declared by hand. Lower-casing
-// makes detection robust to casing differences between the docs and the
-// hand-written client (WiFi vs Wifi, Mqtt vs MQTT).
-func handWrittenComponents(dir string) (map[string]bool, error) {
+// statusIdentifier captures the base component name from a hand-written status
+// type (FooStatus) or status request (FooGetStatusRequest). Nested sub-status
+// types (FooBarStatus) also match and add harmless extra keys that never
+// correspond to a real component name.
+var statusIdentifier = regexp.MustCompile(`type\s+(\w+?)(?:Status|GetStatusRequest)\s+struct`)
+
+// handWrittenComponents returns two sets of component base names (lower-cased):
+// those with a hand-written config type/request, and those with a hand-written
+// status type/request. Config and status are tracked separately so each part is
+// skipped independently. Lower-casing makes detection robust to casing
+// differences between the docs and the hand-written client (WiFi vs Wifi).
+func handWrittenComponents(dir string) (config, status map[string]bool, err error) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	set := map[string]bool{}
+	config = map[string]bool{}
+	status = map[string]bool{}
 	for _, e := range entries {
 		name := e.Name()
 		if e.IsDir() || !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_gen.go") {
@@ -84,36 +93,46 @@ func handWrittenComponents(dir string) (map[string]bool, error) {
 		}
 		b, err := os.ReadFile(filepath.Join(dir, name))
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		for _, m := range configIdentifier.FindAllSubmatch(b, -1) {
 			base := strings.ToLower(string(m[1]))
 			if base != "" && base != "set" { // ignore the shared SetConfigResponse helper
-				set[base] = true
+				config[base] = true
+			}
+		}
+		for _, m := range statusIdentifier.FindAllSubmatch(b, -1) {
+			base := strings.ToLower(string(m[1]))
+			if base != "" {
+				status[base] = true
 			}
 		}
 	}
-	return set, nil
+	return config, status, nil
 }
 
-// emitComponent renders and gofmt-formats a single component's config file.
-func emitComponent(c *Component) ([]byte, error) {
-	tree := buildTree(c.Fields)
-
+// emitComponent renders and gofmt-formats a single component's generated file,
+// containing the config part, the status part, or both.
+func emitComponent(c *Component, genConfig, genStatus bool) ([]byte, error) {
 	var b strings.Builder
 	b.WriteString("// Code generated by cmd/gen from the Shelly API docs. DO NOT EDIT.\n\n")
 	b.WriteString("package shelly\n\n")
 	b.WriteString("import \"resty.dev/v3\"\n\n")
 
 	needsJSON := false
-	// Nested struct types first (depth-first), then the root Config struct.
-	emitStructs(&b, c.Prefix()+"Config", tree, &needsJSON)
-
-	if c.HasGetConfig {
-		emitGetConfig(&b, c)
+	if genConfig {
+		// Nested struct types first (depth-first), then the root Config struct.
+		emitStructs(&b, c.Prefix()+"Config", buildTree(c.Fields), &needsJSON)
+		if c.HasGetConfig {
+			emitGetConfig(&b, c)
+		}
+		if c.HasSetConfig {
+			emitSetConfig(&b, c)
+		}
 	}
-	if c.HasSetConfig {
-		emitSetConfig(&b, c)
+	if genStatus {
+		emitStructs(&b, c.Prefix()+"Status", buildTree(c.StatusFields), &needsJSON)
+		emitGetStatus(&b, c)
 	}
 
 	src := b.String()
@@ -259,6 +278,22 @@ func emitSetConfig(b *strings.Builder, c *Component) {
 	fmt.Fprintf(b, "func (r *%s) NewTypedResponse() *SetConfigResponse { return &SetConfigResponse{} }\n\n", req)
 	fmt.Fprintf(b, "func (r *%s) NewResponse() any { return r.NewTypedResponse() }\n\n", req)
 	fmt.Fprintf(b, "func (r *%s) Do(client *resty.Client) (*SetConfigResponse, *Frame, error) {\n", req)
+	b.WriteString("\tresp := r.NewTypedResponse()\n\traw, err := Do(client, r, resp)\n\treturn resp, raw, err\n}\n\n")
+}
+
+func emitGetStatus(b *strings.Builder, c *Component) {
+	req := c.Prefix() + "GetStatusRequest"
+	st := c.Prefix() + "Status"
+	fmt.Fprintf(b, "// %s requests the status of the %s component.\n", req, c.Name)
+	fmt.Fprintf(b, "type %s struct {\n", req)
+	if c.Keyed {
+		fmt.Fprintf(b, "\t// ID of the %s component instance.\n\tID int `json:\"id\"`\n", c.Name)
+	}
+	b.WriteString("}\n\n")
+	fmt.Fprintf(b, "func (r *%s) Method() string { return %q }\n\n", req, c.Prefix()+".GetStatus")
+	fmt.Fprintf(b, "func (r *%s) NewTypedResponse() *%s { return &%s{} }\n\n", req, st, st)
+	fmt.Fprintf(b, "func (r *%s) NewResponse() any { return r.NewTypedResponse() }\n\n", req)
+	fmt.Fprintf(b, "func (r *%s) Do(client *resty.Client) (*%s, *Frame, error) {\n", req, st)
 	b.WriteString("\tresp := r.NewTypedResponse()\n\traw, err := Do(client, r, resp)\n\treturn resp, raw, err\n}\n\n")
 }
 

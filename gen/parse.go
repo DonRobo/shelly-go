@@ -66,12 +66,18 @@ func parsePage(name string, htmlBytes []byte) (*Component, error) {
 			comp.HasGetConfig = true
 		case lname + "setconfig":
 			comp.HasSetConfig = true
+		case lname + "getstatus":
+			comp.HasGetStatus = true
 		}
 	}
 
 	// Config fields live in the table following the heading id="configuration".
 	if t := tableAfterHeading(nodes, "configuration"); t != nil {
 		comp.Fields = parseRows(t, "")
+	}
+	// Status fields live in the table following the heading id="status".
+	if t := tableAfterHeading(nodes, "status"); t != nil {
+		comp.StatusFields = parseRows(t, "")
 	}
 	comp.Keyed = inferKeyed(comp)
 

@@ -33,11 +33,17 @@ type Component struct {
 	// A component needs both to become a Terraform *_config resource.
 	HasGetConfig bool `json:"hasGetConfig"`
 	HasSetConfig bool `json:"hasSetConfig"`
+	// HasGetStatus records whether the docs expose a GetStatus RPC, i.e. whether
+	// a typed <Name>Status + <Name>GetStatusRequest can be generated.
+	HasGetStatus bool `json:"hasGetStatus"`
 	// Keyed is true when component instances are addressed by a numeric id
 	// (Switch:0, Input:1, ...). Singletons like Sys/WiFi/Cloud are not keyed.
 	Keyed bool `json:"keyed"`
 	// Fields are the configuration properties, in document order.
 	Fields []*Field `json:"fields,omitempty"`
+	// StatusFields are the status properties (the "Status" table), in document
+	// order. Same shape as Fields; the emitter turns them into <Name>Status.
+	StatusFields []*Field `json:"statusFields,omitempty"`
 }
 
 // Prefix is the identifier and RPC-method prefix for the component.
