@@ -221,16 +221,16 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 					ResetReason:      IntPtr(3),
 				},
 				Cloud: &CloudStatus{
-					Connected: true,
+					Connected: BoolPtr(true),
 				},
 				MQTT: &MQTTStatus{
-					Connected: false,
+					Connected: BoolPtr(false),
 				},
 				Wifi: &WifiStatus{
 					StaIP:  StrPtr("192.168.1.24"),
-					Status: "got ip",
+					Status: StrPtr("got ip"),
 					SSID:   StrPtr("PickleTown"),
-					RRSI:   Float64Ptr(-36),
+					Rssi:   Float64Ptr(-36),
 				},
 				Ethernet: &EthStatus{
 					IP: nil,
@@ -462,16 +462,16 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 					ResetReason:      IntPtr(3),
 				},
 				Cloud: &CloudStatus{
-					Connected: true,
+					Connected: BoolPtr(true),
 				},
 				MQTT: &MQTTStatus{
-					Connected: false,
+					Connected: BoolPtr(false),
 				},
 				Wifi: &WifiStatus{
 					StaIP:  StrPtr("192.168.1.23"),
-					Status: "got ip",
+					Status: StrPtr("got ip"),
 					SSID:   StrPtr("PickleTown"),
-					RRSI:   Float64Ptr(-22),
+					Rssi:   Float64Ptr(-22),
 				},
 				Ethernet: &EthStatus{
 					IP: nil,
@@ -620,7 +620,7 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 				Humidities: []*HumidityStatus{
 					{
 						ID: 0,
-						RH: Float64Ptr(59.4),
+						Rh: Float64Ptr(59.4),
 					},
 				},
 				Temperatures: []*TemperatureStatus{
@@ -631,16 +631,16 @@ func TestShellyGetStatusResponseUnmarshall(t *testing.T) {
 					},
 				},
 				Cloud: &CloudStatus{
-					Connected: true,
+					Connected: BoolPtr(true),
 				},
 				MQTT: &MQTTStatus{
-					Connected: true,
+					Connected: BoolPtr(true),
 				},
 				Wifi: &WifiStatus{
 					StaIP:  StrPtr("192.168.1.199"),
-					Status: "got ip",
+					Status: StrPtr("got ip"),
 					SSID:   StrPtr("PickleTown_Garage"),
-					RRSI:   Float64Ptr(-35),
+					Rssi:   Float64Ptr(-35),
 				},
 			},
 		},
