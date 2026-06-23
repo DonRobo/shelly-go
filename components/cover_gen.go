@@ -150,8 +150,7 @@ type CoverConfig struct {
 	SafetySwitch         *CoverConfigSafetySwitch         `json:"safety_switch,omitempty"`
 	Slat                 *CoverConfigSlat                 `json:"slat,omitempty"`
 	// SwapInputs defines whether the functions of the two inputs are swapped. Only
-	// present if there are two inputs associated with the Cover instance. Documented
-	// without a type by Shelly.
+	// present if there are two inputs associated with the Cover instance.
 	SwapInputs *bool `json:"swap_inputs,omitempty"`
 }
 
