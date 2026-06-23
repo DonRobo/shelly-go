@@ -132,6 +132,22 @@ func (r *EMSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse, *
 	return resp, raw, err
 }
 
+// EMBlinkModeSelector* are the documented values of EM.blink_mode_selector. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	EMBlinkModeSelectorActiveEnergy   = "active_energy"
+	EMBlinkModeSelectorApparentEnergy = "apparent_energy"
+)
+
+// EMPhaseSelector* are the documented values of EM.phase_selector. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	EMPhaseSelectorA   = "a"
+	EMPhaseSelectorB   = "b"
+	EMPhaseSelectorC   = "c"
+	EMPhaseSelectorAll = "all"
+)
+
 // EMStatus is generated from the Shelly API documentation.
 type EMStatus struct {
 	// ID id of the EM component instance

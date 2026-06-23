@@ -155,6 +155,14 @@ func (r *CCTSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse, 
 	return resp, raw, err
 }
 
+// CCTInitialState* are the documented values of CCT.initial_state. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	CCTInitialStateOff         = "off"
+	CCTInitialStateOn          = "on"
+	CCTInitialStateRestoreLast = "restore_last"
+)
+
 // CCTStatusTransitionTarget is generated from the Shelly API documentation.
 type CCTStatusTransitionTarget struct {
 	// Output true if the output channel becomes on, false otherwise
