@@ -122,6 +122,13 @@ func (r *WifiSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse,
 	return resp, raw, err
 }
 
+// WifiIpv4mode* are the documented values of Wifi.sta.ipv4mode. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	WifiIpv4modeDhcp   = "dhcp"
+	WifiIpv4modeStatic = "static"
+)
+
 // WifiStatus is generated from the Shelly API documentation.
 type WifiStatus struct {
 	// StaIP ip of the device in the network (null if disconnected)

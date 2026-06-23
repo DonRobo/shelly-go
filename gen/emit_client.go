@@ -5,6 +5,7 @@ import (
 	"go/format"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -90,6 +91,7 @@ func emitComponent(c *Component, genConfig, genStatus bool) ([]byte, error) {
 		if c.HasSetConfig {
 			emitSetConfig(&b, c)
 		}
+		emitEnums(&b, c)
 	}
 	if genStatus {
 		emitStructs(&b, c.Prefix()+"Status", buildTree(c.StatusFields), &needsJSON)
@@ -174,6 +176,49 @@ func emitStructs(b *strings.Builder, typeName string, n *node, needsJSON *bool) 
 		fmt.Fprintf(b, "\t%s %s `json:\"%s\"`\n\n", field, goType, jsonTag(name, c.field))
 	}
 	b.WriteString("}\n\n")
+}
+
+// enumToken matches the clean lowercase tokens that become enum constants;
+// numeric or punctuated documented values are skipped.
+var enumToken = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
+
+// emitEnums writes, for each string config field that documents a value set, a
+// const block of named values, e.g. CoverInModeSingle = "single". The constants
+// are plain untyped strings: they give callers discoverable, self-documenting
+// names without constraining the field, which stays a *string — the docs are
+// not always exhaustive ("... if applicable"), so a closed type would be wrong.
+func emitEnums(b *strings.Builder, c *Component) {
+	seen := map[string]bool{}
+	for _, f := range c.Fields {
+		if f.Type != "string" || len(f.Enum) == 0 {
+			continue
+		}
+		leaf := f.Key
+		if i := strings.LastIndex(leaf, "."); i >= 0 {
+			leaf = leaf[i+1:]
+		}
+		base := c.Prefix() + goName(leaf)
+		var lines []string
+		for _, v := range f.Enum {
+			if !enumToken.MatchString(v) {
+				continue
+			}
+			name := base + goName(v)
+			if seen[name] {
+				continue
+			}
+			seen[name] = true
+			lines = append(lines, fmt.Sprintf("\t%s = %q", name, v))
+		}
+		if len(lines) == 0 {
+			continue
+		}
+		fmt.Fprintf(b, "// %s* are the documented values of %s.%s. They are advisory: the\n", base, c.Prefix(), f.Key)
+		b.WriteString("// field accepts any string, since the documented set may be incomplete.\n")
+		b.WriteString("const (\n")
+		b.WriteString(strings.Join(lines, "\n"))
+		b.WriteString("\n)\n\n")
+	}
 }
 
 // goLeafType maps an IR leaf field to a Go type. A keyed "id" field is a bare

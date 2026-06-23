@@ -165,6 +165,12 @@ func (r *SysSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse, 
 	return resp, raw, err
 }
 
+// SysAddonType* are the documented values of Sys.device.addon_type. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	SysAddonTypeSensor = "sensor"
+)
+
 // SysStatusAvailableUpdatesBeta is generated from the Shelly API documentation.
 type SysStatusAvailableUpdatesBeta struct {
 	// Version version of the new firmware
