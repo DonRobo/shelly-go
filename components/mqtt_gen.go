@@ -15,8 +15,18 @@ type MQTTConfig struct {
 	// Server host name of the MQTT server. Can be followed by port number - host:port
 	Server *string `json:"server,omitempty"`
 
+	// ClientID identifies each MQTT client that connects to an MQTT brokers
+	ClientID *string `json:"client_id,omitempty"`
+
 	// User username
 	User *string `json:"user,omitempty"`
+
+	// SSLCA type of the TCP sockets
+	SSLCA *string `json:"ssl_ca,omitempty"`
+
+	// TopicPrefix prefix of the topics on which device publish/subscribe. Limited to
+	// 300 characters. Could not start with $ and #, +, %, ? are not allowed.
+	TopicPrefix *string `json:"topic_prefix,omitempty"`
 
 	// RPCNtf enables RPC notifications (NotifyStatus and NotifyEvent) to be published
 	// on <device_id|topic_prefix>/events/rpc (<topic_prefix> when a custom prefix is

@@ -182,10 +182,13 @@ func parseRows(table *html.Node, prefix string) []*Field {
 			fullKey = prefix + "." + key
 		}
 
-		// An object property with a nested table documents its children; recurse
-		// and don't emit the parent as a leaf.
+		// An object property documents its children in a nested table; recurse
+		// and don't emit the parent as a leaf. The docs also nest tables purely
+		// to enumerate a scalar's allowed values ("Value | Description"); those
+		// are not sub-properties, so only recurse when the nested table is an
+		// object table (header carries a "Type" column).
 		if len(cells) >= 3 {
-			if nested := firstDescendantTable(cells[2]); nested != nil {
+			if nested := firstDescendantTable(cells[2]); nested != nil && isObjectTable(nested) {
 				fields = append(fields, parseRows(nested, fullKey)...)
 				continue
 			}
@@ -200,15 +203,37 @@ func parseRows(table *html.Node, prefix string) []*Field {
 			elem = arrayElem(textOf(cells[1]))
 		}
 		desc := ""
+		var valueEnum []string
 		if len(cells) >= 3 {
 			desc = cleanText(textExcludingTables(cells[2]))
+			// A scalar may enumerate its allowed values in a nested
+			// "Value | Description" table (stripped from desc above). Capture
+			// those as the enum and complete the dangling sentence the prose
+			// left ("..., one of the:") so the doc comment reads cleanly.
+			if nested := firstDescendantTable(cells[2]); nested != nil {
+				valueEnum = valueTableValues(nested)
+				if len(valueEnum) > 0 && strings.HasSuffix(desc, ":") {
+					desc = desc + " " + strings.Join(valueEnum, ", ") + "."
+				}
+			}
+		}
+		enum := enumValues(desc)
+		// Value-table tokens are real enums only for string fields; a boolean's
+		// "false | true" rows are not an enum, and a documented "null" token is
+		// the nullable sentinel, not a member.
+		if enum == nil && base == "string" {
+			for _, v := range valueEnum {
+				if v != "null" {
+					enum = append(enum, v)
+				}
+			}
 		}
 		fields = append(fields, &Field{
 			Key:         fullKey,
 			Type:        base,
 			Elem:        elem,
 			Nullable:    nullable,
-			Enum:        enumValues(desc),
+			Enum:        enum,
 			Description: desc,
 		})
 	}
@@ -338,6 +363,73 @@ func directCells(tr *html.Node) []*html.Node {
 	var cells []*html.Node
 	for c := tr.FirstChild; c != nil; c = c.NextSibling {
 		if c.Type == html.ElementNode && c.Data == "td" {
+			cells = append(cells, c)
+		}
+	}
+	return cells
+}
+
+// isObjectTable reports whether table documents object sub-properties
+// ("Property | Type | Description") rather than a scalar's allowed values
+// ("Value | Description"). The distinguishing signal is a "Type" header column,
+// which only the sub-property tables carry.
+func isObjectTable(table *html.Node) bool {
+	for _, th := range headerCells(table) {
+		if strings.EqualFold(strings.TrimSpace(textOf(th)), "Type") {
+			return true
+		}
+	}
+	return false
+}
+
+// valueTableValues returns the first-column tokens of a "Value | Description"
+// enumeration table — the allowed values of a scalar field. It returns nil for
+// any other table, so it is safe to call on any nested table.
+func valueTableValues(table *html.Node) []string {
+	hdr := headerCells(table)
+	if len(hdr) == 0 || !strings.EqualFold(strings.TrimSpace(textOf(hdr[0])), "Value") {
+		return nil
+	}
+	var vals []string
+	for _, tr := range directRows(table) {
+		cells := directCells(tr)
+		if len(cells) == 0 {
+			continue
+		}
+		if v := strings.TrimSpace(textOf(cells[0])); v != "" {
+			vals = append(vals, v)
+		}
+	}
+	return vals
+}
+
+// headerCells returns the <th> cells of table's own header row, not descending
+// into nested tables (whose headers belong to a different scope).
+func headerCells(table *html.Node) []*html.Node {
+	var cells []*html.Node
+	var firstRow *html.Node
+	var findRow func(*html.Node)
+	findRow = func(node *html.Node) {
+		for c := node.FirstChild; c != nil && firstRow == nil; c = c.NextSibling {
+			if c.Type != html.ElementNode {
+				continue
+			}
+			if c.Data == "table" {
+				continue // a nested table's rows are out of scope
+			}
+			if c.Data == "tr" {
+				firstRow = c
+				return
+			}
+			findRow(c)
+		}
+	}
+	findRow(table)
+	if firstRow == nil {
+		return cells
+	}
+	for c := firstRow.FirstChild; c != nil; c = c.NextSibling {
+		if c.Type == html.ElementNode && c.Data == "th" {
 			cells = append(cells, c)
 		}
 	}

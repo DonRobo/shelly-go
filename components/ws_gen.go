@@ -15,6 +15,9 @@ type WsConfig struct {
 	// Server name of the server to which the device is connected. When prefixed with
 	// wss:// a TLS socket will be used
 	Server *string `json:"server,omitempty"`
+
+	// SSLCA type of the TCP sockets
+	SSLCA *string `json:"ssl_ca,omitempty"`
 }
 
 // WsGetConfigRequest requests the configuration of the Ws component.

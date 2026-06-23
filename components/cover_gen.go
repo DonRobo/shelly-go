@@ -27,6 +27,10 @@ type CoverConfigObstructionDetection struct {
 	// monitored, one of open, close, both
 	Direction *string `json:"direction,omitempty"`
 
+	// Action the recovery action that should be performed if the safety switch is
+	// engaged while moving in a monitored direction, one of the: stop, reverse.
+	Action *string `json:"action,omitempty"`
+
 	// PowerThr watts, power consumption above this threshold should be interpreted as
 	// objects obstructing Cover movement. This property is editable at any time, but
 	// note that during the cover calibration procedure (Cover.Calibrate), power_thr
@@ -49,6 +53,15 @@ type CoverConfigSafetySwitch struct {
 	// Direction the direction of motion for which the safety switch should be
 	// monitored, one of open, close, both
 	Direction *string `json:"direction,omitempty"`
+
+	// Action the recovery action which should be performed if the safety switch is
+	// engaged while moving in a monitored direction, is one of the: stop, reverse,
+	// pause.
+	Action *string `json:"action,omitempty"`
+
+	// AllowedMove allowed movement direction when the safety switch is engaged while
+	// moving in a monitored direction: null, reverse.
+	AllowedMove *string `json:"allowed_move,omitempty"`
 }
 
 // CoverConfigSlat is generated from the Shelly API documentation.
@@ -89,6 +102,10 @@ type CoverConfig struct {
 	// Name name of the Cover component instance
 	Name *string `json:"name,omitempty"`
 
+	// InMode one of single, dual or detached, only present if there is at least one
+	// input associated with the Cover instance: single, dual, detached.
+	InMode *string `json:"in_mode,omitempty"`
+
 	// InLocked if True, all changes to physical inputs are ignored, regardless of
 	// mode.
 	InLocked *bool `json:"in_locked,omitempty"`
@@ -121,9 +138,21 @@ type CoverConfig struct {
 	// direction
 	MaxtimeClose *float64 `json:"maxtime_close,omitempty"`
 
+	// InvertDirections defines the motor rotation for open and close directions
+	// (changing this parameter requires a reboot): false, true.
+	InvertDirections *bool `json:"invert_directions,omitempty"`
+
+	// MaintenanceMode can be used to temporarily freeze all motions for maintenance:
+	// false, true.
+	MaintenanceMode *bool `json:"maintenance_mode,omitempty"`
+
 	ObstructionDetection *CoverConfigObstructionDetection `json:"obstruction_detection,omitempty"`
 	SafetySwitch         *CoverConfigSafetySwitch         `json:"safety_switch,omitempty"`
 	Slat                 *CoverConfigSlat                 `json:"slat,omitempty"`
+	// SwapInputs defines whether the functions of the two inputs are swapped. Only
+	// present if there are two inputs associated with the Cover instance. Documented
+	// without a type by Shelly.
+	SwapInputs *bool `json:"swap_inputs,omitempty"`
 }
 
 // CoverGetConfigRequest requests the configuration of the Cover component.

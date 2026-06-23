@@ -320,6 +320,16 @@
           "description": "Name of the Cover component instance"
         },
         {
+          "key": "in_mode",
+          "type": "string",
+          "enum": [
+            "single",
+            "dual",
+            "detached"
+          ],
+          "description": "One of single, dual or detached, only present if there is at least one input associated with the Cover instance: single, dual, detached."
+        },
+        {
           "key": "in_locked",
           "type": "boolean",
           "description": "If True, all changes to physical inputs are ignored, regardless of mode."
@@ -375,6 +385,16 @@
           "description": "Default timeout after which Cover will stop moving in a close direction"
         },
         {
+          "key": "invert_directions",
+          "type": "boolean",
+          "description": "Defines the motor rotation for open and close directions (changing this parameter requires a reboot): false, true."
+        },
+        {
+          "key": "maintenance_mode",
+          "type": "boolean",
+          "description": "Can be used to temporarily freeze all motions for maintenance: false, true."
+        },
+        {
           "key": "obstruction_detection.enable",
           "type": "boolean",
           "description": "true when obstruction detection is enabled, false otherwise"
@@ -383,6 +403,15 @@
           "key": "obstruction_detection.direction",
           "type": "string",
           "description": "The direction of motion for which the safety switch should be monitored, one of open, close, both"
+        },
+        {
+          "key": "obstruction_detection.action",
+          "type": "string",
+          "enum": [
+            "stop",
+            "reverse"
+          ],
+          "description": "The recovery action that should be performed if the safety switch is engaged while moving in a monitored direction, one of the: stop, reverse."
         },
         {
           "key": "obstruction_detection.power_thr",
@@ -403,6 +432,25 @@
           "key": "safety_switch.direction",
           "type": "string",
           "description": "The direction of motion for which the safety switch should be monitored, one of open, close, both"
+        },
+        {
+          "key": "safety_switch.action",
+          "type": "string",
+          "enum": [
+            "stop",
+            "reverse",
+            "pause"
+          ],
+          "description": "The recovery action which should be performed if the safety switch is engaged while moving in a monitored direction, is one of the: stop, reverse, pause."
+        },
+        {
+          "key": "safety_switch.allowed_move",
+          "type": "string",
+          "nullable": true,
+          "enum": [
+            "reverse"
+          ],
+          "description": "Allowed movement direction when the safety switch is engaged while moving in a monitored direction: null, reverse."
         },
         {
           "key": "slat.enable",
@@ -433,6 +481,11 @@
           "key": "slat.precise_ctl",
           "type": "boolean",
           "description": "This property only applies when cover (vertical) position is less than one full slat rotation away from the fully closed position. If this condition is met, any slat movement will always go through fully closed position first. This improves slat positioning accuracy, yet is slower to execute."
+        },
+        {
+          "key": "swap_inputs",
+          "type": "boolean",
+          "description": "Defines whether the functions of the two inputs are swapped. Only present if there are two inputs associated with the Cover instance. Documented without a type by Shelly."
         }
       ],
       "statusFields": [
@@ -2020,10 +2073,33 @@
           "description": "Host name of the MQTT server. Can be followed by port number - host:port"
         },
         {
+          "key": "client_id",
+          "type": "string",
+          "nullable": true,
+          "description": "Identifies each MQTT client that connects to an MQTT brokers"
+        },
+        {
           "key": "user",
           "type": "string",
           "nullable": true,
           "description": "Username"
+        },
+        {
+          "key": "ssl_ca",
+          "type": "string",
+          "nullable": true,
+          "enum": [
+            "*",
+            "user_ca.pem",
+            "ca.pem"
+          ],
+          "description": "Type of the TCP sockets"
+        },
+        {
+          "key": "topic_prefix",
+          "type": "string",
+          "nullable": true,
+          "description": "Prefix of the topics on which device publish/subscribe. Limited to 300 characters. Could not start with $ and #, +, %, ? are not allowed."
         },
         {
           "key": "rpc_ntf",
@@ -3212,6 +3288,11 @@
           "key": "cpu",
           "type": "number",
           "description": "(since 1.7.0) Portion of time spent in the JS interpreter of this script instance, calculated every 10 seconds"
+        },
+        {
+          "key": "errors",
+          "type": "array",
+          "description": "Optional, present only when the script execution resulted in an error. The array contains description of the type of error. Possible errors are:"
         }
       ]
     },
@@ -4202,6 +4283,16 @@
           "key": "server",
           "type": "string",
           "description": "Name of the server to which the device is connected. When prefixed with wss:// a TLS socket will be used"
+        },
+        {
+          "key": "ssl_ca",
+          "type": "string",
+          "enum": [
+            "*",
+            "user_ca.pem",
+            "ca.pem"
+          ],
+          "description": "Type of the TCP sockets"
         }
       ],
       "statusFields": [
