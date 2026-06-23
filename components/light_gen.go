@@ -166,6 +166,25 @@ func (r *LightSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse
 	return resp, raw, err
 }
 
+// LightInMode* are the documented values of Light.in_mode. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	LightInModeFollow   = "follow"
+	LightInModeFlip     = "flip"
+	LightInModeActivate = "activate"
+	LightInModeDetached = "detached"
+	LightInModeDim      = "dim"
+)
+
+// LightInitialState* are the documented values of Light.initial_state. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	LightInitialStateOff         = "off"
+	LightInitialStateOn          = "on"
+	LightInitialStateRestoreLast = "restore_last"
+	LightInitialStateToggle      = "toggle"
+)
+
 // LightStatusTransitionTarget is generated from the Shelly API documentation.
 type LightStatusTransitionTarget struct {
 	// Output true if the output channel becomes on, false otherwise

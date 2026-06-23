@@ -145,6 +145,24 @@ func (r *RGBSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse, 
 	return resp, raw, err
 }
 
+// RGBInMode* are the documented values of RGB.in_mode. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	RGBInModeFollow   = "follow"
+	RGBInModeFlip     = "flip"
+	RGBInModeActivate = "activate"
+	RGBInModeDetached = "detached"
+	RGBInModeDim      = "dim"
+)
+
+// RGBInitialState* are the documented values of RGB.initial_state. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	RGBInitialStateOff         = "off"
+	RGBInitialStateOn          = "on"
+	RGBInitialStateRestoreLast = "restore_last"
+)
+
 // RGBStatusTransitionTarget is generated from the Shelly API documentation.
 type RGBStatusTransitionTarget struct {
 	// Output true if the output channel becomes on, false otherwise

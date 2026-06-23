@@ -195,6 +195,33 @@ func (r *CoverSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse
 	return resp, raw, err
 }
 
+// CoverInMode* are the documented values of Cover.in_mode. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	CoverInModeSingle   = "single"
+	CoverInModeDual     = "dual"
+	CoverInModeDetached = "detached"
+)
+
+// CoverAction* are the documented values of Cover.obstruction_detection.action. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	CoverActionStop    = "stop"
+	CoverActionReverse = "reverse"
+)
+
+// CoverAction* are the documented values of Cover.safety_switch.action. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	CoverActionPause = "pause"
+)
+
+// CoverAllowedMove* are the documented values of Cover.safety_switch.allowed_move. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	CoverAllowedMoveReverse = "reverse"
+)
+
 // CoverStatusAenergy is generated from the Shelly API documentation.
 type CoverStatusAenergy struct {
 	// Total total energy consumed in Watt-hours.

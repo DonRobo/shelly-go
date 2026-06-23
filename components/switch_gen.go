@@ -121,6 +121,25 @@ func (r *SwitchSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigRespons
 	return resp, raw, err
 }
 
+// SwitchInMode* are the documented values of Switch.in_mode. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	SwitchInModeMomentary = "momentary"
+	SwitchInModeFollow    = "follow"
+	SwitchInModeFlip      = "flip"
+	SwitchInModeDetached  = "detached"
+	SwitchInModeCycle     = "cycle"
+)
+
+// SwitchInitialState* are the documented values of Switch.initial_state. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	SwitchInitialStateOff         = "off"
+	SwitchInitialStateOn          = "on"
+	SwitchInitialStateRestoreLast = "restore_last"
+	SwitchInitialStateMatchInput  = "match_input"
+)
+
 // SwitchStatusAenergy is generated from the Shelly API documentation.
 type SwitchStatusAenergy struct {
 	// Total total energy consumed in Watt-hours
