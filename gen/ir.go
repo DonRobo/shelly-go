@@ -77,6 +77,12 @@ type Field struct {
 	// Enum holds the allowed values when the description specifies a
 	// "Range of values: ...". Empty otherwise.
 	Enum []string `json:"enum,omitempty"`
+	// Min and Max hold the documented numeric bounds when the description states
+	// an accepted range (e.g. "[0.5..30]"). Both are nil unless a bound parsed.
+	// Consumed by the provider to emit plan-time range validators; the library
+	// itself does not enforce them.
+	Min *float64 `json:"min,omitempty"`
+	Max *float64 `json:"max,omitempty"`
 	// Description is the cleaned doc text for the property.
 	Description string `json:"description,omitempty"`
 }
