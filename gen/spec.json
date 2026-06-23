@@ -131,6 +131,8 @@
         {
           "key": "button_fade_rate",
           "type": "number",
+          "min": 1,
+          "max": 5,
           "description": "Controls how quickly the output level changes while a button is held down for dimming (if applicable). Default value 3. Range [1,5] where 5 is fastest, 1 is slowest"
         },
         {
@@ -460,16 +462,22 @@
         {
           "key": "slat.open_time",
           "type": "number",
+          "min": 0.5,
+          "max": 30,
           "description": "Time it takes for slats to move from fully closed (0%) to fully open (100%) position, seconds. Must be manually configured by the user. Accepted range: [0.5..30]s"
         },
         {
           "key": "slat.close_time",
           "type": "number",
+          "min": 0.5,
+          "max": 30,
           "description": "Time it takes for slats to move from fully open (100%) to fully closed (100%) position, seconds. Must be manually configured by the user. Accepted range: [0.5..30]s"
         },
         {
           "key": "slat.step",
           "type": "number",
+          "min": 1,
+          "max": 100,
           "description": "Single step movement spread, represented as % from the full range (used only when slats are controlled via inputs). Accepted range: [1..100]%"
         },
         {
@@ -1466,11 +1474,15 @@
         {
           "key": "report_thr",
           "type": "number",
+          "min": 1,
+          "max": 20,
           "description": "Humidity report threshold in %. Accepted range is device-specific, default [1.0..20.0]% unless specified otherwise"
         },
         {
           "key": "offset",
           "type": "number",
+          "min": -50,
+          "max": 50,
           "description": "Humidity offset in %. Value is applied to measured humidity. Accepted range is device-specific, default [-50.0..50.0]% unless specified otherwise"
         }
       ],
@@ -1589,6 +1601,8 @@
         {
           "key": "report_thr",
           "type": "number",
+          "min": 1,
+          "max": 50,
           "description": "(only for type analog) Analog input report threshold in percent. The accepted range is device-specific, default [1.0..50.0]% unless specified otherwise"
         },
         {
@@ -1617,16 +1631,22 @@
         {
           "key": "count_rep_thr",
           "type": "number",
+          "min": 1,
+          "max": 2147483647,
           "description": "(only for type count) Counts report threshold in number of pulses. Accepted range [1 - 2147483647]"
         },
         {
           "key": "freq_window",
           "type": "number",
+          "min": 1,
+          "max": 3600,
           "description": "(only for type count) Reference time in seconds for base of frequency measurement. Accepted range [1 - 3600]"
         },
         {
           "key": "freq_rep_thr",
           "type": "number",
+          "min": 0,
+          "max": 10000,
           "description": "(only for type count) Frequency report threshold in percent. Accepted range [0 - 10000]"
         },
         {
@@ -1831,6 +1851,8 @@
         {
           "key": "button_fade_rate",
           "type": "number",
+          "min": 1,
+          "max": 5,
           "description": "Controls how quickly the output level changes while a button is held down for dimming (if applicable). Default value 3. Range [1,5] where 5 is fastest, 1 is slowest"
         },
         {
@@ -2602,6 +2624,8 @@
         {
           "key": "button_fade_rate",
           "type": "number",
+          "min": 1,
+          "max": 5,
           "description": "Controls how quickly the output level changes while a button is held down for dimming (if applicable). Default value 3. Range [1,5] where 5 is fastest, 1 is slowest"
         },
         {
@@ -3061,6 +3085,8 @@
         {
           "key": "button_fade_rate",
           "type": "number",
+          "min": 1,
+          "max": 5,
           "description": "Controls how quickly the output level changes while a button is held down for dimming (if applicable). Default value 3. Range [1,5] where 5 is fastest, 1 is slowest"
         },
         {
@@ -3994,11 +4020,15 @@
         {
           "key": "report_thr_C",
           "type": "number",
+          "min": 0.5,
+          "max": 5,
           "description": "Temperature report threshold in Celsius. Accepted range is device-specific, default [0.5..5.0]C unless specified otherwise"
         },
         {
           "key": "offset_C",
           "type": "number",
+          "min": -50,
+          "max": 50,
           "description": "Offset in Celsius to be applied to the measured temperature. Accepted range is device-specific, default [-50.0 .. 50.0] unless specified otherwise"
         }
       ],

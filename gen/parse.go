@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	"golang.org/x/net/html"
@@ -228,16 +229,43 @@ func parseRows(table *html.Node, prefix string) []*Field {
 				}
 			}
 		}
+		var min, max *float64
+		if base == "number" || base == "integer" {
+			min, max = parseRange(desc)
+		}
 		fields = append(fields, &Field{
 			Key:         fullKey,
 			Type:        base,
 			Elem:        elem,
 			Nullable:    nullable,
 			Enum:        enum,
+			Min:         min,
+			Max:         max,
 			Description: desc,
 		})
 	}
 	return fields
+}
+
+// rangeBracket matches a documented numeric range inside brackets, covering the
+// forms the docs use: "[0.5..30]", "[1, 5]", "[1 - 2147483647]", "[0 to 100]".
+// Both bounds must be numbers, so open ranges like "[0..N]" and enum lists are
+// ignored.
+var rangeBracket = regexp.MustCompile(`\[\s*(-?\d+(?:\.\d+)?)\s*(?:\.\.|,|-|to)\s*(-?\d+(?:\.\d+)?)\s*\]`)
+
+// parseRange extracts the documented numeric bounds from a description, or
+// (nil, nil) when none is present or the bounds are not a clean numeric pair.
+func parseRange(desc string) (*float64, *float64) {
+	m := rangeBracket.FindStringSubmatch(desc)
+	if m == nil {
+		return nil, nil
+	}
+	lo, err1 := strconv.ParseFloat(m[1], 64)
+	hi, err2 := strconv.ParseFloat(m[2], 64)
+	if err1 != nil || err2 != nil || lo > hi {
+		return nil, nil
+	}
+	return &lo, &hi
 }
 
 var rangeOfValues = regexp.MustCompile(`(?i)Range of values?:\s*(.+)`)

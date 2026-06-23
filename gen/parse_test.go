@@ -46,6 +46,35 @@ func TestNormaliseType(t *testing.T) {
 	}
 }
 
+func TestParseRange(t *testing.T) {
+	cases := []struct {
+		desc     string
+		min, max float64
+		ok       bool
+	}{
+		{"Accepted range: [0.5..30]s", 0.5, 30, true},
+		{"Range [1,5] where 5 is fastest", 1, 5, true},
+		{"range [1 - 2147483647]", 1, 2147483647, true},
+		{"value, [0 to 100] percent", 0, 100, true},
+		{"Offset, [-50, 50]", -50, 50, true},
+		{"range: null or [0..N]", 0, 0, false}, // non-numeric upper bound
+		{"Range of values: off, on, restore_last", 0, 0, false},
+		{"no range at all", 0, 0, false},
+	}
+	for _, c := range cases {
+		min, max := parseRange(c.desc)
+		if !c.ok {
+			if min != nil || max != nil {
+				t.Errorf("parseRange(%q) = (%v,%v), want nil", c.desc, min, max)
+			}
+			continue
+		}
+		if min == nil || max == nil || *min != c.min || *max != c.max {
+			t.Errorf("parseRange(%q) = (%v,%v), want (%v,%v)", c.desc, min, max, c.min, c.max)
+		}
+	}
+}
+
 func TestEnumValues(t *testing.T) {
 	got := enumValues("Mode of the associated input. Range of values: momentary, follow, flip, detached, cycle (if applicable)")
 	want := []string{"momentary", "follow", "flip", "detached", "cycle"}
