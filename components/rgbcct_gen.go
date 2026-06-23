@@ -115,6 +115,20 @@ func (r *RGBCCTSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigRespons
 	return resp, raw, err
 }
 
+// RGBCCTInitialState* are the documented values of RGBCCT.initial_state. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	RGBCCTInitialStateOff         = "off"
+	RGBCCTInitialStateOn          = "on"
+	RGBCCTInitialStateRestoreLast = "restore_last"
+)
+
+// RGBCCTMode* are the documented values of RGBCCT.night_mode.mode. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	RGBCCTModeRGB = "rgb"
+)
+
 // RGBCCTStatusTransitionTarget is generated from the Shelly API documentation.
 type RGBCCTStatusTransitionTarget struct {
 	// Output true if the output channel becomes on, false otherwise

@@ -81,6 +81,13 @@ func (r *EthSetConfigRequest) Do(client *resty.Client) (*rpc.SetConfigResponse, 
 	return resp, raw, err
 }
 
+// EthIpv4mode* are the documented values of Eth.ipv4mode. They are advisory: the
+// field accepts any string, since the documented set may be incomplete.
+const (
+	EthIpv4modeDhcp   = "dhcp"
+	EthIpv4modeStatic = "static"
+)
+
 // EthStatus is generated from the Shelly API documentation.
 type EthStatus struct {
 	// IP iP of the device in the network
