@@ -1,6 +1,7 @@
 package gen
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -111,5 +112,53 @@ func TestParsePageMinimal(t *testing.T) {
 	}
 	if len(comp.Fields[2].Enum) != 3 {
 		t.Errorf("mode enum = %v, want [a b c]", comp.Fields[2].Enum)
+	}
+}
+
+// A scalar field may carry a nested "Value | Description" table that merely
+// enumerates its allowed values; that is not a sub-property table, so the field
+// must stay a leaf. A real object field uses a "Property | Type | Description"
+// table and must still recurse into its children.
+func TestParseValueTableNotObject(t *testing.T) {
+	doc := `<html><body>
+	<h3 id="demogetconfig">Demo.GetConfig</h3>
+	<h2 id="configuration">Configuration</h2>
+	<table>
+	  <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+	  <tr><td>in_mode</td><td>string</td><td>The mode, one of the:
+	    <table><tbody><tr><th>Value</th><th>Description</th></tr>
+	      <tr><td>single</td><td>one input</td></tr>
+	      <tr><td>dual</td><td>two inputs</td></tr>
+	    </tbody></table></td></tr>
+	  <tr><td>motor</td><td>object</td><td>Motor settings:
+	    <table><tbody><tr><th>Property</th><th>Type</th><th>Description</th></tr>
+	      <tr><td>idle_power_thr</td><td>number</td><td>threshold</td></tr>
+	    </tbody></table></td></tr>
+	</table>
+	</body></html>`
+
+	comp, err := parsePage("Demo", []byte(doc))
+	if err != nil {
+		t.Fatal(err)
+	}
+	byKey := map[string]*Field{}
+	for _, f := range comp.Fields {
+		byKey[f.Key] = f
+	}
+	in, ok := byKey["in_mode"]
+	if !ok || in.Type != "string" {
+		t.Fatalf("in_mode should be a string leaf; fields=%v", byKey)
+	}
+	if want := []string{"single", "dual"}; len(in.Enum) != 2 || in.Enum[0] != want[0] || in.Enum[1] != want[1] {
+		t.Errorf("in_mode enum = %v, want %v (captured from value table)", in.Enum, want)
+	}
+	if !strings.HasSuffix(in.Description, "one of the: single, dual.") {
+		t.Errorf("in_mode description not completed from value table: %q", in.Description)
+	}
+	if _, ok := byKey["motor.idle_power_thr"]; !ok {
+		t.Errorf("motor.idle_power_thr should be recursed from object table; fields=%v", byKey)
+	}
+	if _, ok := byKey["motor"]; ok {
+		t.Errorf("motor object should not be emitted as a leaf; fields=%v", byKey)
 	}
 }

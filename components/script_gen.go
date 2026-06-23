@@ -3,6 +3,7 @@
 package components
 
 import (
+	"encoding/json"
 	"github.com/DonRobo/shelly-go/rpc"
 	"resty.dev/v3"
 )
@@ -81,6 +82,10 @@ type ScriptStatus struct {
 	// CPU (since 1.7.0) Portion of time spent in the JS interpreter of this script
 	// instance, calculated every 10 seconds
 	CPU *float64 `json:"cpu,omitempty"`
+
+	// Errors optional, present only when the script execution resulted in an error.
+	// The array contains description of the type of error. Possible errors are:
+	Errors json.RawMessage `json:"errors,omitempty"`
 }
 
 // ScriptGetStatusRequest requests the status of the Script component.

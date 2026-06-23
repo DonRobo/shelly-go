@@ -71,6 +71,12 @@ var fixes = []func(*Spec){
 	// codegen. Sourced from observed responses; drop if Shelly documents them.
 	addStatusField("Sys", &Field{Key: "reset_reason", Type: "integer", Description: "Numeric reset reason. Not documented by Shelly; appears in firmware responses."}),
 	addStatusField("Sys", &Field{Key: "safe_mode", Type: "boolean", Description: "True if the device is operating in Safe Mode; present only in that mode. Not documented by Shelly."}),
+
+	// Cover.swap_inputs is documented, but its Type cell is left blank in the
+	// docs, so the parser cannot infer a type and drops the row. It is a boolean
+	// (swap the two inputs' open/close functions); inject it with the type the
+	// docs omit. Drop this fix if Shelly fills in the Type cell.
+	addField("Cover", &Field{Key: "swap_inputs", Type: "boolean", Description: "Defines whether the functions of the two inputs are swapped. Only present if there are two inputs associated with the Cover instance. Documented without a type by Shelly."}),
 }
 
 // expandStatusObject returns a fix that represents a status object the docs
@@ -127,6 +133,24 @@ func addStatusField(comp string, f *Field) func(*Spec) {
 			}
 		}
 		c.StatusFields = append(c.StatusFields, f)
+	}
+}
+
+// addField returns a fix that appends a config leaf the docs document without a
+// usable type (so the parser drops it). No-op if a field with that key already
+// parsed, so the fix self-disables once the docs are corrected.
+func addField(comp string, f *Field) func(*Spec) {
+	return func(s *Spec) {
+		c := s.component(comp)
+		if c == nil {
+			return
+		}
+		for _, ex := range c.Fields {
+			if ex.Key == f.Key {
+				return
+			}
+		}
+		c.Fields = append(c.Fields, f)
 	}
 }
 
