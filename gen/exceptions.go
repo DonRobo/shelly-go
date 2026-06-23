@@ -76,7 +76,7 @@ var fixes = []func(*Spec){
 	// docs, so the parser cannot infer a type and drops the row. It is a boolean
 	// (swap the two inputs' open/close functions); inject it with the type the
 	// docs omit. Drop this fix if Shelly fills in the Type cell.
-	addField("Cover", &Field{Key: "swap_inputs", Type: "boolean", Description: "Defines whether the functions of the two inputs are swapped. Only present if there are two inputs associated with the Cover instance. Documented without a type by Shelly."}),
+	addField("Cover", &Field{Key: "swap_inputs", Type: "boolean", Description: "Defines whether the functions of the two inputs are swapped. Only present if there are two inputs associated with the Cover instance."}),
 }
 
 // expandStatusObject returns a fix that represents a status object the docs
